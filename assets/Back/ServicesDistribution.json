@@ -1,0 +1,69 @@
+﻿{
+    "Distribution": [
+        {
+            "Type": "Estetica ",
+            "Subgroup": "110",
+            "Name": "Maquillaje"
+        },
+        {
+            "Type": "Estetica ",
+            "Subgroup": "120",
+            "Name": "Uñas"
+        },
+        {
+            "Type": "Estetica ",
+            "Subgroup": "180",
+            "Name": "Otros"
+        },
+        {
+            "Type": "Peluqueria",
+            "Subgroup": "210",
+            "Name": "Cortes"
+        },
+        {
+            "Type": "Peluqueria",
+            "Subgroup": "220",
+            "Name": "peinar"
+        },
+        {
+            "Type": "Peluqueria",
+            "Subgroup": "230",
+            "Name": "Tinte"
+        },
+        {
+            "Type": "Peluqueria",
+            "Subgroup": "240",
+            "Name": "Mechas"
+        },
+        {
+            "Type": "Peluqueria",
+            "Subgroup": "280",
+            "Name": "Decoloración"
+        },
+        {
+            "Type": "Peluqueria",
+            "Subgroup": "310",
+            "Name": "Alisados"
+        },
+        {
+            "Type": "Peluqueria",
+            "Subgroup": "320",
+            "Name": "Extensiones"
+        },
+        {
+            "Type": "Peluqueria",
+            "Subgroup": "330",
+            "Name": "Recogidos"
+        },
+        {
+            "Type": "Peluqueria",
+            "Subgroup": "340",
+            "Name": "Tratamientos"
+        },
+        {
+            "Type": "Peluqueria",
+            "Subgroup": "350",
+            "Name": "Permanente"
+        }
+    ]
+}

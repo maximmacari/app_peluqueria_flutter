@@ -1,0 +1,6 @@
+contador citas creadas globales
+contador timestamps desde que estamos abiertos
+String, no hardcodear las strings
+Progresview()
+AlertDialog()
+utilizar routes

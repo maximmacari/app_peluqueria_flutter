@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "192419688266",
+    "project_id": "gspread-python-294609",
+    "storage_bucket": "gspread-python-294609.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:192419688266:android:fcaa85373050755eb95bb3",
+        "android_client_info": {
+          "package_name": "com.example.flutter_sms_auth1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "192419688266-pipl08cbgnidtvo09vhpipv50p9e6idd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_sms_auth1",
+            "certificate_hash": "0747d841098fb8bf761a24ff48860a0ad27aca90"
+          }
+        },
+        {
+          "client_id": "192419688266-18ak8v10mdnibmku8l08nrjlji26q5cf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIDqk2SAOprSQh787aWpd12Ua578CxmSg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "192419688266-18ak8v10mdnibmku8l08nrjlji26q5cf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

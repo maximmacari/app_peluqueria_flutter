@@ -1,0 +1,508 @@
+﻿{
+  "Peluqueria": [
+    {
+      "Codigo": "210",
+      "Subgrupo": "cortes",
+      "Nombre": "corte caballero",
+      "Duracion": "15",
+      "Precio": "9.50 "
+    },
+    {
+      "Codigo": "211",
+      "Subgrupo": "cortes",
+      "Nombre": "corte señora ",
+      "Duracion": "30",
+      "Precio": "9.50 "
+    },
+    {
+      "Codigo": "212",
+      "Subgrupo": "cortes",
+      "Nombre": "corte maquina",
+      "Duracion": "10",
+      "Precio": "7.00 "
+    },
+    {
+      "Codigo": "213",
+      "Subgrupo": "cortes",
+      "Nombre": "corte jubilados",
+      "Duracion": "15",
+      "Precio": "7.50 "
+    },
+    {
+      "Codigo": "214",
+      "Subgrupo": "cortes",
+      "Nombre": "corte niños hasta 5 años",
+      "Duracion": "15",
+      "Precio": "6.00 "
+    },
+    {
+      "Codigo": "215",
+      "Subgrupo": "cortes",
+      "Nombre": "corte niños hasta 10 años",
+      "Duracion": "20",
+      "Precio": "7.00 "
+    },
+    {
+      "Codigo": "216",
+      "Subgrupo": "cortes",
+      "Nombre": "corte flequillo",
+      "Duracion": "10",
+      "Precio": "4.00 "
+    },
+    {
+      "Codigo": "217",
+      "Subgrupo": "cortes",
+      "Nombre": "corte barba",
+      "Duracion": "10",
+      "Precio": "3.50 "
+    },
+    {
+      "Codigo": "220",
+      "Subgrupo": "peinados",
+      "Nombre": "peinar flash",
+      "Duracion": "15",
+      "Precio": "5.00 "
+    },
+    {
+      "Codigo": "221",
+      "Subgrupo": "peinados",
+      "Nombre": "peinar corto",
+      "Duracion": "15",
+      "Precio": "9.50 "
+    },
+    {
+      "Codigo": "222",
+      "Subgrupo": "peinados",
+      "Nombre": "peinar medio",
+      "Duracion": "20",
+      "Precio": "10.50 "
+    },
+    {
+      "Codigo": "223",
+      "Subgrupo": "peinados",
+      "Nombre": "peinar lago",
+      "Duracion": "25",
+      "Precio": "12.00 "
+    },
+    {
+      "Codigo": "224",
+      "Subgrupo": "peinados",
+      "Nombre": "peinar extralargo",
+      "Duracion": "30",
+      "Precio": "15.00 "
+    },
+    {
+      "Codigo": "230",
+      "Subgrupo": "tintes",
+      "Nombre": "tinte corto",
+      "Duracion": "25",
+      "Precio": "15.90 "
+    },
+    {
+      "Codigo": "231",
+      "Subgrupo": "tintes",
+      "Nombre": "tinte medio",
+      "Duracion": "30",
+      "Precio": "17.50 "
+    },
+    {
+      "Codigo": "232",
+      "Subgrupo": "tintes",
+      "Nombre": "tinte largo",
+      "Duracion": "30",
+      "Precio": "21.00 "
+    },
+    {
+      "Codigo": "233",
+      "Subgrupo": "tintes",
+      "Nombre": "tinte xx largo",
+      "Duracion": "45",
+      "Precio": "32.00 "
+    },
+    {
+      "Codigo": "234",
+      "Subgrupo": "tintes",
+      "Nombre": "tinte chicos",
+      "Duracion": "15",
+      "Precio": "10.00 "
+    },
+    {
+      "Codigo": "235",
+      "Subgrupo": "tintes",
+      "Nombre": "contorno tinte",
+      "Duracion": "30",
+      "Precio": "7.50 "
+    },
+    {
+      "Codigo": "236",
+      "Subgrupo": "tintes",
+      "Nombre": "tinte cejas + forma ceja",
+      "Duracion": "20",
+      "Precio": "10.00 "
+    },
+    {
+      "Codigo": "240",
+      "Subgrupo": "mechas",
+      "Nombre": "mechas corto 1/2",
+      "Duracion": "20",
+      "Precio": "12.80 "
+    },
+    {
+      "Codigo": "241",
+      "Subgrupo": "mechas",
+      "Nombre": "mechas largo 1/2",
+      "Duracion": "30",
+      "Precio": "19.00 "
+    },
+    {
+      "Codigo": "242",
+      "Subgrupo": "mechas",
+      "Nombre": "mechas corto",
+      "Duracion": "30",
+      "Precio": "18.00 "
+    },
+    {
+      "Codigo": "243",
+      "Subgrupo": "mechas",
+      "Nombre": "mechas medio",
+      "Duracion": "30",
+      "Precio": "25.40 "
+    },
+    {
+      "Codigo": "244",
+      "Subgrupo": "mechas",
+      "Nombre": "mechas largo",
+      "Duracion": "30",
+      "Precio": "32.00 "
+    },
+    {
+      "Codigo": "245",
+      "Subgrupo": "mechas",
+      "Nombre": "mechas xx largo",
+      "Duracion": "40",
+      "Precio": "60.00 "
+    },
+    {
+      "Codigo": "246",
+      "Subgrupo": "mechas",
+      "Nombre": "mechas bicolor ",
+      "Duracion": "30",
+      "Precio": "6.50 "
+    },
+    {
+      "Codigo": "247",
+      "Subgrupo": "mechas",
+      "Nombre": "mechas californianas",
+      "Duracion": "45",
+      "Precio": "35.00 "
+    },
+    {
+      "Codigo": "248",
+      "Subgrupo": "mechas",
+      "Nombre": "mechas californianas largo",
+      "Duracion": "20",
+      "Precio": "60.00 "
+    },
+    {
+      "Codigo": "249",
+      "Subgrupo": "mechas",
+      "Nombre": "mechas chicos",
+      "Duracion": "60",
+      "Precio": "20.50 "
+    },
+    {
+      "Codigo": "250",
+      "Subgrupo": "mechas",
+      "Nombre": "mechas extralargo",
+      "Duracion": "30",
+      "Precio": "40.00 "
+    },
+    {
+      "Codigo": "251",
+      "Subgrupo": "mechas",
+      "Nombre": "mechas (reflejos)",
+      "Duracion": "10",
+      "Precio": "12.00 "
+    },
+    {
+      "Codigo": "280",
+      "Subgrupo": "decoloraciones",
+      "Nombre": "decoloracion corto",
+      "Duracion": "30",
+      "Precio": "21.80 "
+    },
+    {
+      "Codigo": "281",
+      "Subgrupo": "decoloraciones",
+      "Nombre": "decoloracion medio",
+      "Duracion": "30",
+      "Precio": "25.00 "
+    },
+    {
+      "Codigo": "282",
+      "Subgrupo": "decoloraciones",
+      "Nombre": "decoloracion largo",
+      "Duracion": "30",
+      "Precio": "38.00 "
+    },
+    {
+      "Codigo": "283",
+      "Subgrupo": "decoloraciones",
+      "Nombre": "decoloracion xx largo",
+      "Duracion": "30",
+      "Precio": "64.00 "
+    },
+    {
+      "Codigo": "284",
+      "Subgrupo": "decoloraciones",
+      "Nombre": "decoloracion x largo",
+      "Duracion": "30",
+      "Precio": "56.00 "
+    },
+    {
+      "Codigo": "310",
+      "Subgrupo": "alisados",
+      "Nombre": "alisado plancha",
+      "Duracion": "20",
+      "Precio": "7.00 "
+    },
+    {
+      "Codigo": "311",
+      "Subgrupo": "alisados",
+      "Nombre": "alisado queratina corto",
+      "Duracion": "40",
+      "Precio": "60.00 "
+    },
+    {
+      "Codigo": "312",
+      "Subgrupo": "alisados",
+      "Nombre": "alisado queratina medio",
+      "Duracion": "40",
+      "Precio": "95.00 "
+    },
+    {
+      "Codigo": "313",
+      "Subgrupo": "alisados",
+      "Nombre": "alisado queratina largo",
+      "Duracion": "40",
+      "Precio": "140.00 "
+    },
+    {
+      "Codigo": "314",
+      "Subgrupo": "alisados",
+      "Nombre": "alisado queratina x largo",
+      "Duracion": "40",
+      "Precio": "180.00 "
+    },
+    {
+      "Codigo": "315",
+      "Subgrupo": "alisados",
+      "Nombre": "alisado queratina xx largo",
+      "Duracion": "40",
+      "Precio": "200.00 "
+    },
+    {
+      "Codigo": "316",
+      "Subgrupo": "alisados",
+      "Nombre": "desrizado pelo corto",
+      "Duracion": "45",
+      "Precio": "32.90 "
+    },
+    {
+      "Codigo": "317",
+      "Subgrupo": "alisados",
+      "Nombre": "desrizado pelo medio",
+      "Duracion": "60",
+      "Precio": "37.90 "
+    },
+    {
+      "Codigo": "318",
+      "Subgrupo": "alisados",
+      "Nombre": "desrizado pelo largo",
+      "Duracion": "120",
+      "Precio": "55.60 "
+    },
+    {
+      "Codigo": "320",
+      "Subgrupo": "extensiones",
+      "Nombre": "extenciones",
+      "Duracion": "45",
+      "Precio": "60.00 "
+    },
+    {
+      "Codigo": "321",
+      "Subgrupo": "extensiones",
+      "Nombre": "extenciones subir",
+      "Duracion": "30",
+      "Precio": "40.00 "
+    },
+    {
+      "Codigo": "322",
+      "Subgrupo": "extensiones",
+      "Nombre": "extenciones quitar",
+      "Duracion": "30",
+      "Precio": "20.00 "
+    },
+    {
+      "Codigo": "323",
+      "Subgrupo": "extensiones",
+      "Nombre": "extenciones adesivas+ corte",
+      "Duracion": "60",
+      "Precio": "140.00 "
+    },
+    {
+      "Codigo": "330",
+      "Subgrupo": "recogidos",
+      "Nombre": "recogido",
+      "Duracion": "30",
+      "Precio": "29.00 "
+    },
+    {
+      "Codigo": "331",
+      "Subgrupo": "recogidos",
+      "Nombre": "semirecogido",
+      "Duracion": "30",
+      "Precio": "25.00 "
+    },
+    {
+      "Codigo": "332",
+      "Subgrupo": "recogidos",
+      "Nombre": "recogido novia (informal)",
+      "Duracion": "30",
+      "Precio": "28.00 "
+    },
+    {
+      "Codigo": "333",
+      "Subgrupo": "recogidos",
+      "Nombre": "recogido(formal)",
+      "Duracion": "45",
+      "Precio": "40.00 "
+    },
+    {
+      "Codigo": "334",
+      "Subgrupo": "recogidos",
+      "Nombre": "rizos con plancha",
+      "Duracion": "30",
+      "Precio": "17.00 "
+    },
+    {
+      "Codigo": "335",
+      "Subgrupo": "recogidos",
+      "Nombre": "trenzado",
+      "Duracion": "25",
+      "Precio": "25.00 "
+    },
+    {
+      "Codigo": "336",
+      "Subgrupo": "recogidos",
+      "Nombre": "retorcidos frontales",
+      "Duracion": "25",
+      "Precio": "14.00 "
+    },
+    {
+      "Codigo": "340",
+      "Subgrupo": "tratamientos",
+      "Nombre": "tratamiento queratina",
+      "Duracion": "15",
+      "Precio": "10.00 "
+    },
+    {
+      "Codigo": "341",
+      "Subgrupo": "tratamientos",
+      "Nombre": "apolla anticaida",
+      "Duracion": "5",
+      "Precio": "3.50 "
+    },
+    {
+      "Codigo": "342",
+      "Subgrupo": "tratamientos",
+      "Nombre": "ampolla volumen",
+      "Duracion": "5",
+      "Precio": "1.80 "
+    },
+    {
+      "Codigo": "343",
+      "Subgrupo": "tratamientos",
+      "Nombre": "crema suavizante",
+      "Duracion": "5",
+      "Precio": "1.50 "
+    },
+    {
+      "Codigo": "344",
+      "Subgrupo": "tratamientos",
+      "Nombre": "champu especial ",
+      "Duracion": "5",
+      "Precio": "1.50 "
+    },
+    {
+      "Codigo": "345",
+      "Subgrupo": "tratamientos",
+      "Nombre": "mascarilla hidratacion",
+      "Duracion": "5",
+      "Precio": "3.50 "
+    },
+    {
+      "Codigo": "346",
+      "Subgrupo": "tratamientos",
+      "Nombre": "masaje capilar",
+      "Duracion": "5",
+      "Precio": "3.00 "
+    },
+    {
+      "Codigo": "347",
+      "Subgrupo": "tratamientos",
+      "Nombre": "secar",
+      "Duracion": "7",
+      "Precio": "3.40 "
+    },
+    {
+      "Codigo": "348",
+      "Subgrupo": "tratamientos",
+      "Nombre": "espuma color",
+      "Duracion": "1",
+      "Precio": "1.50 "
+    },
+    {
+      "Codigo": "349",
+      "Subgrupo": "tratamientos",
+      "Nombre": "spray volumen",
+      "Duracion": "1",
+      "Precio": "2.00 "
+    },
+    {
+      "Codigo": "350",
+      "Subgrupo": "permanentes",
+      "Nombre": "permanente corto",
+      "Duracion": "25",
+      "Precio": "22.20 "
+    },
+    {
+      "Codigo": "351",
+      "Subgrupo": "permanentes",
+      "Nombre": "permanente medio",
+      "Duracion": "30",
+      "Precio": "27.80 "
+    },
+    {
+      "Codigo": "352",
+      "Subgrupo": "permanentes",
+      "Nombre": "permanente largo",
+      "Duracion": "25",
+      "Precio": "36.00 "
+    },
+    {
+      "Codigo": "353",
+      "Subgrupo": "permanentes",
+      "Nombre": "permanente xx largo",
+      "Duracion": "40",
+      "Precio": "40.00 "
+    },
+    {
+      "Codigo": "354",
+      "Subgrupo": "permanentes",
+      "Nombre": "permanente extralargo",
+      "Duracion": "45",
+      "Precio": "45.50 "
+    }
+  ]
+}
