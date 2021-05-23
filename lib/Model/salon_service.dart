@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class SalonService {
   String _id;
   String _subgroup;
@@ -18,17 +20,6 @@ class SalonService {
     this._price = price;
   }
 
-  String get id => _id;
-  set id(String id) => _id = id;
-  String get subgroup => _subgroup;
-  set subgroup(String subgroup) => _subgroup = subgroup;
-  String get name => _name;
-  set name(String name) => _name = name;
-  String get duration => _duration;
-  set duration(String duration) => _duration = duration;
-  String get price => _price;
-  set price(String price) => _price = price;
-
   SalonService.fromJson(Map<String, dynamic> json) {
     _id = json['id'];
     _subgroup = json['subgroup'];
@@ -48,20 +39,20 @@ class SalonService {
   }
 }
 
-class Services {
-  List<SalonService> _salonServices;
-  List<SalonService> _esteticaServices;
+/* class Services {
+  List _salonServices;
+  List _esteticaServices;
 
-  Services({List<SalonService> SalonService, List<SalonService> esthetic}) {
+  Services({List SalonService, List esthetic}) {
     this._salonServices = SalonService;
     this._esteticaServices = esthetic;
   }
 
-  List<SalonService> get SalonService => _salonServices;
-  set SalonService(List<SalonService> SalonService) =>
+  List get SalonService => _salonServices;
+  set SalonService(List SalonService) =>
       _salonServices = SalonService;
-  List<SalonService> get esthetic => _esteticaServices;
-  set esthetic(List<SalonService> esthetic) => _esteticaServices = esthetic;
+  List get esthetic => _esteticaServices;
+  set esthetic(List esthetic) => _esteticaServices = esthetic;
 
   Services.fromJson(Map<String, dynamic> json) {
     if (json['SalonService'] != null) {
@@ -90,3 +81,6 @@ class Services {
     return data;
   }
 }
+
+
+ */

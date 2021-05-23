@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "192419688266",
-    "project_id": "gspread-python-294609",
-    "storage_bucket": "gspread-python-294609.appspot.com"
+    "project_number": "74134163522",
+    "project_id": "peluqeuria",
+    "storage_bucket": "peluqeuria.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:192419688266:android:fcaa85373050755eb95bb3",
+        "mobilesdk_app_id": "1:74134163522:android:c9f0c3aad94fdaacf49ddb",
         "android_client_info": {
           "package_name": "com.example.flutter_sms_auth1"
         }
       },
       "oauth_client": [
         {
-          "client_id": "192419688266-pipl08cbgnidtvo09vhpipv50p9e6idd.apps.googleusercontent.com",
+          "client_id": "74134163522-ce0bdlg9vc0vnlrkgj4gahn9t7aft4l3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.flutter_sms_auth1",
@@ -22,20 +22,20 @@
           }
         },
         {
-          "client_id": "192419688266-18ak8v10mdnibmku8l08nrjlji26q5cf.apps.googleusercontent.com",
+          "client_id": "74134163522-s5h0uge7ons9nfffpj5kr8o9v31esq1l.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAIDqk2SAOprSQh787aWpd12Ua578CxmSg"
+          "current_key": "AIzaSyBZIL4bu11qC1dKKNSjBKSMDKso64_F3IM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "192419688266-18ak8v10mdnibmku8l08nrjlji26q5cf.apps.googleusercontent.com",
+              "client_id": "74134163522-s5h0uge7ons9nfffpj5kr8o9v31esq1l.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

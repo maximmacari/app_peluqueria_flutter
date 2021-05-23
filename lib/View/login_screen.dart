@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sms_auth1/shared/alert_dialog.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -130,8 +132,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextSpan(
                                 text: 'términos y condiciones.',
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap =
-                                      () => {openTermsAndContidionModal()},
+                                  ..onTap = () =>
+                                      {showTermsAndContidionDialog(context)},
                                 style: TextStyle(color: Colors.blue),
                               ),
                             ],
@@ -169,10 +171,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.blue,
-                          letterSpacing: 2,
+                          letterSpacing: 4,
                           fontSize: 24),
                       decoration: InputDecoration(
-                          hintText: "*** ***",
+                          hintText: "******",
                           contentPadding: EdgeInsets.symmetric(
                               vertical: 16.0, horizontal: 24.0),
                           prefixIcon: Icon(
@@ -219,7 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Container(
                     width: 100,
                     height: 100,
-                    color: Colors.grey[50],
+                    color: Colors.grey[200],
                     child: Center(
                       child: CircularProgressIndicator(),
                     ),
@@ -229,10 +231,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       )),
     );
-  }
-
-  void openTermsAndContidionModal() {
-    print('Abrir modal terminos y condiciones');
   }
 
   void receiveSMS() {
@@ -254,36 +252,55 @@ class _LoginScreenState extends State<LoginScreen> {
     final String phoneNumberE164 = "+34" + _phoneController.text;
     await _firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneNumberE164,
+        autoRetrievedSmsCodeForTesting: "+34645962530", // only testing
         timeout: const Duration(seconds: 60),
         verificationCompleted: (phoneAuthCredential) async {
           setState(() {
             showLoading = false;
           });
-          //_signinWithPhoneAuthCredential(phoneAuthCredential);
+          try {
+            _signinWithPhoneAuthCredential(phoneAuthCredential);
+            Navigator.push(
+              context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          } catch (e) {
+            print("err: $e");
+          }
         },
-        verificationFailed: (failed) {
+        verificationFailed: (FirebaseAuthException e) async {
           setState(() {
             showLoading = false;
           });
-          print("err: ${failed.message}");
+          print("err: ${e.message}");
+          OkAlertDialog(
+              "Error", "${e.message}", () => {Navigator.of(context).pop("ok")});
         },
-        codeSent: (verificationId, resendingToken) async {
+        codeSent: (String verificationId, int resendingToken) async {
           setState(() {
             showLoading = false;
             verificationId = verificationId;
           });
+          PhoneAuthCredential credential = PhoneAuthProvider.credential(
+              verificationId: verificationId, smsCode: _codeController.text);
+          await _firebaseAuth.signInWithCredential(credential);
         },
         //after the time out..60 seconds this method is called
         codeAutoRetrievalTimeout: (codeAutoRetrievalTimeout) async {
-          print("err Timeout: ${codeAutoRetrievalTimeout}");
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("OTP error: se acabó el tiempo"),
+          ));
+          print("err: ${codeAutoRetrievalTimeout.toString()}");
         });
   }
 
   void _sendCode() async {
-    print("code: ${_codeController.text}");
-    final phoneAuthCredential = PhoneAuthProvider.credential(
-        verificationId: verificationId, smsCode: _codeController.text);
-    _signinWithPhoneAuthCredential(phoneAuthCredential);
+    try {
+      print("code: ${_codeController.text}");
+      final phoneAuthCredential = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: _codeController.text);
+      _signinWithPhoneAuthCredential(phoneAuthCredential);
+    } catch (e) {
+      print("err: $e");
+    }
   }
 
   void _resetButtonCounter() {
@@ -299,11 +316,13 @@ class _LoginScreenState extends State<LoginScreen> {
       final authCredential =
           await _firebaseAuth.signInWithCredential(phoneAuthCredential);
       if (authCredential.user != null) {
+        print("Ha entrado: ${authCredential.user}");
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => HomeScreen()));
       }
     } on FirebaseAuthException catch (e) {
-      print("err: $e");
+      OkAlertDialog(
+          "Error", e.message, () => {Navigator.of(context).pop("ok")});
     } finally {
       setState(() {
         showLoading = false;
@@ -332,6 +351,83 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  void showTermsAndContidionDialog(context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return termsConditionDialog(context);
+      },
+    );
+  }
+
+  Widget termsConditionDialog(context) {
+    return Container(
+        child: Center(
+      child: FutureBuilder(
+          future: DefaultAssetBundle.of(context).loadString("assets/terms.txt"),
+          builder: (context, snapshot) {
+            var terms = snapshot.data.toString();
+            if (snapshot.hasData) {
+              return AlertDialog(
+                title: Text("Términos y condiciones"),
+                content: SingleChildScrollView(
+                    child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text("$terms"),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              conditionAccepted = false;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text("Cancelar"),
+                          style: TextButton.styleFrom(
+                              shape: (RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              )),
+                              padding: EdgeInsets.all(16),
+                              primary: Colors.black,
+                              backgroundColor: Colors.blue),
+                        ),
+                        Spacer(),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              conditionAccepted = true;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text("Aceptar"),
+                          style: TextButton.styleFrom(
+                              shape: (RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              )),
+                              padding: EdgeInsets.all(16),
+                              primary: Colors.black,
+                              backgroundColor: Colors.blue),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                )),
+              );
+            } else {
+              return Text("");
+            }
+          }),
+    ));
+  }
+
   @override
   void dispose() {
     _timer.cancel();
@@ -354,8 +450,7 @@ class CustomInputFormatter extends TextInputFormatter {
       buffer.write(text[i]);
       var nonZeroIndex = i + 1;
       if (nonZeroIndex % 3 == 0 && nonZeroIndex != text.length) {
-        buffer.write(
-            ' '); // Replace this with anything you want to put after each n numbers
+        buffer.write(' ');
       }
     }
 
