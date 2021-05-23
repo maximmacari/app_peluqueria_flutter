@@ -252,27 +252,27 @@ class _LoginScreenState extends State<LoginScreen> {
     final String phoneNumberE164 = "+34" + _phoneController.text;
     await _firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneNumberE164,
-        autoRetrievedSmsCodeForTesting: "+34645962530", // only testing
+        //autoRetrievedSmsCodeForTesting: "+34645962530", // only testing
         timeout: const Duration(seconds: 60),
         verificationCompleted: (phoneAuthCredential) async {
           setState(() {
             showLoading = false;
           });
           try {
-            _signinWithPhoneAuthCredential(phoneAuthCredential);
+            //_signinWithPhoneAuthCredential(phoneAuthCredential);
             Navigator.push(
               context, MaterialPageRoute(builder: (context) => HomeScreen()));
           } catch (e) {
             print("err: $e");
           }
         },
-        verificationFailed: (FirebaseAuthException e) async {
+        verificationFailed: (FirebaseAuthException fbException) async {
           setState(() {
             showLoading = false;
           });
-          print("err: ${e.message}");
+          print("err: ${fbException.message}");
           OkAlertDialog(
-              "Error", "${e.message}", () => {Navigator.of(context).pop("ok")});
+              "Error", "${fbException.message}", () => {Navigator.of(context).pop("ok")});
         },
         codeSent: (String verificationId, int resendingToken) async {
           setState(() {
@@ -285,6 +285,10 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         //after the time out..60 seconds this method is called
         codeAutoRetrievalTimeout: (codeAutoRetrievalTimeout) async {
+          setState(() {
+            showLoading = false;
+            verificationId = codeAutoRetrievalTimeout;
+          });
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text("OTP error: se acabó el tiempo"),
           ));
