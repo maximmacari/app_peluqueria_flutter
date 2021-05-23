@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'login_screen.dart';
+import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 
 void main() async {
   //Firebase init
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Consigue tu clave OTP',
+      title: 'Peluqeria',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
@@ -29,10 +29,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: Scaffold(
-        appBar: AppBar(title: Text("Acceso a la solicitud de citas")),
-        body: LoginScreen(),
-      ),
+      initialRoute: Screen.PRESENTATION,
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }

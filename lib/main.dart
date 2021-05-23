@@ -33,6 +33,11 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(title: Text("Acceso a la solicitud de citas")),
         body: LoginScreen(),
       ),
+      onGenerateRoute: (settings) {
+
+      },
     );
   }
 }
+
+

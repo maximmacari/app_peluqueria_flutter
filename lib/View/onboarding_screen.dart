@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../shared/colors.dart';
 import "../shared/custom_button.dart";
@@ -25,10 +26,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   bool _isLastPage() {
     return (_currentPage == _numPages - 1);
-  }
-
-  void Function() _goHomeScreen() {
-    print("Home");
   }
 
   Widget _indicator(bool isActive) {
@@ -58,16 +55,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         Container(
-                          color: Colors.blue,
+                            color: Colors.blue,
                             alignment: Alignment.centerRight,
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(8, 8, 24, 8),
                               child: SimpleButton(
                                 onPressed: (() => {
                                       if (_isLastPage())
-                                        {this._goHomeScreen()}
-                                      else
-                                        {null}
+                                        Navigator.of(context)
+                                            .pushNamed(Screen.LOGIN)
                                     }),
                                 labelString: (!_isLastPage() ? "Saltar" : ""),
                               ),
@@ -91,7 +87,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     Center(
                                         child: SvgPicture.asset(
                                       "assets/logo.svg",
-                                      color: Theme.of(context).colorScheme.mainForeground,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .mainForeground,
                                     )),
                                     SizedBox(height: 30),
                                     Center(
@@ -188,7 +186,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     ),
                                     onPressed: () {
                                       if (_isLastPage())
-                                        _goHomeScreen();
+                                        Navigator.of(context)
+                                            .pushNamed(Screen.LOGIN);
                                       else {
                                         _pageController.nextPage(
                                             duration:

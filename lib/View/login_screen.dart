@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 import 'package:flutter_sms_auth1/shared/alert_dialog.dart';
 import 'home_screen.dart';
 
@@ -44,141 +45,67 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(20),
-      child: Center(
-          child: Stack(
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Scaffold(
+        appBar: AppBar(title: Text("Acceso a la solicitud de citas")),
+        body: Padding(
+          padding: EdgeInsets.all(20),
+          child: Center(
+              child: Stack(
             children: <Widget>[
-              Spacer(flex: 2),
-              Text("Introduce tu numero"),
-              Form(
-                key: _phoneFormKey,
-                child: TextFormField(
-                  keyboardType: TextInputType.phone,
-                  controller: _phoneController,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    new CustomInputFormatter(),
-                    LengthLimitingTextInputFormatter(
-                        11) //phone number(9) + separation every 3 chars (2)
-                  ],
-                  focusNode: _focusPhoneField,
-                  autofocus: false,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                      fontSize: 24),
-                  decoration: InputDecoration(
-                      suffix: Column(
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              receiveSMS();
-                            },
-                            child: Text(
-                              _buttonEnabled
-                                  ? "Recibir SMS"
-                                  : "$_secsButtonAvailable sec SMS",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            style: TextButton.styleFrom(
-                                shape: (RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                )),
-                                padding: EdgeInsets.all(12),
-                                primary: Colors.black,
-                                backgroundColor:
-                                    _buttonEnabled ? Colors.blue : Colors.grey),
-                          ),
-                        ],
-                      ),
-                      hintText: "645 962 530", // Use company number
-                      hintStyle: TextStyle(color: Colors.grey[400]),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 0),
-                      prefixIcon: Icon(
-                        Icons.mobile_friendly,
-                        color: Colors.black,
-                        size: 24,
-                      ),
-                      isDense: true,
-                      alignLabelWithHint: true),
-                  validator: (value) {
-                    if (value.isEmpty) return "El campo no puede estar vacío.";
-                    if (!PHONE_REGEX.hasMatch(value))
-                      return "Número no válido.";
-                    if (!conditionAccepted)
-                      return "Debes aceptar los términos y condiciones.";
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        RichText(
-                          text: TextSpan(
-                            text: "Acepto los ",
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: 'términos y condiciones.',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () =>
-                                      {showTermsAndContidionDialog(context)},
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                        Checkbox(
-                          value: conditionAccepted,
-                          onChanged: (value) {
-                            setState(() {
-                              conditionAccepted = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Spacer(),
-              Center(
-                  child: Column(
-                children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Spacer(flex: 2),
+                  Text("Introduce tu numero"),
                   Form(
-                    key: _codeFormKey,
+                    key: _phoneFormKey,
                     child: TextFormField(
                       keyboardType: TextInputType.phone,
-                      controller: _codeController,
+                      controller: _phoneController,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
+                        new CustomInputFormatter(),
+                        LengthLimitingTextInputFormatter(
+                            11) //phone number(9) + separation every 3 chars (2)
                       ],
-                      focusNode: _focusCodeField,
+                      focusNode: _focusPhoneField,
                       autofocus: false,
-                      maxLength: 6,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.blue,
-                          letterSpacing: 4,
                           fontSize: 24),
                       decoration: InputDecoration(
-                          hintText: "******",
+                          suffix: Column(
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  receiveSMS();
+                                },
+                                child: Text(
+                                  _buttonEnabled
+                                      ? "Recibir SMS"
+                                      : "$_secsButtonAvailable sec SMS",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                style: TextButton.styleFrom(
+                                    shape: (RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    )),
+                                    padding: EdgeInsets.all(12),
+                                    primary: Colors.black,
+                                    backgroundColor: _buttonEnabled
+                                        ? Colors.blue
+                                        : Colors.grey),
+                              ),
+                            ],
+                          ),
+                          hintText: "645 962 530", // Use company number
+                          hintStyle: TextStyle(color: Colors.grey[400]),
                           contentPadding: EdgeInsets.symmetric(
-                              vertical: 16.0, horizontal: 24.0),
+                              vertical: 8.0, horizontal: 0),
                           prefixIcon: Icon(
-                            Icons.input,
+                            Icons.mobile_friendly,
                             color: Colors.black,
                             size: 24,
                           ),
@@ -187,50 +114,129 @@ class _LoginScreenState extends State<LoginScreen> {
                       validator: (value) {
                         if (value.isEmpty)
                           return "El campo no puede estar vacío.";
+                        if (!PHONE_REGEX.hasMatch(value))
+                          return "Número no válido.";
+                        if (!conditionAccepted)
+                          return "Debes aceptar los términos y condiciones.";
                       },
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
-                    child: TextButton(
-                      onPressed: () {
-                        if (_codeFormKey.currentState.validate()) {
-                          _sendCode();
-                        }
-                      },
-                      child: Text(
-                        "Enviar",
-                        style: TextStyle(fontSize: 22),
-                      ),
-                      style: TextButton.styleFrom(
-                          shape: (RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          )),
-                          padding: EdgeInsets.all(16),
-                          primary: Colors.black,
-                          backgroundColor: Colors.blue),
-                    ),
-                  )
-                ],
-              )),
-              Spacer(flex: 3)
-            ],
-          ),
-          showLoading
-              ? Center(
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    color: Colors.grey[200],
-                    child: Center(
-                      child: CircularProgressIndicator(),
+                    padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            RichText(
+                              text: TextSpan(
+                                text: "Acepto los ",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: 'términos y condiciones.',
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => {
+                                            showTermsAndContidionDialog(context)
+                                          },
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Spacer(),
+                            Checkbox(
+                              value: conditionAccepted,
+                              onChanged: (value) {
+                                setState(() {
+                                  conditionAccepted = value;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                )
-              : Container()
-        ],
-      )),
-    );
+                  Spacer(),
+                  Center(
+                      child: Column(
+                    children: [
+                      Form(
+                        key: _codeFormKey,
+                        child: TextFormField(
+                          keyboardType: TextInputType.phone,
+                          controller: _codeController,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          focusNode: _focusCodeField,
+                          autofocus: false,
+                          maxLength: 6,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                              letterSpacing: 4,
+                              fontSize: 24),
+                          decoration: InputDecoration(
+                              hintText: "******",
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 16.0, horizontal: 24.0),
+                              prefixIcon: Icon(
+                                Icons.input,
+                                color: Colors.black,
+                                size: 24,
+                              ),
+                              isDense: true,
+                              alignLabelWithHint: true),
+                          validator: (value) {
+                            if (value.isEmpty)
+                              return "El campo no puede estar vacío.";
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
+                        child: TextButton(
+                          onPressed: () {
+                            if (_codeFormKey.currentState.validate()) {
+                              _sendCode();
+                            }
+                          },
+                          child: Text(
+                            "Enviar",
+                            style: TextStyle(fontSize: 22),
+                          ),
+                          style: TextButton.styleFrom(
+                              shape: (RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              )),
+                              padding: EdgeInsets.all(16),
+                              primary: Colors.black,
+                              backgroundColor: Colors.blue),
+                        ),
+                      )
+                    ],
+                  )),
+                  Spacer(flex: 3)
+                ],
+              ),
+              showLoading
+                  ? Center(
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        color: Colors.grey[200],
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    )
+                  : Container()
+            ],
+          )),
+        ));
   }
 
   void receiveSMS() {
@@ -260,8 +266,7 @@ class _LoginScreenState extends State<LoginScreen> {
           });
           try {
             //_signinWithPhoneAuthCredential(phoneAuthCredential);
-            Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomeScreen()));
+            Navigator.of(context).pushNamed(Screen.HOME);
           } catch (e) {
             print("err: $e");
           }
@@ -271,8 +276,8 @@ class _LoginScreenState extends State<LoginScreen> {
             showLoading = false;
           });
           print("err: ${fbException.message}");
-          OkAlertDialog(
-              "Error", "${fbException.message}", () => {Navigator.of(context).pop("ok")});
+          OkAlertDialog("Error", "${fbException.message}",
+              () => {Navigator.of(context).pop("ok")});
         },
         codeSent: (String verificationId, int resendingToken) async {
           setState(() {
@@ -321,8 +326,7 @@ class _LoginScreenState extends State<LoginScreen> {
           await _firebaseAuth.signInWithCredential(phoneAuthCredential);
       if (authCredential.user != null) {
         print("Ha entrado: ${authCredential.user}");
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        Navigator.of(context).pushNamed(Screen.HOME);
       }
     } on FirebaseAuthException catch (e) {
       OkAlertDialog(
