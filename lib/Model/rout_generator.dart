@@ -31,3 +31,4 @@ class Screen {
 //info
 //https://www.youtube.com/watch?v=nyvwx7o277U
 //https://medium.com/flutter-community/clean-navigation-in-flutter-using-generated-routes-891bd6e000df
+//https://medium.com/fabcoding/navigating-between-screens-in-flutter-navigator-named-routes-passing-data-e3deab46c9e6
