@@ -1,20 +1,19 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserPreferences {
-  static final UserPreferences _instancia = new UserPreferences._internal();
+  // codingwithdhrumil  flutter shared prefereences example
+  static final UserPreferences _instance = new UserPreferences._internal();
 
-  factory UserPreferences() {
-    return _instancia;
-  }
+  static const String PRESENTATTION_SEEN = "presentation_seen";
+
+  factory UserPreferences() => _instance ?? UserPreferences._internal();
 
   UserPreferences._internal();
 
-  SharedPreferences _prefs;
+  static SharedPreferences _prefs;
 
   initPrefs() async {
-    if (_prefs == null) {
-      this._prefs = await SharedPreferences.getInstance();
-    }
+    _prefs = await SharedPreferences.getInstance();
   }
 
   // GET y SET del presentationSeen,
@@ -23,10 +22,10 @@ class UserPreferences {
   // false: first screen will be onBoarding
   // */
   get presentationSeen {
-    return _prefs.getBool('presentationSeen') ?? '';
+    return _prefs.getBool(PRESENTATTION_SEEN) ?? false;
   }
 
   set presentationSeen(bool value) {
-    _prefs.setBool('presentationSeen', value);
+    _prefs.setBool(PRESENTATTION_SEEN, value);
   }
 }

@@ -17,12 +17,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final int _numPages = 3;
   final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
-  SharedPreferences preferences;
 
   @override
   void initState() {
     super.initState();
-    UserPreferences().initPrefs();
   }
 
   List<Widget> _buildPageIndicator() {
@@ -69,13 +67,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             Opacity(
                               opacity: !_isLastPage() ? 1.0 : 0,
                               child: SimpleButton(
-                                onPressed: (() => {
-                                      if (_isLastPage())
-                                        {
-                                          Navigator.of(context)
-                                              .pushNamed(Screen.LOGIN)
-                                        }
-                                    }),
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed(Screen.LOGIN);
+                                  UserPreferences()
+                                      .presentationSeen(value: true);
+                                },
                                 labelString: 'Saltar',
                               ),
                             ),
@@ -193,10 +189,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   padding: EdgeInsets.all(8),
                                 ),
                                 onPressed: () {
+                                  print("current $_currentPage");
+                                  print("");
                                   if (_isLastPage()) {
-                                    UserPreferences().presentationSeen(true);
+                                    UserPreferences()
+                                        .presentationSeen(value: true);
                                     Navigator.of(context)
-                                        .pushNamed(Screen.LOGIN);
+                                        .pushNamed(Screen.HOME);
+                                    print("entra");
                                   } else {
                                     _pageController.nextPage(
                                         duration: Duration(milliseconds: 300),

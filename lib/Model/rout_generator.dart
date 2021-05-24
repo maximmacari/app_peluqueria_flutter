@@ -10,8 +10,6 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     //final args = settings.arguments; // data passed to other views
 
-    UserPreferences().initPrefs();
-
     switch (settings.name) {
       case Screen.PRESENTATION:
         return UserPreferences().presentationSeen == false ||
