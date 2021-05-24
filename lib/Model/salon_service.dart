@@ -38,6 +38,10 @@ class SalonService {
   }
 }
 
+//TODO how to import json data  into firebase wiht node,
+//TODO JSON read local file
+
+
 /* class Services {
   List _salonServices;
   List _esteticaServices;

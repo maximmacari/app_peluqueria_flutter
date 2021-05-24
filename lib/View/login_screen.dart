@@ -6,7 +6,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 import 'package:flutter_sms_auth1/shared/alert_dialog.dart';
-import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -212,7 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               shape: (RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0),
                               )),
-                              padding: EdgeInsets.all(16),
+                              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                               primary: Colors.black,
                               backgroundColor: Colors.blue),
                         ),

@@ -1,9 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'View/login_screen.dart';
+import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 
 void main() async {
-  //Firebase init
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
@@ -15,29 +14,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Consigue tu clave OTP',
+      title: 'Peluqeria',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        appBar: AppBar(title: Text("Acceso a la solicitud de citas")),
-        body: LoginScreen(),
-      ),
-      onGenerateRoute: (settings) {
-
-      },
+          primarySwatch: Colors.blue,
+          colorScheme: ColorScheme.light()), //test colors
+      initialRoute: Screen.PRESENTATION,
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
-
-

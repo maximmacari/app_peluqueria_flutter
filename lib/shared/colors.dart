@@ -19,10 +19,6 @@ class ConstantColors {
       ]);
 }
 
-extension ColorExtension on Colors {
-
-}
-
 extension CustomColorScheme on ColorScheme {
   Color get mainBackground => brightness == Brightness.light
       ? const Color(0xFFe8005b)

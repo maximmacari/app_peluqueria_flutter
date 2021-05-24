@@ -47,7 +47,8 @@ class SimpleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(16),
+        //padding: EdgeInsets.all(16),
+        margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -65,9 +66,10 @@ class SimpleButton extends StatelessWidget {
                   style: CustomTextStyles.ONBOARDING_BTN_TEXT),
               style: TextButton.styleFrom(
                 primary: Theme.of(context).colorScheme.mainForeground,
-                minimumSize: Size(88, 36),
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                backgroundColor: Theme.of(context).colorScheme.mainBackground,
+                //minimumSize: Size(88, 36),
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                backgroundColor: Colors
+                    .black54, //Theme.of(context).colorScheme.mainBackground,
                 shadowColor: Colors.white,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8)),
