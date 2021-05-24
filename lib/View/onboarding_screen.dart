@@ -69,8 +69,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               child: SimpleButton(
                                 onPressed: () {
                                   Navigator.of(context).pushNamed(Screen.LOGIN);
-                                  UserPreferences()
-                                      .presentationSeen(value: true);
+                                  UserPreferences.setPresentationSeen(true);
                                 },
                                 labelString: 'Saltar',
                               ),
@@ -192,11 +191,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   print("current $_currentPage");
                                   print("");
                                   if (_isLastPage()) {
-                                    UserPreferences()
-                                        .presentationSeen(value: true);
+                                    UserPreferences.setPresentationSeen(true);
                                     Navigator.of(context)
-                                        .pushNamed(Screen.HOME);
-                                    print("entra");
+                                        .pushNamed(Screen.HOME);                                      
                                   } else {
                                     _pageController.nextPage(
                                         duration: Duration(milliseconds: 300),

@@ -4,7 +4,6 @@ import 'package:flutter_sms_auth1/Model/user_preferences.dart';
 import 'package:flutter_sms_auth1/View/home_screen.dart';
 import 'package:flutter_sms_auth1/View/login_screen.dart';
 import 'package:flutter_sms_auth1/View/onboarding_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -12,10 +11,10 @@ class RouteGenerator {
 
     switch (settings.name) {
       case Screen.PRESENTATION:
-        return UserPreferences().presentationSeen == false ||
-                UserPreferences().presentationSeen == null
+        return UserPreferences.getPresentationSeen() == false ||
+                UserPreferences.getPresentationSeen() == null
             ? MaterialPageRoute(builder: (_) => OnboardingScreen())
-            : MaterialPageRoute(builder: (_) => LoginScreen());
+            : MaterialPageRoute(builder: (_) => HomeScreen());
       case Screen.LOGIN:
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case Screen.HOME:

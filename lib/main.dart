@@ -6,7 +6,7 @@ import 'package:flutter_sms_auth1/Model/user_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  //await UserPreferences().initPrefs();
+  await UserPreferences.initPrefs();
   runApp(MyApp());
 }
 
