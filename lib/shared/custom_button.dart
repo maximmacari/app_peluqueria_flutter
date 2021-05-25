@@ -24,10 +24,8 @@ class TxtButtonIcon extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Text(
-                "${this.labelString}",
-                style: CustomTextStyles.ONBOARDING_BTN_TEXT,
-              ),
+              Text("${this.labelString}",
+                  style: CustomTextStyles().onboardingBtnTextStyle(context)),
               Icon(
                 icon,
                 color: Theme.of(context).colorScheme.mainForeground,
@@ -63,7 +61,7 @@ class SimpleButton extends StatelessWidget {
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           ElevatedButton(
               child: Text(this.labelString,
-                  style: CustomTextStyles.ONBOARDING_BTN_TEXT),
+                  style: CustomTextStyles().onboardingBtnTextStyle(context)),
               style: TextButton.styleFrom(
                 primary: Theme.of(context).colorScheme.mainForeground,
                 //minimumSize: Size(88, 36),

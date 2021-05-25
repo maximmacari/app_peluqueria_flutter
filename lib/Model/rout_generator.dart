@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sms_auth1/Model/user_preferences.dart';
+import 'package:flutter_sms_auth1/View/appointment_screen.dart';
 import 'package:flutter_sms_auth1/View/home_screen.dart';
 import 'package:flutter_sms_auth1/View/login_screen.dart';
 import 'package:flutter_sms_auth1/View/onboarding_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     //final args = settings.arguments; // data passed to other views
-
+    final _authFirebase = FirebaseAuth.instance;
     switch (settings.name) {
       case Screen.PRESENTATION:
         return UserPreferences.getPresentationSeen() == false ||
@@ -20,7 +22,12 @@ class RouteGenerator {
       case Screen.HOME:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case Screen.SET_APPOINTMENT:
-        return null;
+        if (_authFirebase.currentUser.phoneNumber == null) { // no user logged in
+          return MaterialPageRoute(builder: (_) => LoginScreen());
+        } else {
+          print("Loggedin: ${_authFirebase.currentUser.phoneNumber}");
+          return MaterialPageRoute(builder: (_) => AppointmentScreen());
+        }
     }
   }
 }

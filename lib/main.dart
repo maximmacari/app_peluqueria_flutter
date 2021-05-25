@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: Colors.blue,
-          colorScheme: ColorScheme.light()), //test colors
+          colorScheme: ColorScheme.dark()), //test colors
       initialRoute: Screen.PRESENTATION,
       onGenerateRoute: RouteGenerator.generateRoute,
     );

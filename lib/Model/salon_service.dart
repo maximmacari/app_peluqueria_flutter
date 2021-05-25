@@ -20,14 +20,20 @@ class SalonService {
     this._price = price;
   }
 
-  factory SalonService.fromJson(Map<String, dynamic> json)
-    => SalonService(
-        id: json['Codigo'],
-        subgroup: json['Subgrupo'],
-        name: json['Nombre'],
-        duration: json['Duracion'],
-        price: json['Precio']
-  );
+  
+  String get subgroup => this._subgroup;
+  String get name => this._name;
+  String get price => this._price;
+
+  String get id => this._id;
+  String get duration => this._duration;
+
+  factory SalonService.fromJson(Map<String, dynamic> json) => SalonService(
+      id: json['Codigo'],
+      subgroup: json['Subgrupo'],
+      name: json['Nombre'],
+      duration: json['Duracion'],
+      price: json['Precio']);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -39,9 +45,9 @@ class SalonService {
     return data;
   }
 
-   String toString() {
+  String toString() {
     return "id: $_id subgroup: $_subgroup name: $_name duration: $_duration price: $_price";
-  } 
+  }
 }
 
 class SalonServiceList {
@@ -55,6 +61,3 @@ class SalonServiceList {
     return new SalonServiceList(services);
   }
 }
-
-//TODO how to import json data  into firebase wiht node,
-//TODO JSON read local file

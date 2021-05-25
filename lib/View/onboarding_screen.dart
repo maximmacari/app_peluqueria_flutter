@@ -4,9 +4,7 @@ import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 import 'package:flutter_sms_auth1/Model/user_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../shared/colors.dart';
-import "../shared/custom_button.dart";
 import '../shared/styles.dart';
-import "package:shared_preferences/shared_preferences.dart";
 
 class OnboardingScreen extends StatefulWidget {
   @override
@@ -42,7 +40,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       height: 8,
       width: isActive ? 24 : 16,
       decoration: BoxDecoration(
-          color: isActive ? Colors.white : Colors.grey,
+          color: isActive ? Theme.of(context).colorScheme.mainForeground : Theme.of(context).colorScheme.mainForeground.withOpacity(0.24),
           borderRadius: BorderRadius.all(Radius.circular(12))),
     );
   }
@@ -55,27 +53,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             value: SystemUiOverlayStyle.light,
             child: Container(
                 decoration: BoxDecoration(
-                    gradient: ConstantColors.backgroundLinearGradient),
+                    gradient: Theme.of(context)
+                        .colorScheme
+                        .mainBackgroundLinearGradient),
                 child: Padding(
                     padding: EdgeInsets.only(top: 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        Row(
-                          children: [
-                            Spacer(),
-                            Opacity(
-                              opacity: !_isLastPage() ? 1.0 : 0,
-                              child: SimpleButton(
-                                onPressed: () {
-                                  Navigator.of(context).pushNamed(Screen.LOGIN);
-                                  UserPreferences.setPresentationSeen(true);
-                                },
-                                labelString: 'Saltar',
-                              ),
-                            ),
-                          ],
-                        ),
                         Spacer(),
                         Container(
                           height: MediaQuery.of(context).size.height * 0.6,
@@ -95,7 +80,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   children: <Widget>[
                                     Center(
                                         child: SvgPicture.asset(
-                                      "assets/logo.svg",
+                                      "assets/images/logo.svg",
                                       color: Theme.of(context)
                                           .colorScheme
                                           .mainForeground,
@@ -104,14 +89,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     Center(
                                       child: Text(
                                         "",
-                                        style:
-                                            CustomTextStyles.ONBOARDING_TITLE,
+                                        style: CustomTextStyles()
+                                            .onboardingTitleStyle(context),
                                       ),
                                     ),
                                     Spacer(),
                                     Text(
                                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-                                      style: CustomTextStyles.ONBOARDING_BODY,
+                                      style: CustomTextStyles()
+                                          .onboardingBodyStyle(context),
                                     )
                                   ],
                                 ),
@@ -123,21 +109,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   children: <Widget>[
                                     Center(
                                         child: SvgPicture.asset(
-                                      "assets/logo.svg",
-                                      color: Colors.white,
+                                      "assets/images/logo.svg",
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .mainForeground,
                                     )),
                                     Spacer(),
                                     Center(
                                       child: Text(
                                         "Connect with \nnew people.",
-                                        style:
-                                            CustomTextStyles.ONBOARDING_TITLE,
+                                        style: CustomTextStyles()
+                                            .onboardingTitleStyle(context),
                                       ),
                                     ),
                                     Spacer(),
                                     Text(
                                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.",
-                                      style: CustomTextStyles.ONBOARDING_BODY,
+                                      style: CustomTextStyles()
+                                          .onboardingBodyStyle(context),
                                     )
                                   ],
                                 ),
@@ -149,21 +138,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   children: <Widget>[
                                     Center(
                                         child: SvgPicture.asset(
-                                      "assets/logo.svg",
-                                      color: Colors.white,
+                                      "assets/images/logo.svg",
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .mainForeground,
                                     )),
                                     Spacer(),
                                     Center(
                                       child: Text(
                                         "Connect with \nnew people.",
-                                        style:
-                                            CustomTextStyles.ONBOARDING_TITLE,
+                                        style: CustomTextStyles()
+                                            .onboardingTitleStyle(context),
                                       ),
                                     ),
                                     Spacer(),
                                     Text(
                                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-                                      style: CustomTextStyles.ONBOARDING_BODY,
+                                      style: CustomTextStyles()
+                                          .onboardingBodyStyle(context),
                                     )
                                   ],
                                 ),
@@ -185,7 +177,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(8.0))),
                                   primary: Colors.black45,
-                                  padding: EdgeInsets.all(8),
+                                  padding: EdgeInsets.all(16),
                                 ),
                                 onPressed: () {
                                   print("current $_currentPage");
@@ -193,7 +185,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   if (_isLastPage()) {
                                     UserPreferences.setPresentationSeen(true);
                                     Navigator.of(context)
-                                        .pushNamed(Screen.HOME);                                      
+                                        .pushNamed(Screen.HOME);
                                   } else {
                                     _pageController.nextPage(
                                         duration: Duration(milliseconds: 300),
@@ -201,12 +193,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   }
                                 },
                                 child: _isLastPage()
-                                    ? Text("Saltar",
-                                        style: CustomTextStyles
-                                            .ONBOARDING_BTN_TEXT)
+                                    ? Text("Comenzar",
+                                        style: CustomTextStyles()
+                                            .onboardingBtnTextStyle(context))
                                     : Text("Siguiente",
-                                        style: CustomTextStyles
-                                            .ONBOARDING_BTN_TEXT))),
+                                        style: CustomTextStyles()
+                                            .onboardingBtnTextStyle(context)))),
                         Spacer()
                       ],
                     )))));
