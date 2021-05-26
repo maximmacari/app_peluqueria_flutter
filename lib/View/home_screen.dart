@@ -27,12 +27,13 @@ class _HomeScreenState extends State<HomeScreen> {
     //read json if exist, if not request it
     readHairdressingServicesJson();
     readEstheticServicesJson();
-    print(_servicesList);
+    //print(_servicesList);
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        //title: Text("Servicios"),
         centerTitle: true,
         leading: IconButton(
             icon: Icon(Icons.info_outlined,
@@ -62,20 +63,11 @@ class _HomeScreenState extends State<HomeScreen> {
           child: _servicesList.length > 0
               ? Column(
                   children: [
-                    VerticalScrollViewSubgroups(_servicesList),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: _servicesList.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            margin: EdgeInsets.fromLTRB(4, 8, 4, 0),
-                            child: ListTile(
-                              leading: Text(""),
-                            ),
-                          );
-                        },
-                      ),
-                    )
+                    HorizontalScrollViewSubgroups(_servicesList),
+                    //Vertical grid with headers
+                    //Stagered vGrid
+                    //medium.com / flutterdevs staggered gridview on flutter
+                    VerticalGridWaterfall()
                   ],
                 )
               : Container()),
@@ -129,11 +121,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class VerticalScrollViewSubgroups extends StatefulWidget {
+class HorizontalScrollViewSubgroups extends StatefulWidget {
   List _services = [];
   List _uniqueServices = [];
 
-  VerticalScrollViewSubgroups(services) {
+  HorizontalScrollViewSubgroups(services) {
     this._services = services;
     this._uniqueServices = _services;
     final aux = this._services.map((e) => e.subgroup).toSet();
@@ -141,12 +133,12 @@ class VerticalScrollViewSubgroups extends StatefulWidget {
   }
 
   @override
-  _VerticalScrollViewSubgroupsState createState() =>
-      _VerticalScrollViewSubgroupsState();
+  _HorizontalScrollViewSubgroupsState createState() =>
+      _HorizontalScrollViewSubgroupsState();
 }
 
-class _VerticalScrollViewSubgroupsState
-    extends State<VerticalScrollViewSubgroups> {
+class _HorizontalScrollViewSubgroupsState
+    extends State<HorizontalScrollViewSubgroups> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -160,7 +152,21 @@ class _VerticalScrollViewSubgroupsState
           itemCount: widget._uniqueServices.length,
           itemBuilder: (context, index) {
             return Container(
-                width: MediaQuery.of(context).size.width * 0.44,
+                width: MediaQuery.of(context).size.width * 0.55,
+                decoration: BoxDecoration(boxShadow: [
+                  BoxShadow(
+                      color: widget._uniqueServices[index].subgroupColor
+                          .withOpacity(0.6),
+                      spreadRadius: -5,
+                      blurRadius: 8,
+                      offset: Offset(-2, -2)),
+                  BoxShadow(
+                      color: widget._uniqueServices[index].subgroupColor
+                          .withOpacity(0.4),
+                      spreadRadius: -2,
+                      blurRadius: 8,
+                      offset: Offset(2, 2))
+                ]),
                 child: Card(
                   child: Container(
                     decoration: new BoxDecoration(
@@ -189,11 +195,11 @@ class _VerticalScrollViewSubgroupsState
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
-                                      fontSize: 20.0,
+                                      fontSize: 24.0,
                                       shadows: <Shadow>[
                                         Shadow(
                                             offset: Offset(1, 1),
-                                            blurRadius: 1.0,
+                                            blurRadius: 5.0,
                                             color: Color(0xFF111111)),
                                         Shadow(
                                             offset: Offset(-1, -1),
@@ -218,8 +224,8 @@ class _VerticalScrollViewSubgroupsState
                                     padding: const EdgeInsets.all(8.0),
                                     child: SvgPicture.asset(
                                       "assets/icons/${widget._uniqueServices[index].subgroup}.svg",
-                                      height: 35,
-                                      width: 35,
+                                      height: 40,
+                                      width: 40,
                                     ),
                                   )),
                               Spacer()
@@ -231,6 +237,35 @@ class _VerticalScrollViewSubgroupsState
                   ),
                 ));
           }),
+    );
+  }
+}
+
+class VerticalGridWaterfall extends StatefulWidget {
+  @override
+  _VerticalGridWaterfallState createState() => _VerticalGridWaterfallState();
+}
+
+class _VerticalGridWaterfallState extends State<VerticalGridWaterfall> {
+  List<String> _subgroupedServices = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Grid Header Demo"),
+      ),
+      body: gridHeader(),
+    );
+  }
+
+  Widget gridHeader() {
+    return new ListView.builder(
+      itemCount: _subgroupedServices.length,
+      itemBuilder: (context, index) {
+        return Spacer();
+      },
+      shrinkWrap: true,
     );
   }
 }

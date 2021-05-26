@@ -91,3 +91,9 @@ class SalonServiceList {
     return new SalonServiceList(services);
   }
 }
+
+extension ListExt on List<SalonService> {
+  List<SalonService> filterBySubgroupName(String name) {
+    return this.where((element) => element._subgroup == name).toList();
+  }
+}
