@@ -20,13 +20,43 @@ class SalonService {
     this._price = price;
   }
 
-  
   String get subgroup => this._subgroup;
   String get name => this._name;
   String get price => this._price;
 
   String get id => this._id;
   String get duration => this._duration;
+
+  Color get subgroupColor {
+    switch (this.subgroup) {
+      case "cortes":
+        return Colors.brown;
+      case "peinados":
+        return Colors.purple;
+      case "tintes":
+        return Colors.orange;
+      case "mechas":
+        return Colors.amber;
+      case "decoloraciones":
+        return const Color(0xffc0c0c0); // silver
+      case "alisados":
+        return Colors.pink;
+      case "extensiones":
+        return Colors.indigo;
+      case "recogidos":
+        return Colors.blue;
+      case "tratamientos":
+        return Colors.green;
+      case "permanenetes":
+        return Colors.cyan;
+      case "maquillajes":
+        return Colors.red;
+      case "uñas":
+        return Colors.yellow;
+      default:
+        return Colors.transparent;
+    }
+  }
 
   factory SalonService.fromJson(Map<String, dynamic> json) => SalonService(
       id: json['Codigo'],

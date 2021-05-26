@@ -40,7 +40,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       height: 8,
       width: isActive ? 24 : 16,
       decoration: BoxDecoration(
-          color: isActive ? Theme.of(context).colorScheme.mainForeground : Theme.of(context).colorScheme.mainForeground.withOpacity(0.24),
+          color: isActive
+              ? Theme.of(context).colorScheme.mainForeground
+              : Theme.of(context).colorScheme.mainForeground.withOpacity(0.24),
           borderRadius: BorderRadius.all(Radius.circular(12))),
     );
   }

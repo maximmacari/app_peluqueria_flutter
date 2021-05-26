@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserPreferences {
-  static const String PRESENTATTION_SEEN = "presentation_seen";
+  static const String PRESENTATION_SEEN = "presentation_seen";
   static Future<SharedPreferences> get _instance async =>
       _prefs ??= await SharedPreferences.getInstance();
   static SharedPreferences _prefs;
@@ -16,10 +16,10 @@ class UserPreferences {
   // false: first screen will be onBoarding, only one time
   // */
   static getPresentationSeen() {
-    return _prefs.getBool(PRESENTATTION_SEEN) ?? false;
+    return _prefs.getBool(PRESENTATION_SEEN) ?? false;
   }
 
   static setPresentationSeen(bool value) {
-    _prefs.setBool(PRESENTATTION_SEEN, value);
+    _prefs.setBool(PRESENTATION_SEEN, value);
   }
 }

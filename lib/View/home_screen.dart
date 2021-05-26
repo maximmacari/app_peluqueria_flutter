@@ -7,6 +7,7 @@ import 'package:flutter_sms_auth1/Model/user_preferences.dart';
 import 'package:flutter_sms_auth1/shared/alert_dialog.dart';
 import 'package:flutter_sms_auth1/shared/styles.dart';
 import "package:flutter_sms_auth1/shared/colors.dart";
+import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:convert';
 import 'package:flutter_sms_auth1/shared/custom_extensions.dart';
 
@@ -130,12 +131,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class VerticalScrollViewSubgroups extends StatefulWidget {
   List _services = [];
-  List _subGroups = [];
+  List _uniqueServices = [];
 
-  VerticalScrollViewSubgroups(@required services) {
+  VerticalScrollViewSubgroups(services) {
     this._services = services;
-    _subGroups =
-        (this._services.map((e) => e.subgroup.toString()).toSet().toList());
+    this._uniqueServices = _services;
+    final aux = this._services.map((e) => e.subgroup).toSet();
+    _uniqueServices.retainWhere((element) => aux.remove(element.subgroup));
   }
 
   @override
@@ -149,27 +151,82 @@ class _VerticalScrollViewSubgroupsState
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.24,
-      child: ListView.builder(
+      child: ListView.separated(
+          separatorBuilder: (ctx, index) => SizedBox(
+                width: 8,
+              ),
           scrollDirection: Axis.horizontal,
-          itemCount: widget._subGroups.length,
+          padding: const EdgeInsets.all(8),
+          itemCount: widget._uniqueServices.length,
           itemBuilder: (context, index) {
             return Container(
-                width: MediaQuery.of(context).size.width * 0.4,
+                width: MediaQuery.of(context).size.width * 0.44,
                 child: Card(
                   child: Container(
                     decoration: new BoxDecoration(
                         image: DecorationImage(
                             colorFilter: ColorFilter.mode(
-                                Colors.red.withOpacity(0.6),
+                                widget._uniqueServices[index].subgroupColor,
                                 BlendMode.softLight),
                             image: AssetImage(
-                                "assets/images/${widget._subGroups[index]}_background.jpg"),
+                                "assets/images/${widget._uniqueServices[index].subgroup}_background.jpg"),
                             fit: BoxFit.cover),
                         borderRadius: BorderRadius.all(Radius.circular(8))),
                     child: Center(
-                        child: Text(
-                      widget._subGroups[index],
-                      style: TextStyle(color: Colors.white, fontSize: 12.0),
+                        child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 9,
+                                child: Text(
+                                  widget._uniqueServices[index].subgroup
+                                      .toString()
+                                      .capitalize(),
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 20.0,
+                                      shadows: <Shadow>[
+                                        Shadow(
+                                            offset: Offset(1, 1),
+                                            blurRadius: 1.0,
+                                            color: Color(0xFF111111)),
+                                        Shadow(
+                                            offset: Offset(-1, -1),
+                                            blurRadius: 2,
+                                            color: Color(0xFF010101)),
+                                      ]),
+                                ),
+                              ),
+                              Spacer(flex: 1)
+                            ],
+                          ),
+                          Spacer(),
+                          Row(
+                            children: [
+                              Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(25)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SvgPicture.asset(
+                                      "assets/icons/${widget._uniqueServices[index].subgroup}.svg",
+                                      height: 35,
+                                      width: 35,
+                                    ),
+                                  )),
+                              Spacer()
+                            ],
+                          )
+                        ],
+                      ),
                     )),
                   ),
                 ));

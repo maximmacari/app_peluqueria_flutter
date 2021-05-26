@@ -100,21 +100,21 @@
     },
     {
       "Codigo": "126",
-      "Subgrupo": "otros",
+      "Subgrupo": "uñas",
       "Nombre": "relleno uñas de gel",
       "Duracion": "60",
       "Precio": "25.00 "
     },
     {
       "Codigo": "180",
-      "Subgrupo": "otros",
+      "Subgrupo": "tintes",
       "Nombre": "tinte pestañas",
       "Duracion": "30",
       "Precio": "15.00 "
     },
     {
       "Codigo": "181",
-      "Subgrupo": "otros",
+      "Subgrupo": "maquillajes",
       "Nombre": "pestañas postizas",
       "Duracion": "15",
       "Precio": "5.80 "

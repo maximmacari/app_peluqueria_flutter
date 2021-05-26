@@ -53,8 +53,7 @@ flutter:
   assets:
     - assets/saved-files/
     - assets/images/
-    - assets/images/cortes_background.jpg
-    - assets/
+    - assets/icons/
     
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
