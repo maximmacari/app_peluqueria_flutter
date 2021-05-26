@@ -442,7 +442,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    try {
+      _timer.cancel();
+    } catch (e) {
+      print("err");
+    }
+
     super.dispose();
   }
 }

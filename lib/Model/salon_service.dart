@@ -96,4 +96,15 @@ extension ListExt on List<SalonService> {
   List<SalonService> filterBySubgroupName(String name) {
     return this.where((element) => element._subgroup == name).toList();
   }
+
+//TODO quitar
+  List<SalonService> getUniqueSubgroup() {
+    List _uniqueServices = this;
+    final aux = this.map((e) => e.subgroup).toSet();
+
+    //
+    //
+    _uniqueServices.retainWhere((element) => aux.remove(element.subgroup));
+    return _uniqueServices;
+  }
 }
