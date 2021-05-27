@@ -3,21 +3,21 @@
     {
       "Codigo": "110",
       "Subgrupo": "maquillajes",
-      "Nombre": "maquillaje natural",
+      "Nombre": "natural",
       "Duracion": "30",
       "Precio": "20.00 "
     },
     {
       "Codigo": "111",
       "Subgrupo": "maquillajes",
-      "Nombre": "maquillaje fiesta",
+      "Nombre": "fiesta",
       "Duracion": "45",
       "Precio": "35.00 "
     },
     {
       "Codigo": "112",
       "Subgrupo": "maquillajes",
-      "Nombre": "maquillaje novia",
+      "Nombre": "novia",
       "Duracion": "30",
       "Precio": "45.00 "
     },
@@ -80,7 +80,7 @@
     {
       "Codigo": "123",
       "Subgrupo": "uñas",
-      "Nombre": "manicura Francesa ",
+      "Nombre": "manicura Francesa",
       "Duracion": "20",
       "Precio": "10.00 "
     },

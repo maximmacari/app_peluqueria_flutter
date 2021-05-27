@@ -10,7 +10,7 @@
     {
       "Codigo": "211",
       "Subgrupo": "cortes",
-      "Nombre": "señora ",
+      "Nombre": "señora",
       "Duracion": "30",
       "Precio": "9.50 "
     },
@@ -80,7 +80,7 @@
     {
       "Codigo": "223",
       "Subgrupo": "peinados",
-      "Nombre": "lago",
+      "Nombre": "largo",
       "Duracion": "25",
       "Precio": "12.00 "
     },
@@ -129,14 +129,14 @@
     {
       "Codigo": "235",
       "Subgrupo": "tintes",
-      "Nombre": "contorno tinte",
+      "Nombre": "contorno",
       "Duracion": "30",
       "Precio": "7.50 "
     },
     {
       "Codigo": "236",
       "Subgrupo": "tintes",
-      "Nombre": "cejas + forma ceja",
+      "Nombre": "cejas y forma",
       "Duracion": "20",
       "Precio": "10.00 "
     },
@@ -185,7 +185,7 @@
     {
       "Codigo": "246",
       "Subgrupo": "mechas",
-      "Nombre": "bicolor ",
+      "Nombre": "bicolor",
       "Duracion": "30",
       "Precio": "6.50 "
     },
@@ -211,14 +211,14 @@
       "Precio": "20.50 "
     },
     {
-      "Codigo": "250",
+      "Codigo": "2401",
       "Subgrupo": "mechas",
       "Nombre": "extralargo",
       "Duracion": "30",
       "Precio": "40.00 "
     },
     {
-      "Codigo": "251",
+      "Codigo": "2402",
       "Subgrupo": "mechas",
       "Nombre": "(reflejos)",
       "Duracion": "10",
@@ -262,21 +262,21 @@
     {
       "Codigo": "310",
       "Subgrupo": "alisados",
-      "Nombre": "alisado plancha",
+      "Nombre": "plancha",
       "Duracion": "20",
       "Precio": "7.00 "
     },
     {
       "Codigo": "311",
       "Subgrupo": "alisados",
-      "Nombre": "alisado queratina corto",
+      "Nombre": "queratina corto",
       "Duracion": "40",
       "Precio": "60.00 "
     },
     {
       "Codigo": "312",
       "Subgrupo": "alisados",
-      "Nombre": "alisado queratina medio",
+      "Nombre": "queratina medio",
       "Duracion": "40",
       "Precio": "95.00 "
     },
@@ -290,14 +290,14 @@
     {
       "Codigo": "314",
       "Subgrupo": "alisados",
-      "Nombre": "alisado queratina x largo",
+      "Nombre": "queratina x largo",
       "Duracion": "40",
       "Precio": "180.00 "
     },
     {
       "Codigo": "315",
       "Subgrupo": "alisados",
-      "Nombre": "alisado queratina xx largo",
+      "Nombre": "queratina xx largo",
       "Duracion": "40",
       "Precio": "200.00 "
     },
@@ -325,35 +325,35 @@
     {
       "Codigo": "320",
       "Subgrupo": "extensiones",
-      "Nombre": "extenciones",
+      "Nombre": "singulares",
       "Duracion": "45",
       "Precio": "60.00 "
     },
     {
       "Codigo": "321",
       "Subgrupo": "extensiones",
-      "Nombre": "extenciones subir",
+      "Nombre": "subir",
       "Duracion": "30",
       "Precio": "40.00 "
     },
     {
       "Codigo": "322",
       "Subgrupo": "extensiones",
-      "Nombre": "extenciones quitar",
+      "Nombre": "quitar",
       "Duracion": "30",
       "Precio": "20.00 "
     },
     {
       "Codigo": "323",
       "Subgrupo": "extensiones",
-      "Nombre": "extenciones adesivas+ corte",
+      "Nombre": "extenciones adesiva y corte",
       "Duracion": "60",
       "Precio": "140.00 "
     },
     {
       "Codigo": "330",
       "Subgrupo": "recogidos",
-      "Nombre": "recogido",
+      "Nombre": "recogido peculiar",
       "Duracion": "30",
       "Precio": "29.00 "
     },
@@ -402,7 +402,7 @@
     {
       "Codigo": "340",
       "Subgrupo": "tratamientos",
-      "Nombre": "tratamiento queratina",
+      "Nombre": "queratina",
       "Duracion": "15",
       "Precio": "10.00 "
     },

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 
 //https://www.uplabs.com/search?q=barber
 //https://github.com/JoanNabusoba/flutter-salon-app/blob/master/lib/pages/book.dart
+//TODO
+//Firebase request get servicios
+//VGrid horas disponibles, widget hora
 class AppointmentScreen extends StatefulWidget {
   @override
   _AppointmentScreenState createState() => _AppointmentScreenState();

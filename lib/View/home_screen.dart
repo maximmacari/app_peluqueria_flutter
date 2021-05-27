@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_sms_auth1/Model/rout_generator.dart';
@@ -40,20 +42,19 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_selectedSubgroup.capitalized(),
-            style:
-                TextStyle(color: Theme.of(context).colorScheme.foregroundPlainTxtColor)),
-        
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.foregroundPlainTxtColor)),
         foregroundColor: Theme.of(context).colorScheme.foregroundPlainTxtColor,
         backgroundColor: ConstantColors.mainColorApp,
         leading: Container(
           margin: EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.blue.withAlpha(200),
-            borderRadius: BorderRadius.circular(50)
-          ),
+              color: Colors.blue.withAlpha(200),
+              borderRadius: BorderRadius.circular(50)),
           child: IconButton(
               icon: Icon(Icons.info_outlined,
-                  color: Theme.of(context).colorScheme.foregroundTxtButtonColor),
+                  color:
+                      Theme.of(context).colorScheme.foregroundTxtButtonColor),
               onPressed: () {
                 UserPreferences.setPresentationSeen(false);
                 Navigator.of(context).pushNamedAndRemoveUntil(
@@ -69,12 +70,11 @@ class _HomeScreenState extends State<HomeScreen> {
           Icons.add,
           //color: Theme.of(context).colorScheme.mainForeground
         ),
-        label: Text(
-          'Reservar',
-          style: TextStyle(
-              color: Theme.of(context).colorScheme.foregroundTxtButtonColor)
-              //ConstantColors.foregroundColorButton), // EEn dark foregroundcolorButton: Colors.white, light foreegroundcolorButton: Colors.nomuydark
-        ),
+        label: Text('Reservar',
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.foregroundTxtButtonColor)
+            //ConstantColors.foregroundColorButton), // EEn dark foregroundcolorButton: Colors.white, light foreegroundcolorButton: Colors.nomuydark
+            ),
         onPressed: () {
           Navigator.of(context).pushNamed(Screen.SET_APPOINTMENT);
         },
@@ -165,36 +165,34 @@ class _HorizontalScrollViewSubgroupsState
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).colorScheme.mainBackground,
-      height: MediaQuery.of(context).size.height * 0.24,
-      child: ListView.separated(
-          separatorBuilder: (ctx, index) => SizedBox(
-                width: 8,
-              ),
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-          itemCount: widget._services.length,
-          itemBuilder: (context, index) {
-            return widget._services.length > 0
-                ? InkWell(
-                    onTap: () {
-                      setState(() {
-                        widget.callback(widget._services[index].subgroup);
-                      });
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.6,
+        padding: EdgeInsets.all(8),
+        color: Theme.of(context).colorScheme.mainBackground,
+        //height: MediaQuery.of(context).size.height * 0.30,
+        child: CarouselSlider(
+            options: CarouselOptions(
+                autoPlay: false,
+                aspectRatio: 16 / 9,
+                initialPage: 0,
+                enlargeCenterPage: true,
+                enableInfiniteScroll: false,
+                onPageChanged: (index, _) {
+                  setState(() {
+                    
+                    widget.callback(widget._services[index].subgroup);
+                  });
+                }),
+            items: widget._services
+                .map((service) => Container(
+                      //width: MediaQuery.of(context).size.width * 0.6,
                       decoration: new BoxDecoration(
                           boxShadow: [
                             BoxShadow(
-                                color: widget._services[index].subgroupColor
-                                    .withOpacity(0.06),
+                                color: service.subgroupColor.withOpacity(0.06),
                                 spreadRadius: 2,
                                 blurRadius: 1,
                                 offset: Offset(-2, -2)),
                             BoxShadow(
-                                color: widget._services[index].subgroupColor
-                                    .withOpacity(0.06),
+                                color: service.subgroupColor.withOpacity(0.06),
                                 spreadRadius: 2,
                                 blurRadius: 1,
                                 offset: Offset(2, 2))
@@ -202,11 +200,10 @@ class _HorizontalScrollViewSubgroupsState
                           color: Theme.of(context).colorScheme.mainBackground,
                           image: DecorationImage(
                               colorFilter: ColorFilter.mode(
-                                  widget._services[index].subgroupColor
-                                      .withOpacity(0.32),
+                                  service.subgroupColor.withOpacity(0.32),
                                   BlendMode.softLight),
                               image: AssetImage(
-                                  "assets/images/${widget._services[index].subgroup}_background.jpg"),
+                                  "assets/images/${service.subgroup}_background.jpg"),
                               fit: BoxFit.cover),
                           borderRadius: BorderRadius.all(Radius.circular(8))),
                       child: Center(
@@ -219,9 +216,7 @@ class _HorizontalScrollViewSubgroupsState
                                 Expanded(
                                   flex: 9,
                                   child: Text(
-                                    widget._services[index].subgroup
-                                        .toString()
-                                        .capitalized(),
+                                    service.subgroup.toString().capitalized(),
                                     maxLines: 2,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
@@ -255,7 +250,7 @@ class _HorizontalScrollViewSubgroupsState
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: SvgPicture.asset(
-                                        "assets/icons/${widget._services[index].subgroup}.svg",
+                                        "assets/icons/${service.subgroup}.svg",
                                         height: 40,
                                         width: 40,
                                       ),
@@ -266,11 +261,8 @@ class _HorizontalScrollViewSubgroupsState
                           ],
                         ),
                       )),
-                    ),
-                  )
-                : CircularProgressIndicator();
-          }),
-    );
+                    ))
+                .toList()));
   }
 }
 
@@ -289,7 +281,7 @@ class VerticalCustomListView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(0, 8, 0, 80),
           itemCount: _subgroupServices.length,
           itemBuilder: (context, index) {
-            return Container(
+            return _subgroupServices.length > 0 ? Container(
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.mainBackground,
                   borderRadius: BorderRadius.all(Radius.circular(16))),
@@ -297,13 +289,15 @@ class VerticalCustomListView extends StatelessWidget {
               child: Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 8, 16, 8),
-                    child: Text(
-                      "${_subgroupServices[index].name.capitalized()}",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: "CormorantGaramond"),
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    child: FittedBox(
+                      child: Text(
+                        "${_subgroupServices[index].name.capitalized()}",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "CormorantGaramond"),
+                      ),
                     ),
                   ),
                   Spacer(),
@@ -312,15 +306,15 @@ class VerticalCustomListView extends StatelessWidget {
                     child: Text(
                       "${_subgroupServices[index].price} €",
                       style: TextStyle(
-                        letterSpacing: 1.5,
-                          fontSize: 18,
+                          letterSpacing: 1.5,
+                          fontSize: 16,
                           fontWeight: FontWeight.w700,
                           fontFamily: "CormorantGaramond"),
                     ),
                   ),
                 ],
               ),
-            );
+            ) : CircularProgressIndicator();
           }),
     ));
   }
