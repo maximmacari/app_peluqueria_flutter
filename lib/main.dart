@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Peluqeria',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorScheme: ColorScheme.dark()),
+      theme: ThemeData(colorScheme: ColorScheme.light()),
       initialRoute: Screen.PRESENTATION,
       onGenerateRoute: RouteGenerator.generateRoute,
     );

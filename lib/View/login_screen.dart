@@ -44,10 +44,10 @@ class _LoginScreenState extends State<LoginScreen> {
           iconTheme: IconTheme.of(context),
           title: Text(
             "Acceso a la solicitud de citas",
-            style:
-                TextStyle(color: Theme.of(context).colorScheme.mainForeground),
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.foregroundTxtButtonColor),
           ),
-          backgroundColor: ConstantColors.btnBackgroundColor,
+          backgroundColor: ConstantColors.mainColorApp,
         ),
         body: Padding(
           padding: EdgeInsets.all(20),
@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         autofocus: false,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: ConstantColors.btnBackgroundColor,
+                            color: ConstantColors.myBlack,
                             fontSize: 24),
                         decoration: InputDecoration(
                             suffix: Column(
@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       padding: EdgeInsets.all(12),
                                       primary: Colors.black,
                                       backgroundColor: _buttonEnabled
-                                          ? ConstantColors.btnBackgroundColor
+                                          ? ConstantColors.mainColorApp
                                           : Colors.grey),
                                 ),
                               ],
@@ -110,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 vertical: 8.0, horizontal: 0),
                             prefixIcon: Icon(
                               Icons.mobile_friendly,
-                              color: Colors.black,
+                              color: ConstantColors.mainColorApp,
                               size: 24,
                             ),
                             isDense: true,
@@ -146,8 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   context)
                                             },
                                       style: TextStyle(
-                                          color: ConstantColors
-                                              .btnBackgroundColor),
+                                          color: ConstantColors.mainColorApp),
                                     ),
                                   ],
                                 ),
@@ -155,6 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Spacer(),
                               Checkbox(
                                 value: _termsAccepted,
+                                activeColor: ConstantColors.mainColorApp,
                                 onChanged: (value) {
                                   setState(() {
                                     _termsAccepted = value;
@@ -183,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             maxLength: 6,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: ConstantColors.btnBackgroundColor,
+                                color: ConstantColors.myBlack,
                                 letterSpacing: 4,
                                 fontSize: 24),
                             decoration: InputDecoration(
@@ -192,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     vertical: 16.0, horizontal: 24.0),
                                 prefixIcon: Icon(
                                   Icons.input,
-                                  color: Colors.black,
+                                  color: ConstantColors.mainColorApp,
                                   size: 24,
                                 ),
                                 isDense: true,
@@ -228,9 +228,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     )),
                                     padding:
                                         EdgeInsets.fromLTRB(16, 16, 16, 16),
-                                    primary: Colors.black,
                                     backgroundColor:
-                                        ConstantColors.btnBackgroundColor),
+                                        ConstantColors.mainColorApp),
                               ),
                             ),
                           ),
@@ -245,7 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Container(
                           width: 100,
                           height: 100,
-                          color: Colors.grey[200],
+                          color: ConstantColors.mainColorApp.withOpacity(0.8),
                           child: Center(
                             child: CircularProgressIndicator(),
                           ),
@@ -397,8 +396,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
         child: Center(
       child: FutureBuilder(
-          future: DefaultAssetBundle.of(context)
-              .loadString("assets/terms_condition.txt"),
+          future: DefaultAssetBundle.of(context).loadString("assets/terms.txt"),
           builder: (context, snapshot) {
             var terms = snapshot.data.toString();
             if (snapshot.hasData) {
@@ -408,7 +406,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Text("$terms"),
+                    Text(
+                      "$terms",
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w300,
+                          fontFamily: "CormorantGaramond"),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     SizedBox(
                       height: 10,
                     ),
@@ -428,8 +435,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               )),
                               padding: EdgeInsets.all(16),
                               primary: Colors.black,
-                              backgroundColor:
-                                  ConstantColors.btnBackgroundColor),
+                              backgroundColor: ConstantColors.mainColorApp),
                         ),
                         Spacer(),
                         TextButton(
@@ -446,19 +452,25 @@ class _LoginScreenState extends State<LoginScreen> {
                               )),
                               padding: EdgeInsets.all(16),
                               primary: Colors.black,
-                              backgroundColor:
-                                  ConstantColors.btnBackgroundColor),
+                              backgroundColor: ConstantColors.mainColorApp),
                         ),
                       ],
                     ),
                     SizedBox(
                       height: 10,
                     ),
+                    Text(
+                      "\© Copyright 2021",
+                      style: TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w300,
+                          fontFamily: "CormorantGaramond"),
+                    ),
                   ],
                 )),
               );
             } else {
-              return Text("");
+              return CircularProgressIndicator();
             }
           }),
     ));
@@ -469,9 +481,8 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       _timer.cancel();
     } catch (e) {
-      print("err");
+      print("err $e");
     }
-
     super.dispose();
   }
 }

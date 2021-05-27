@@ -41,8 +41,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       width: isActive ? 24 : 16,
       decoration: BoxDecoration(
           color: isActive
-              ? Theme.of(context).colorScheme.mainForeground
-              : Theme.of(context).colorScheme.mainForeground.withOpacity(0.24),
+              ? ConstantColors.mainColorApp
+              : Theme.of(context).colorScheme.foregroundTxtButtonColor.withOpacity(0.24),
           borderRadius: BorderRadius.all(Radius.circular(12))),
     );
   }
@@ -85,7 +85,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       "assets/images/logo.svg",
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .mainForeground,
+                                          .foregroundTxtButtonColor,
                                     )),
                                     Spacer(),
                                     Center(
@@ -114,7 +114,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       "assets/images/logo.svg",
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .mainForeground,
+                                          .foregroundTxtButtonColor,
                                     )),
                                     Spacer(),
                                     Center(
@@ -143,7 +143,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       "assets/images/logo.svg",
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .mainForeground,
+                                          .foregroundTxtButtonColor,
                                     )),
                                     Spacer(),
                                     Center(
@@ -180,7 +180,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(8.0))),
-                                    primary: ConstantColors.btnBackgroundColor,
+                                    primary: ConstantColors.mainColorApp,
                                     padding: EdgeInsets.all(16),
                                   ),
                                   onPressed: () {

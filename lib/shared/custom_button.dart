@@ -17,7 +17,7 @@ class TxtButtonIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RawMaterialButton(
-        fillColor: Theme.of(context).colorScheme.mainForeground,
+        fillColor: Theme.of(context).colorScheme.foregroundTxtButtonColor,
         onPressed: this.onPressed,
         child: Padding(
           padding: EdgeInsets.all(8),
@@ -28,7 +28,7 @@ class TxtButtonIcon extends StatelessWidget {
                   style: CustomTextStyles().onboardingBtnTextStyle(context)),
               Icon(
                 icon,
-                color: Theme.of(context).colorScheme.mainForeground,
+                color: Theme.of(context).colorScheme.foregroundTxtButtonColor,
               ),
             ],
           ),
@@ -63,7 +63,7 @@ class SimpleButton extends StatelessWidget {
               child: Text(this.labelString,
                   style: CustomTextStyles().onboardingBtnTextStyle(context)),
               style: TextButton.styleFrom(
-                primary: Theme.of(context).colorScheme.mainForeground,
+                primary: Theme.of(context).colorScheme.foregroundTxtButtonColor,
                 //minimumSize: Size(88, 36),
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                 backgroundColor: Colors

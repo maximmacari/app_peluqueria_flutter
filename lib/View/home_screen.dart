@@ -5,11 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_sms_auth1/Model/salon_service.dart';
 import 'package:flutter_sms_auth1/Model/user_preferences.dart';
 import 'package:flutter_sms_auth1/shared/alert_dialog.dart';
-import 'package:flutter_sms_auth1/shared/styles.dart';
 import "package:flutter_sms_auth1/shared/colors.dart";
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:convert';
 import 'package:flutter_sms_auth1/shared/custom_extensions.dart';
+import "package:carousel_slider/carousel_slider.dart";
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -41,21 +41,28 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(_selectedSubgroup.capitalized(),
             style:
-                TextStyle(color: Theme.of(context).colorScheme.mainForeground)),
-        centerTitle: true,
-        backgroundColor: ConstantColors.btnBackgroundColor,
-        foregroundColor: Theme.of(context).colorScheme.mainBackground,
-        leading: IconButton(
-            icon: Icon(Icons.info_outlined,
-                color: Theme.of(context).colorScheme.mainForeground),
-            onPressed: () {
-              UserPreferences.setPresentationSeen(false);
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                  Screen.PRESENTATION, (route) => false);
-            }),
+                TextStyle(color: Theme.of(context).colorScheme.foregroundPlainTxtColor)),
+        
+        foregroundColor: Theme.of(context).colorScheme.foregroundPlainTxtColor,
+        backgroundColor: ConstantColors.mainColorApp,
+        leading: Container(
+          margin: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.blue.withAlpha(200),
+            borderRadius: BorderRadius.circular(50)
+          ),
+          child: IconButton(
+              icon: Icon(Icons.info_outlined,
+                  color: Theme.of(context).colorScheme.foregroundTxtButtonColor),
+              onPressed: () {
+                UserPreferences.setPresentationSeen(false);
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    Screen.PRESENTATION, (route) => false);
+              }),
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: ConstantColors.btnBackgroundColor,
+        backgroundColor: ConstantColors.mainColorApp,
         elevation: 4.0,
         //shape: StadiumBorder(side: BorderSide(color: Colors.white, width: 1)),
         icon: Icon(
@@ -63,7 +70,10 @@ class _HomeScreenState extends State<HomeScreen> {
           //color: Theme.of(context).colorScheme.mainForeground
         ),
         label: Text(
-          'Reservar',style: , // EEn dark foregroundcolorButton: Colors.white, light foreegroundcolorButton: Colors.nomuydark
+          'Reservar',
+          style: TextStyle(
+              color: Theme.of(context).colorScheme.foregroundTxtButtonColor)
+              //ConstantColors.foregroundColorButton), // EEn dark foregroundcolorButton: Colors.white, light foreegroundcolorButton: Colors.nomuydark
         ),
         onPressed: () {
           Navigator.of(context).pushNamed(Screen.SET_APPOINTMENT);
@@ -79,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     _servicesList.filterBySubgroupName(_selectedSubgroup))
               ],
             )
-          : Container(),
+          : CircularProgressIndicator(),
     );
   }
 
@@ -165,97 +175,100 @@ class _HorizontalScrollViewSubgroupsState
           padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
           itemCount: widget._services.length,
           itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () {
-                setState(() {
-                  widget.callback(widget._services[index].subgroup);
-                });
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.6,
-                decoration: new BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          color: widget._services[index].subgroupColor
-                              .withOpacity(0.06),
-                          spreadRadius: 2,
-                          blurRadius: 1,
-                          offset: Offset(-2, -2)),
-                      BoxShadow(
-                          color: widget._services[index].subgroupColor
-                              .withOpacity(0.06),
-                          spreadRadius: 2,
-                          blurRadius: 1,
-                          offset: Offset(2, 2))
-                    ],
-                    color: Theme.of(context).colorScheme.mainBackground,
-                    image: DecorationImage(
-                        colorFilter: ColorFilter.mode(
-                            widget._services[index].subgroupColor
-                                .withOpacity(0.32),
-                            BlendMode.softLight),
-                        image: AssetImage(
-                            "assets/images/${widget._services[index].subgroup}_background.jpg"),
-                        fit: BoxFit.cover),
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-                child: Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 9,
-                            child: Text(
-                              widget._services[index].subgroup
-                                  .toString()
-                                  .capitalized(),
-                              maxLines: 2,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 24.0,
-                                  shadows: <Shadow>[
-                                    Shadow(
-                                        offset: Offset(1, 1),
-                                        blurRadius: 5.0,
-                                        color: Color(0xFF111111)),
-                                    Shadow(
-                                        offset: Offset(-1, -1),
-                                        blurRadius: 2,
-                                        color: Color(0xFF010101)),
-                                  ]),
-                            ),
-                          ),
-                          Spacer(flex: 1)
-                        ],
-                      ),
-                      Spacer(),
-                      Row(
-                        children: [
-                          Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(25)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SvgPicture.asset(
-                                  "assets/icons/${widget._services[index].subgroup}.svg",
-                                  height: 40,
-                                  width: 40,
+            return widget._services.length > 0
+                ? InkWell(
+                    onTap: () {
+                      setState(() {
+                        widget.callback(widget._services[index].subgroup);
+                      });
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      decoration: new BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                                color: widget._services[index].subgroupColor
+                                    .withOpacity(0.06),
+                                spreadRadius: 2,
+                                blurRadius: 1,
+                                offset: Offset(-2, -2)),
+                            BoxShadow(
+                                color: widget._services[index].subgroupColor
+                                    .withOpacity(0.06),
+                                spreadRadius: 2,
+                                blurRadius: 1,
+                                offset: Offset(2, 2))
+                          ],
+                          color: Theme.of(context).colorScheme.mainBackground,
+                          image: DecorationImage(
+                              colorFilter: ColorFilter.mode(
+                                  widget._services[index].subgroupColor
+                                      .withOpacity(0.32),
+                                  BlendMode.softLight),
+                              image: AssetImage(
+                                  "assets/images/${widget._services[index].subgroup}_background.jpg"),
+                              fit: BoxFit.cover),
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      child: Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 9,
+                                  child: Text(
+                                    widget._services[index].subgroup
+                                        .toString()
+                                        .capitalized(),
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        fontSize: 24.0,
+                                        shadows: <Shadow>[
+                                          Shadow(
+                                              offset: Offset(1, 1),
+                                              blurRadius: 5.0,
+                                              color: Color(0xFF111111)),
+                                          Shadow(
+                                              offset: Offset(-1, -1),
+                                              blurRadius: 2,
+                                              color: Color(0xFF010101)),
+                                        ]),
+                                  ),
                                 ),
-                              )),
-                          Spacer()
-                        ],
-                      )
-                    ],
-                  ),
-                )),
-              ),
-            );
+                                Spacer(flex: 1)
+                              ],
+                            ),
+                            Spacer(),
+                            Row(
+                              children: [
+                                Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(25)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SvgPicture.asset(
+                                        "assets/icons/${widget._services[index].subgroup}.svg",
+                                        height: 40,
+                                        width: 40,
+                                      ),
+                                    )),
+                                Spacer()
+                              ],
+                            )
+                          ],
+                        ),
+                      )),
+                    ),
+                  )
+                : CircularProgressIndicator();
           }),
     );
   }
@@ -299,8 +312,9 @@ class VerticalCustomListView extends StatelessWidget {
                     child: Text(
                       "${_subgroupServices[index].price} €",
                       style: TextStyle(
+                        letterSpacing: 1.5,
                           fontSize: 18,
-                          fontWeight: FontWeight.w300,
+                          fontWeight: FontWeight.w700,
                           fontFamily: "CormorantGaramond"),
                     ),
                   ),

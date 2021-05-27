@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class ConstantColors {
   static const backgroundLinearGradientLight = LinearGradient(
@@ -19,17 +20,18 @@ class ConstantColors {
         Color(0xFF434343),
         Color(0xFF111222),
       ]);
-  static const btnBackgroundColor = Color(0xFF2ec4b6);
-  static const btnForegroundColor = Color(0xFF212121);
-  static const backgroundLight = Color(0xFFf1f1f1);
+  
+  static const myWhite = Color(0xFFf1f1f1);
+  static const myBlack = Color(0xFF010101);
+  static const mainColorApp = Color(0xFF2ec4b6);
+  //static final foregroundColorButton = SchedulerBinding.instance.window.platformBrightness == Brightness.light ? Color(0xFF121212) : Color(0xFFDEE4e7);
 }
 
 extension CustomColorScheme on ColorScheme {
-  Color get mainBackground => brightness == Brightness.light
-      ? const Color(0xFFffffff)
-      : const Color(0xFF212121);
-  Color get mainForeground =>
-      brightness == Brightness.light ? Color(0xFF010101) : Color(0xFFf1f1f1);
+  Color get mainBackground => brightness == Brightness.light ? const Color(0xFFffffff) : const Color(0xFF212121);
+  Color get foregroundTxtButtonColor => ConstantColors.myBlack;
+  Color get foregroundPlainTxtColor => brightness == Brightness.light ? 
+  ConstantColors.myBlack : ConstantColors.myWhite;
   LinearGradient get mainBackgroundLinearGradient =>
       brightness == Brightness.light
           ? ConstantColors.backgroundLinearGradientLight
