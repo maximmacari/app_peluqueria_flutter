@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_sms_auth1/Model/rout_generator.dart';
@@ -12,14 +10,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:convert';
 import 'package:flutter_sms_auth1/shared/custom_extensions.dart';
 import "package:carousel_slider/carousel_slider.dart";
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+//https://petercoding.com/firebase/2020/04/04/using-cloud-firestore-in-flutter/
 class _HomeScreenState extends State<HomeScreen> {
-  final _authFirebase = FirebaseAuth.instance;
+  final _authFirebase = FirebaseAuth.instance; //TODO quitar
 
   List<SalonService> _servicesList = [];
   String _selectedSubgroup = "cortes";
@@ -34,8 +34,51 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     //read json if exist, if not request it
-    readHairdressingServicesJson();
-    readEstheticServicesJson();
+    loadServices();
+    //assetExists('assets/saved-files/hairdressin.json');
+    //readHairdressingServicesJson();
+    //readEstheticServicesJson();
+  }
+
+  void loadServices() {
+    assetExists('assets/saved-files/hairdressin.json').then((value) => {
+          value
+              ? {
+                  //read json file
+                  print("exists")
+                }
+              : {
+                  //file not found
+                  print("file not found"),
+                  //implementar ersctirua de json getFirestoreServices() 
+                  //Firestore retrieve
+                  //Create file
+
+                  //print("err: ${err.toString()}");
+                }
+        });
+  }
+
+  Future<bool> assetExists(String path) async {
+    try {
+      await rootBundle.load(path);
+      return true;
+    } catch (err) {
+      print("err: ${err.toString()}");
+      return false;
+    }
+  }
+
+    void getFirestoreServices() {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    //CollectionReference _estheticServices =firestore.collection('SERVICES_ESTHETIC');
+    //CollectionReference _hairdressingServices =firestore.collection('SERVICES_HAIRDRESSING');
+
+    firestore.collection("SERVICES_HAIRDRESSING").get().then((querySnapshot) {
+    querySnapshot.docs.forEach((result) {
+      print(result.data());
+    });
+  });
   }
 
   Widget build(BuildContext context) {
@@ -89,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     _servicesList.filterBySubgroupName(_selectedSubgroup))
               ],
             )
-          : CircularProgressIndicator(),
+          : Center(child: CircularProgressIndicator()),
     );
   }
 
@@ -130,6 +173,8 @@ class _HomeScreenState extends State<HomeScreen> {
           () => Navigator.of(context).pop("ok"));
     }
   }
+
+
 
   //Not really needed
   Future<void> _signOut() async {
@@ -177,7 +222,6 @@ class _HorizontalScrollViewSubgroupsState
                 enableInfiniteScroll: false,
                 onPageChanged: (index, _) {
                   setState(() {
-                    
                     widget.callback(widget._services[index].subgroup);
                   });
                 }),
@@ -281,40 +325,42 @@ class VerticalCustomListView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(0, 8, 0, 80),
           itemCount: _subgroupServices.length,
           itemBuilder: (context, index) {
-            return _subgroupServices.length > 0 ? Container(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.mainBackground,
-                  borderRadius: BorderRadius.all(Radius.circular(16))),
-              margin: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    child: FittedBox(
-                      child: Text(
-                        "${_subgroupServices[index].name.capitalized()}",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: "CormorantGaramond"),
-                      ),
+            return _subgroupServices.length > 0
+                ? Container(
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.mainBackground,
+                        borderRadius: BorderRadius.all(Radius.circular(16))),
+                    margin: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: FittedBox(
+                            child: Text(
+                              "${_subgroupServices[index].name.capitalized()}",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: "CormorantGaramond"),
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
+                          child: Text(
+                            "${_subgroupServices[index].price} €",
+                            style: TextStyle(
+                                letterSpacing: 1.5,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: "CormorantGaramond"),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
-                    child: Text(
-                      "${_subgroupServices[index].price} €",
-                      style: TextStyle(
-                          letterSpacing: 1.5,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: "CormorantGaramond"),
-                    ),
-                  ),
-                ],
-              ),
-            ) : CircularProgressIndicator();
+                  )
+                : Center(child: CircularProgressIndicator());
           }),
     ));
   }

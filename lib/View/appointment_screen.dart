@@ -1,11 +1,11 @@
 import "package:flutter/material.dart";
-import 'package:flutter/material.dart';
 
 //https://www.uplabs.com/search?q=barber
 //https://github.com/JoanNabusoba/flutter-salon-app/blob/master/lib/pages/book.dart
 //TODO
 //Firebase request get servicios
 //VGrid horas disponibles, widget hora
+//preguntar sobre la empresa de ayer
 class AppointmentScreen extends StatefulWidget {
   @override
   _AppointmentScreenState createState() => _AppointmentScreenState();
