@@ -99,12 +99,12 @@ extension ListExt on List<SalonService> {
 
 //TODO quitar
   List<SalonService> getUniqueSubgroup() {
-    List _uniqueServices = this;
-    final aux = this.map((e) => e.subgroup).toSet();
-
-    //
-    //
-    _uniqueServices.retainWhere((element) => aux.remove(element.subgroup));
+    List<SalonService> _uniqueServices = [];
+    for (final e in this) {
+      if (int.parse(e.id.substring(e.id.length - 1)) == 0) {
+        _uniqueServices.add(e);
+      }
+    }
     return _uniqueServices;
   }
 }

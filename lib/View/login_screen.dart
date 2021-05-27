@@ -6,7 +6,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 import 'package:flutter_sms_auth1/shared/alert_dialog.dart';
+import 'package:flutter_sms_auth1/shared/colors.dart';
 import 'package:flutter_sms_auth1/shared/custom_extensions.dart';
+import 'package:flutter_sms_auth1/shared/styles.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -38,7 +40,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(title: Text("Acceso a la solicitud de citas")),
+        appBar: AppBar(
+          iconTheme: IconTheme.of(context),
+          title: Text(
+            "Acceso a la solicitud de citas",
+            style:
+                TextStyle(color: Theme.of(context).colorScheme.mainForeground),
+          ),
+          backgroundColor: ConstantColors.btnBackgroundColor,
+        ),
         body: Padding(
           padding: EdgeInsets.all(20),
           child: Container(
@@ -66,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         autofocus: false,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.blue,
+                            color: ConstantColors.btnBackgroundColor,
                             fontSize: 24),
                         decoration: InputDecoration(
                             suffix: Column(
@@ -89,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       padding: EdgeInsets.all(12),
                                       primary: Colors.black,
                                       backgroundColor: _buttonEnabled
-                                          ? Colors.blue
+                                          ? ConstantColors.btnBackgroundColor
                                           : Colors.grey),
                                 ),
                               ],
@@ -135,7 +145,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                               showTermsAndContidionDialog(
                                                   context)
                                             },
-                                      style: TextStyle(color: Colors.blue),
+                                      style: TextStyle(
+                                          color: ConstantColors
+                                              .btnBackgroundColor),
                                     ),
                                   ],
                                 ),
@@ -171,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             maxLength: 6,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Colors.blue,
+                                color: ConstantColors.btnBackgroundColor,
                                 letterSpacing: 4,
                                 fontSize: 24),
                             decoration: InputDecoration(
@@ -191,27 +203,36 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
-                          child: TextButton(
-                            onPressed: () {
-                              if (_codeFormKey.currentState.validate() &&
-                                  _phoneFormKey.currentState.validate() &&
-                                  _termsAccepted) {
-                                _sendCode();
-                              }
-                            },
-                            child: Text(
-                              "Enviar",
-                              style: TextStyle(fontSize: 22),
+                        Container(
+                          margin: EdgeInsets.only(top: 32),
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              child: TextButton(
+                                onPressed: () {
+                                  if (_codeFormKey.currentState.validate() &&
+                                      _phoneFormKey.currentState.validate() &&
+                                      _termsAccepted) {
+                                    _sendCode();
+                                  }
+                                },
+                                child: Text(
+                                  "Enviar",
+                                  style: CustomTextStyles()
+                                      .onboardingBtnTextStyle(context),
+                                ),
+                                style: TextButton.styleFrom(
+                                    shape: (RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    )),
+                                    padding:
+                                        EdgeInsets.fromLTRB(16, 16, 16, 16),
+                                    primary: Colors.black,
+                                    backgroundColor:
+                                        ConstantColors.btnBackgroundColor),
+                              ),
                             ),
-                            style: TextButton.styleFrom(
-                                shape: (RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                )),
-                                padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                                primary: Colors.black,
-                                backgroundColor: Colors.blue),
                           ),
                         )
                       ],
@@ -376,7 +397,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
         child: Center(
       child: FutureBuilder(
-          future: DefaultAssetBundle.of(context).loadString("assets/terms.txt"),
+          future: DefaultAssetBundle.of(context)
+              .loadString("assets/terms_condition.txt"),
           builder: (context, snapshot) {
             var terms = snapshot.data.toString();
             if (snapshot.hasData) {
@@ -406,7 +428,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               )),
                               padding: EdgeInsets.all(16),
                               primary: Colors.black,
-                              backgroundColor: Colors.blue),
+                              backgroundColor:
+                                  ConstantColors.btnBackgroundColor),
                         ),
                         Spacer(),
                         TextButton(
@@ -423,7 +446,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               )),
                               padding: EdgeInsets.all(16),
                               primary: Colors.black,
-                              backgroundColor: Colors.blue),
+                              backgroundColor:
+                                  ConstantColors.btnBackgroundColor),
                         ),
                       ],
                     ),

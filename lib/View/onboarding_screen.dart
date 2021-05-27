@@ -173,34 +173,38 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         Spacer(),
                         Align(
                             alignment: FractionalOffset.center,
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(8.0))),
-                                  primary: Colors.black45,
-                                  padding: EdgeInsets.all(16),
-                                ),
-                                onPressed: () {
-                                  print("current $_currentPage");
-                                  print("");
-                                  if (_isLastPage()) {
-                                    UserPreferences.setPresentationSeen(true);
-                                    Navigator.of(context)
-                                        .pushNamed(Screen.HOME);
-                                  } else {
-                                    _pageController.nextPage(
-                                        duration: Duration(milliseconds: 300),
-                                        curve: Curves.easeInOut);
-                                  }
-                                },
-                                child: _isLastPage()
-                                    ? Text("Comenzar",
-                                        style: CustomTextStyles()
-                                            .onboardingBtnTextStyle(context))
-                                    : Text("Siguiente",
-                                        style: CustomTextStyles()
-                                            .onboardingBtnTextStyle(context)))),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8.0))),
+                                    primary: ConstantColors.btnBackgroundColor,
+                                    padding: EdgeInsets.all(16),
+                                  ),
+                                  onPressed: () {
+                                    print("current $_currentPage");
+                                    print("");
+                                    if (_isLastPage()) {
+                                      UserPreferences.setPresentationSeen(true);
+                                      Navigator.of(context)
+                                          .pushNamed(Screen.HOME);
+                                    } else {
+                                      _pageController.nextPage(
+                                          duration: Duration(milliseconds: 300),
+                                          curve: Curves.easeInOut);
+                                    }
+                                  },
+                                  child: _isLastPage()
+                                      ? Text("Comenzar",
+                                          style: CustomTextStyles()
+                                              .onboardingBtnTextStyle(context))
+                                      : Text("Siguiente",
+                                          style: CustomTextStyles()
+                                              .onboardingBtnTextStyle(
+                                                  context))),
+                            )),
                         Spacer()
                       ],
                     )))));

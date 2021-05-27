@@ -3,126 +3,126 @@
     {
       "Codigo": "210",
       "Subgrupo": "cortes",
-      "Nombre": "corte caballero",
+      "Nombre": "caballero",
       "Duracion": "15",
       "Precio": "9.50 "
     },
     {
       "Codigo": "211",
       "Subgrupo": "cortes",
-      "Nombre": "corte señora ",
+      "Nombre": "señora ",
       "Duracion": "30",
       "Precio": "9.50 "
     },
     {
       "Codigo": "212",
       "Subgrupo": "cortes",
-      "Nombre": "corte maquina",
+      "Nombre": "maquina",
       "Duracion": "10",
       "Precio": "7.00 "
     },
     {
       "Codigo": "213",
       "Subgrupo": "cortes",
-      "Nombre": "corte jubilados",
+      "Nombre": "jubilados",
       "Duracion": "15",
       "Precio": "7.50 "
     },
     {
       "Codigo": "214",
       "Subgrupo": "cortes",
-      "Nombre": "corte niños hasta 5 años",
+      "Nombre": "niños hasta 5 años",
       "Duracion": "15",
       "Precio": "6.00 "
     },
     {
       "Codigo": "215",
       "Subgrupo": "cortes",
-      "Nombre": "corte niños hasta 10 años",
+      "Nombre": "niños hasta 10 años",
       "Duracion": "20",
       "Precio": "7.00 "
     },
     {
       "Codigo": "216",
       "Subgrupo": "cortes",
-      "Nombre": "corte flequillo",
+      "Nombre": "flequillo",
       "Duracion": "10",
       "Precio": "4.00 "
     },
     {
       "Codigo": "217",
       "Subgrupo": "cortes",
-      "Nombre": "corte barba",
+      "Nombre": "barba",
       "Duracion": "10",
       "Precio": "3.50 "
     },
     {
       "Codigo": "220",
       "Subgrupo": "peinados",
-      "Nombre": "peinar flash",
+      "Nombre": "flash",
       "Duracion": "15",
       "Precio": "5.00 "
     },
     {
       "Codigo": "221",
       "Subgrupo": "peinados",
-      "Nombre": "peinar corto",
+      "Nombre": "corto",
       "Duracion": "15",
       "Precio": "9.50 "
     },
     {
       "Codigo": "222",
       "Subgrupo": "peinados",
-      "Nombre": "peinar medio",
+      "Nombre": "medio",
       "Duracion": "20",
       "Precio": "10.50 "
     },
     {
       "Codigo": "223",
       "Subgrupo": "peinados",
-      "Nombre": "peinar lago",
+      "Nombre": "lago",
       "Duracion": "25",
       "Precio": "12.00 "
     },
     {
       "Codigo": "224",
       "Subgrupo": "peinados",
-      "Nombre": "peinar extralargo",
+      "Nombre": "extralargo",
       "Duracion": "30",
       "Precio": "15.00 "
     },
     {
       "Codigo": "230",
       "Subgrupo": "tintes",
-      "Nombre": "tinte corto",
+      "Nombre": "corto",
       "Duracion": "25",
       "Precio": "15.90 "
     },
     {
       "Codigo": "231",
       "Subgrupo": "tintes",
-      "Nombre": "tinte medio",
+      "Nombre": "medio",
       "Duracion": "30",
       "Precio": "17.50 "
     },
     {
       "Codigo": "232",
       "Subgrupo": "tintes",
-      "Nombre": "tinte largo",
+      "Nombre": "largo",
       "Duracion": "30",
       "Precio": "21.00 "
     },
     {
       "Codigo": "233",
       "Subgrupo": "tintes",
-      "Nombre": "tinte xx largo",
+      "Nombre": "xx largo",
       "Duracion": "45",
       "Precio": "32.00 "
     },
     {
       "Codigo": "234",
       "Subgrupo": "tintes",
-      "Nombre": "tinte chicos",
+      "Nombre": "chicos",
       "Duracion": "15",
       "Precio": "10.00 "
     },
@@ -136,91 +136,91 @@
     {
       "Codigo": "236",
       "Subgrupo": "tintes",
-      "Nombre": "tinte cejas + forma ceja",
+      "Nombre": "cejas + forma ceja",
       "Duracion": "20",
       "Precio": "10.00 "
     },
     {
       "Codigo": "240",
       "Subgrupo": "mechas",
-      "Nombre": "mechas corto 1/2",
+      "Nombre": "corto 1/2",
       "Duracion": "20",
       "Precio": "12.80 "
     },
     {
       "Codigo": "241",
       "Subgrupo": "mechas",
-      "Nombre": "mechas largo 1/2",
+      "Nombre": "largo 1/2",
       "Duracion": "30",
       "Precio": "19.00 "
     },
     {
       "Codigo": "242",
       "Subgrupo": "mechas",
-      "Nombre": "mechas corto",
+      "Nombre": "corto",
       "Duracion": "30",
       "Precio": "18.00 "
     },
     {
       "Codigo": "243",
       "Subgrupo": "mechas",
-      "Nombre": "mechas medio",
+      "Nombre": "medio",
       "Duracion": "30",
       "Precio": "25.40 "
     },
     {
       "Codigo": "244",
       "Subgrupo": "mechas",
-      "Nombre": "mechas largo",
+      "Nombre": "largo",
       "Duracion": "30",
       "Precio": "32.00 "
     },
     {
       "Codigo": "245",
       "Subgrupo": "mechas",
-      "Nombre": "mechas xx largo",
+      "Nombre": "xx largo",
       "Duracion": "40",
       "Precio": "60.00 "
     },
     {
       "Codigo": "246",
       "Subgrupo": "mechas",
-      "Nombre": "mechas bicolor ",
+      "Nombre": "bicolor ",
       "Duracion": "30",
       "Precio": "6.50 "
     },
     {
       "Codigo": "247",
       "Subgrupo": "mechas",
-      "Nombre": "mechas californianas",
+      "Nombre": "californianas",
       "Duracion": "45",
       "Precio": "35.00 "
     },
     {
       "Codigo": "248",
       "Subgrupo": "mechas",
-      "Nombre": "mechas californianas largo",
+      "Nombre": "californianas largo",
       "Duracion": "20",
       "Precio": "60.00 "
     },
     {
       "Codigo": "249",
       "Subgrupo": "mechas",
-      "Nombre": "mechas chicos",
+      "Nombre": "chicos",
       "Duracion": "60",
       "Precio": "20.50 "
     },
     {
       "Codigo": "250",
       "Subgrupo": "mechas",
-      "Nombre": "mechas extralargo",
+      "Nombre": "extralargo",
       "Duracion": "30",
       "Precio": "40.00 "
     },
     {
       "Codigo": "251",
       "Subgrupo": "mechas",
-      "Nombre": "mechas (reflejos)",
+      "Nombre": "(reflejos)",
       "Duracion": "10",
       "Precio": "12.00 "
     },
