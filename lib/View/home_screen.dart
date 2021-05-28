@@ -1,4 +1,7 @@
+import 'dart:io';
+import "package:path_provider/path_provider.dart";
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +14,7 @@ import 'dart:convert';
 import 'package:flutter_sms_auth1/shared/custom_extensions.dart';
 import "package:carousel_slider/carousel_slider.dart";
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -34,51 +38,107 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     //read json if exist, if not request it
-    loadServices();
-    //assetExists('assets/saved-files/hairdressin.json');
+
+    getFirestoreServices();
+
+    /*  reqPermissions().then((status) => {
+          status.isGranted
+              ? {
+                  //permission granted
+                  mainDirectory.then((directory) => {
+                        fileExists(directory.path.toString() + "/thisfiledoesnotexist.json")
+                            .then((fileExists) => {
+                                  fileExists
+                                      ? {
+                                          print("File exists"),
+                                          readFileAsString(
+                                                  directory.path.toString() +
+                                                      "/services.json")
+                                              .then((fileResult) => {
+                                                    print("result: " +
+                                                        fileResult.toString())
+                                                  })
+                                        }
+                                      : {
+                                          print("File does not exist"),
+                                          
+                                          //writeFileAsString(directory.path.toString() +"/services.json","caca")
+                                        }
+                                })
+                      })
+                }
+              : {
+                  //permission denied
+                }
+        }); */
     //readHairdressingServicesJson();
     //readEstheticServicesJson();
   }
 
-  void loadServices() {
-    assetExists('assets/saved-files/hairdressin.json').then((value) => {
-          value
-              ? {
-                  //read json file
-                  print("exists")
-                }
-              : {
-                  //file not found
-                  print("file not found"),
-                  //implementar ersctirua de json getFirestoreServices() 
-                  //Firestore retrieve
-                  //Create file
+  Future<Directory> get mainDirectory async =>
+      // Retrieve "External Storage Directory" for Android and "NSApplicationSupportDirectory" for iOS
+      Platform.isAndroid
+          ? await getExternalStorageDirectory()
+          : await getApplicationSupportDirectory();
 
-                  //print("err: ${err.toString()}");
-                }
-        });
+  Future<bool> fileExists(String path) async {
+    return await File(path).exists();
   }
 
-  Future<bool> assetExists(String path) async {
+  Future<PermissionStatus> reqPermissions() async {
+    var status = await Permission.storage.request();
+    if (!status.isDenied && !status.isGranted) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => CupertinoAlertDialog(
+                title: Text('Permisio de almacenamiento.'),
+                content: Text(
+                    'Necesitamos tu permiso para mejorar el rendimiento de la app.'),
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    child: Text('Denegar'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  CupertinoDialogAction(
+                    child: Text('Ajustes'),
+                    onPressed: () => openAppSettings(),
+                  ),
+                ],
+              ));
+    }
+    return status;
+  }
+
+  writeFileAsString(String filePath, String jsonEncodedContent) async {
     try {
-      await rootBundle.load(path);
-      return true;
+      File file = File(filePath);
+      // Convert json object to String data using json.encode() method
+      await file.writeAsString(jsonEncodedContent);
     } catch (err) {
-      print("err: ${err.toString()}");
-      return false;
+      print("err ${err.toString()}");
     }
   }
 
-    void getFirestoreServices() {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    //CollectionReference _estheticServices =firestore.collection('SERVICES_ESTHETIC');
-    //CollectionReference _hairdressingServices =firestore.collection('SERVICES_HAIRDRESSING');
+  Future<String> readFileAsString(String filePath) async {
+    String fileContent = "";
+    try {
+      fileContent = await File(filePath).readAsString();
+    } catch (err) {
+      print("err ${err.toString()}");
+    }
+    return fileContent;
+  }
 
-    firestore.collection("SERVICES_HAIRDRESSING").get().then((querySnapshot) {
-    querySnapshot.docs.forEach((result) {
-      print(result.data());
+  List<SalonService> getFirestoreServices() {
+    List<SalonService> _services;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    firestore.collection("SERVICES").get().then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
+        _services
+            .add(SalonService.fromJson(jsonDecode(result.data().toString())));
+      });
     });
-  });
+    return _services;
   }
 
   Widget build(BuildContext context) {
@@ -142,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // Fetch content from the json file
+  /*  // Fetch content from the json file
   Future<void> readHairdressingServicesJson() async {
     try {
       final String response =
@@ -156,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
       OkAlertDialog("Error", "Ha habido un error: ${err.toString()}",
           () => Navigator.of(context).pop("ok"));
     }
-  }
+  } */
 
   // Fetch content from the json file
   Future<void> readEstheticServicesJson() async {
@@ -173,8 +233,6 @@ class _HomeScreenState extends State<HomeScreen> {
           () => Navigator.of(context).pop("ok"));
     }
   }
-
-
 
   //Not really needed
   Future<void> _signOut() async {

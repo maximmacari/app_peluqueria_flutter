@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class Appointment {
   DateTime idStartTimestamp;
-  String serviceName;
+  String serviceId;
   String userUID;
   DateTime timestampCreation;
   DateTime endTimestamp;
 
   Appointment(
       {@required this.idStartTimestamp,
-      @required this.serviceName,
+      @required this.serviceId,
       @required this.userUID,
       @required this.timestampCreation,
       @required this.endTimestamp});
