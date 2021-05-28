@@ -1,20 +1,18 @@
-import 'dart:io';
-import "package:path_provider/path_provider.dart";
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_sms_auth1/Model/rout_generator.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_sms_auth1/Model/salon_service.dart';
 import 'package:flutter_sms_auth1/Model/user_preferences.dart';
-import 'package:flutter_sms_auth1/shared/alert_dialog.dart';
+import 'package:flutter_sms_auth1/ViewModel/home_vm.dart';
 import "package:flutter_sms_auth1/shared/colors.dart";
 import 'package:flutter_svg/flutter_svg.dart';
-import 'dart:convert';
 import 'package:flutter_sms_auth1/shared/custom_extensions.dart';
 import "package:carousel_slider/carousel_slider.dart";
+import 'package:flutter_sms_auth1/Model/custom_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -23,34 +21,31 @@ class HomeScreen extends StatefulWidget {
 
 //https://petercoding.com/firebase/2020/04/04/using-cloud-firestore-in-flutter/
 class _HomeScreenState extends State<HomeScreen> {
-  final _authFirebase = FirebaseAuth.instance; //TODO quitar
+  //List<SalonService> _servicesList = [];
+  //String _selectedSubgroup = "cortes";
 
-  List<SalonService> _servicesList = [];
-  String _selectedSubgroup = "cortes";
-
-  callback(newSubgroup) {
+  /* callback(newSubgroup) {
     setState(() {
       _selectedSubgroup = newSubgroup;
     });
-  }
+  } */
 
   @override
   void initState() {
     super.initState();
-    //read json if exist, if not request it
-
-    getFirestoreServices();
-
-    /*  reqPermissions().then((status) => {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<HomeObservable>(context, listen: false).initHome(context);
+    });
+    /* reqPermissions().then((status) => {
           status.isGranted
               ? {
-                  //permission granted
+                  log.info("Permission granted: ${status.toString()}"),
                   mainDirectory.then((directory) => {
-                        fileExists(directory.path.toString() + "/thisfiledoesnotexist.json")
+                        fileExists(directory.path.toString() + "/services.json")
                             .then((fileExists) => {
                                   fileExists
                                       ? {
-                                          print("File exists"),
+                                          log.info("File /servies.json exists"),
                                           readFileAsString(
                                                   directory.path.toString() +
                                                       "/services.json")
@@ -60,32 +55,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   })
                                         }
                                       : {
-                                          print("File does not exist"),
-                                          
-                                          //writeFileAsString(directory.path.toString() +"/services.json","caca")
+                                          log.warning(
+                                              "File /services.json does not exist"),
+                                          getFirestoreServices(),
+                                          writeFileAsString(
+                                              directory.path.toString() +
+                                                  "/services.json",
+                                              _servicesList.toString()),
                                         }
                                 })
                       })
                 }
               : {
-                  //permission denied
+                  log.info("Permission denied: ${status.toString()}"),
                 }
         }); */
-    //readHairdressingServicesJson();
-    //readEstheticServicesJson();
   }
 
-  Future<Directory> get mainDirectory async =>
-      // Retrieve "External Storage Directory" for Android and "NSApplicationSupportDirectory" for iOS
-      Platform.isAndroid
-          ? await getExternalStorageDirectory()
-          : await getApplicationSupportDirectory();
-
-  Future<bool> fileExists(String path) async {
-    return await File(path).exists();
-  }
-
-  Future<PermissionStatus> reqPermissions() async {
+/*   Future<PermissionStatus> reqPermissions() async {
     var status = await Permission.storage.request();
     if (!status.isDenied && !status.isGranted) {
       showDialog(
@@ -107,44 +94,24 @@ class _HomeScreenState extends State<HomeScreen> {
               ));
     }
     return status;
-  }
+  } */
 
-  writeFileAsString(String filePath, String jsonEncodedContent) async {
-    try {
-      File file = File(filePath);
-      // Convert json object to String data using json.encode() method
-      await file.writeAsString(jsonEncodedContent);
-    } catch (err) {
-      print("err ${err.toString()}");
-    }
-  }
-
-  Future<String> readFileAsString(String filePath) async {
-    String fileContent = "";
-    try {
-      fileContent = await File(filePath).readAsString();
-    } catch (err) {
-      print("err ${err.toString()}");
-    }
-    return fileContent;
-  }
-
-  List<SalonService> getFirestoreServices() {
-    List<SalonService> _services;
+  /* //TODO quitar
+  void getFirestoreServices() {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     firestore.collection("SERVICES").get().then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
-        _services
-            .add(SalonService.fromJson(jsonDecode(result.data().toString())));
+        print("get: ${result.data()}");
+        _servicesList.add(new SalonService.fromJson(result.data()));
       });
     });
-    return _services;
-  }
+  } */
 
   Widget build(BuildContext context) {
+    var homeObservable = Provider.of<HomeObservable>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(_selectedSubgroup.capitalized(),
+        title: Text(homeObservable.selectedSubgroup.capitalized(),
             style: TextStyle(
                 color: Theme.of(context).colorScheme.foregroundPlainTxtColor)),
         foregroundColor: Theme.of(context).colorScheme.foregroundPlainTxtColor,
@@ -183,69 +150,19 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      body: (_servicesList as List<SalonService>).length > 0
+      body: (homeObservable.servicesList as List<SalonService>).length >
+              0 // todo quitar
           ? Column(
               children: [
                 HorizontalScrollViewSubgroups(
-                    _servicesList.getUniqueSubgroup(), callback),
-                VerticalCustomListView(
-                    _servicesList.filterBySubgroupName(_selectedSubgroup))
+                    homeObservable.servicesList.getUniqueSubgroup(),
+                    homeObservable.callback),
+                VerticalCustomListView(homeObservable.servicesList
+                    .filterBySubgroupName(homeObservable.selectedSubgroup))
               ],
             )
           : Center(child: CircularProgressIndicator()),
     );
-  }
-
-  void updateSelecteeedSubgroup(String newSubgroup) {
-    setState(() {
-      this._selectedSubgroup = newSubgroup;
-    });
-  }
-
-  /*  // Fetch content from the json file
-  Future<void> readHairdressingServicesJson() async {
-    try {
-      final String response =
-          await rootBundle.loadString('assets/saved-files/hairdressing.json');
-      final hairdressingObjectJson = jsonDecode(response)["Peluqueria"] as List;
-      setState(() {
-        _servicesList.addAll(
-            SalonServiceList.fromJson(hairdressingObjectJson).salonServices);
-      });
-    } catch (err) {
-      OkAlertDialog("Error", "Ha habido un error: ${err.toString()}",
-          () => Navigator.of(context).pop("ok"));
-    }
-  } */
-
-  // Fetch content from the json file
-  Future<void> readEstheticServicesJson() async {
-    try {
-      final String response =
-          await rootBundle.loadString('assets/saved-files/esthetic.json');
-      final _estheticObjectJson = jsonDecode(response)["Estetica"] as List;
-      setState(() {
-        _servicesList.addAll(
-            SalonServiceList.fromJson(_estheticObjectJson).salonServices);
-      });
-    } catch (err) {
-      OkAlertDialog("Error", "Ha habido un error: ${err.toString()}",
-          () => Navigator.of(context).pop("ok"));
-    }
-  }
-
-  //Not really needed
-  Future<void> _signOut() async {
-    try {
-      if (_authFirebase.currentUser != null) {
-        await _authFirebase.signOut();
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(Screen.LOGIN, (route) => false);
-      }
-    } catch (err) {
-      OkAlertDialog("Error", "Ha habido un error: ${err.toString()}",
-          () => {Navigator.of(context).pop()});
-    }
   }
 }
 
@@ -270,7 +187,6 @@ class _HorizontalScrollViewSubgroupsState
     return Container(
         padding: EdgeInsets.all(8),
         color: Theme.of(context).colorScheme.mainBackground,
-        //height: MediaQuery.of(context).size.height * 0.30,
         child: CarouselSlider(
             options: CarouselOptions(
                 autoPlay: false,
@@ -285,7 +201,6 @@ class _HorizontalScrollViewSubgroupsState
                 }),
             items: widget._services
                 .map((service) => Container(
-                      //width: MediaQuery.of(context).size.width * 0.6,
                       decoration: new BoxDecoration(
                           boxShadow: [
                             BoxShadow(
