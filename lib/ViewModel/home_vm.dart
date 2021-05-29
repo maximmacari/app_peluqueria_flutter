@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sms_auth1/Model/custom_utils.dart';
 import 'package:flutter_sms_auth1/Model/salon_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,11 +8,10 @@ import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_sms_auth1/Model/salon_service.dart';
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logging/logging.dart';
 
-//Un (with) mixin se refiere a  agregar las capacidades de otra clase o clases a nuestra propia clase, sin heredar de esas clases.
+//Un (with) mixin se refiere a  agregar las capacidades de otra clase o clases a nuestra propia clase, sin heredar de esas clases, pero pudinedo utilizar sus propiedades.
 class HomeObservable with ChangeNotifier {
   String _selectedSubgroup = "cortes";
   List<SalonService> _servicesList = [];
@@ -56,7 +56,7 @@ class HomeObservable with ChangeNotifier {
                                                       "/services.json")
                                               .then((fileResult) => {
                                                     _log.info(
-                                                        "Read result from file: ${fileResult.toString()}")
+                                                        "Read results from file: ${fileResult.toString()}")
                                                   })
                                         }
                                       : {
@@ -78,9 +78,9 @@ class HomeObservable with ChangeNotifier {
   }
 
 /* 
-  //Not really needed
+  //Not really needed //TODO quitar
   Future<void> _signOut() async {
-    final _authFirebase = FirebaseAuth.instance; //TODO quitar
+    final _authFirebase = FirebaseAuth.instance; 
     try {
       if (_authFirebase.currentUser != null) {
         await _authFirebase.signOut();

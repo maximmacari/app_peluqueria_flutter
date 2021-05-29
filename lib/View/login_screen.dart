@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -19,13 +20,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final PHONE_REGEX = RegExp("(6|7)[ -]*([0-9][ -]*){8}");
 
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
+
   final FocusNode _focusPhoneField = new FocusNode();
+  final FocusNode _focusCodeField = new FocusNode();
+  
   final _phoneFormKey = GlobalKey<FormState>();
   final _codeFormKey = GlobalKey<FormState>();
-  bool _termsAccepted = false;
 
-  final TextEditingController _codeController = TextEditingController();
-  final FocusNode _focusCodeField = new FocusNode();
+  bool _termsAccepted = false;
 
   Timer _timer;
   bool _buttonEnabled = true;

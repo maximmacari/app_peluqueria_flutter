@@ -8,10 +8,10 @@ import "package:flutter_sms_auth1/shared/colors.dart";
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_sms_auth1/shared/custom_extensions.dart';
 import "package:carousel_slider/carousel_slider.dart";
-import 'package:flutter_sms_auth1/Model/custom_utils.dart';
+/* import 'package:flutter_sms_auth1/Model/custom_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:logging/logging.dart';
+import 'package:logging/logging.dart'; */
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {

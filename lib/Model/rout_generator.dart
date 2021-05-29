@@ -22,13 +22,15 @@ class RouteGenerator {
       case Screen.HOME:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case Screen.SET_APPOINTMENT:
-        if (_authFirebase.currentUser == null) {
+        /* testing
+         if (_authFirebase.currentUser == null) {
           // no user logged in
           return MaterialPageRoute(builder: (_) => LoginScreen());
         } else {
-          print("Loggedin: ${_authFirebase.currentUser.phoneNumber}");
+          print("Loggedin: ${_authFirebase.currentUser.phoneNumber}"); */
+          
           return MaterialPageRoute(builder: (_) => AppointmentScreen());
-        }
+        //}
     }
   }
 }

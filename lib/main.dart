@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         title: 'Peluqeria',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(colorScheme: ColorScheme.light()),
-        initialRoute: Screen.PRESENTATION,
+        initialRoute: Screen.SET_APPOINTMENT,
         onGenerateRoute: RouteGenerator.generateRoute,
       ),
     );
