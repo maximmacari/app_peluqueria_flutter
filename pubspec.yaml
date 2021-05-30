@@ -38,6 +38,7 @@ dependencies:
   permission_handler: ^5.1.0
   provider: ^5.0.0
   logging: ^1.0.1
+  intl: ^0.16.1
 
   
 

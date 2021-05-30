@@ -4,6 +4,7 @@ import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 import 'package:flutter_sms_auth1/Model/user_preferences.dart';
 import 'package:flutter_sms_auth1/ViewModel/home_vm.dart';
 import 'package:flutter_sms_auth1/ViewModel/onboarding_vm.dart';
+import 'package:flutter_sms_auth1/ViewModel/appointment_vm.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => OnBoardingObservable()),
         ChangeNotifierProvider(create: (context) => HomeObservable()),
+        ChangeNotifierProvider(create: (context) => AppointmentObservable())
       ],
       child: MaterialApp(
         title: 'Peluqeria',

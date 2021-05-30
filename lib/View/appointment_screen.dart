@@ -1,6 +1,9 @@
 import "package:flutter/material.dart";
+import 'package:flutter/rendering.dart';
 import 'package:flutter_sms_auth1/shared/colors.dart';
 import 'package:flutter_sms_auth1/shared/styles.dart';
+import 'package:flutter_sms_auth1/ViewModel/appointment_vm.dart';
+import 'package:provider/provider.dart';
 
 class AppointmentScreen extends StatefulWidget {
   @override
@@ -10,6 +13,7 @@ class AppointmentScreen extends StatefulWidget {
 class _AppointmentScreenState extends State<AppointmentScreen> {
   @override
   Widget build(BuildContext context) {
+    var appointmentObservable = Provider.of<AppointmentObservable>(context);
     final screenSizeWidth = MediaQuery.of(context).size.width;
     final screenSizeHeight = MediaQuery.of(context).size.height;
     final double itemHeight = (screenSizeHeight - kToolbarHeight - 24) / 10;
@@ -64,9 +68,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           color: ConstantColors.mainColorApp,
-                          
                           child: IconButton(
-                            color: ConstantColors.mainColorApp,
+                              color: ConstantColors.mainColorApp,
                               icon: Icon(Icons.chevron_right,
                                   color: Theme.of(context)
                                       .colorScheme
@@ -76,35 +79,17 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                       ],
                     ),
                     SizedBox(height: 8),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          DateColumn(
-                            weekDay: "Mon",
-                            date: "16",
-                          ),
-                          DateColumn(
-                            weekDay: "Tue",
-                            date: "17",
-                          ),
-                          DateColumn(
-                            weekDay: "Wed",
-                            date: "18",
-                          ),
-                          DateColumn(
-                            weekDay: "Thu",
-                            date: "19",
-                          ),
-                          DateColumn(weekDay: "Fri", date: "20"),
-                          DateColumn(
-                            weekDay: "Sat",
-                            date: "21",
-                          ),
-                          DateColumn(
-                            weekDay: "Sun",
-                            date: "22",
-                          )
-                        ]),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: appointmentObservable
+                            .daysInMonth()
+                            .map((currentDate) {
+                          return DateColumn(dateTime: currentDate);
+                        }).toList(),
+                      ),
+                    ),
                     SizedBox(height: 15),
                   ])),
               Container(
@@ -114,7 +99,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      _header("Madrugada"),
+                      _headerWidget("Madrugada"),
                       GridView.builder(
                         primary: false,
                         shrinkWrap: true,
@@ -126,10 +111,10 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                             crossAxisSpacing: 8,
                             mainAxisSpacing: 8),
                         itemBuilder: (BuildContext context, int index) {
-                          return buttonTime("10:30 - 11:45");
+                          return _buttonTimeWidget("10:30 - 11:45");
                         },
                       ),
-                      _header("Tarde"),
+                      _headerWidget("Tarde"),
                       GridView.builder(
                         primary: false,
                         shrinkWrap: true,
@@ -141,7 +126,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                             crossAxisSpacing: 8,
                             mainAxisSpacing: 8),
                         itemBuilder: (BuildContext context, int index) {
-                          return buttonTime("18:30 - 19:30");
+                          return _buttonTimeWidget("18:30 - 19:30");
                         },
                       ),
                     ],
@@ -172,14 +157,14 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   }
 
   //buttonTime
-  Widget buttonTime(timeText) {
+  Widget _buttonTimeWidget(timeText) {
     return TextButton(
         style: ButtonStyle(
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               side: BorderSide(
                   color: Colors.grey, width: 1, style: BorderStyle.solid),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
         ),
@@ -191,16 +176,15 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 fontSize: 14)));
   }
 
-  Widget _header(String text) {
+  Widget _headerWidget(String text) {
     return Column(
       children: [
         SizedBox(height: 24),
         Text("$text: ",
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         SizedBox(height: 16)
       ],
     );
-    
   }
 }
 
@@ -212,27 +196,49 @@ class AvaiableTimeButton extends StatelessWidget {
 }
 
 class DateColumn extends StatelessWidget {
-  final String weekDay, date;
+  final DateTime dateTime;
 
-  const DateColumn({Key key, this.weekDay, this.date}) : super(key: key);
+  const DateColumn({Key key, this.dateTime}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-          color: ConstantColors.mainColorApp,
-          borderRadius: BorderRadius.all(Radius.circular(8))),
-      child: Column(
-        children: <Widget>[
-          Text(weekDay, style: TextStyle(color: ConstantColors.myBlack)),
-          Container(
-              padding: EdgeInsets.all(8),
-              child: Text(date,
-                  style: TextStyle(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .foregroundPlainTxtColor))),
-        ],
+    var appointmentObservable =
+        Provider.of<AppointmentObservable>(context, listen: false);
+
+    bool _isDateColumnPicked() {
+      return this.dateTime == appointmentObservable.selectedDate;
+    }
+
+    return InkWell(
+      onTap: () {
+        appointmentObservable.selectedDate = dateTime;
+      },
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(6, 0, 0, 0),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          border:
+               Border.all(
+                  width: 1,
+                )
+              ,
+          borderRadius: BorderRadius.circular(12),
+          color: _isDateColumnPicked()
+              ? ConstantColors.mainColorApp
+              : ConstantColors.myBlack,
+        ),
+        child: Column(
+          children: <Widget>[
+            Text(appointmentObservable.dayName(dateTime),
+                style: TextStyle(color: ConstantColors.myBlack)),
+            Container(
+                padding: EdgeInsets.all(8),
+                child: Text(dateTime.day.toString(),
+                    style: TextStyle(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .foregroundPlainTxtColor))),
+          ],
+        ),
       ),
     );
   }
