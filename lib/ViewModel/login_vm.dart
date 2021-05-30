@@ -18,14 +18,17 @@ class LoginObservable with ChangeNotifier {
 
   set termsAccepted(bool accepted) {
     _termsAccepted = accepted;
+    notifyListeners();
   }
 
   set buttonEnabled(bool enabled) {
     _buttonEnabled = buttonEnabled;
+    notifyListeners();
   }
 
   set verificationId(String verificationId){
     _verificationId = verificationId;
+    notifyListeners();
   }
 
   void showLoadingToggle(){

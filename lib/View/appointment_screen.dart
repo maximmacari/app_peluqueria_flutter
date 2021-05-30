@@ -1,8 +1,10 @@
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
+import 'package:flutter_sms_auth1/ViewModel/home_vm.dart';
 import 'package:flutter_sms_auth1/shared/colors.dart';
 import 'package:flutter_sms_auth1/shared/styles.dart';
 import 'package:flutter_sms_auth1/ViewModel/appointment_vm.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 class AppointmentScreen extends StatefulWidget {
@@ -14,10 +16,14 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   @override
   Widget build(BuildContext context) {
     var appointmentObservable = Provider.of<AppointmentObservable>(context);
+    var homeObservable = Provider.of<HomeObservable>(context);
     final screenSizeWidth = MediaQuery.of(context).size.width;
     final screenSizeHeight = MediaQuery.of(context).size.height;
     final double itemHeight = (screenSizeHeight - kToolbarHeight - 24) / 10;
     final double itemWidth = screenSizeWidth / 1.8;
+
+    print(homeObservable.servicesNames); // TODO test, now its empty[]
+    initializeDateFormatting("es_ES");
 
     return Scaffold(
       backgroundColor: ConstantColors.mainColorApp,
@@ -49,14 +55,27 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        IconButton(
-                            icon: Icon(Icons.chevron_left,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .foregroundPlainTxtColor),
-                            onPressed: () {}),
+                        InkWell(
+                          onTap: () {
+                            appointmentObservable.previousMonth();
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                color: appointmentObservable.isDateAccesibleBackward
+                                    ? ConstantColors.mainColorApp
+                                    : ConstantColors.mainColorApp
+                                        .withOpacity(0.24),
+                                shape: BoxShape.circle),
+                            child: Icon(
+                              Icons.chevron_left,
+                              color: ConstantColors.myBlack,
+                            ),
+                          ),
+                        ),
                         Expanded(
-                          child: Text("July, 2020", // instance of date
+                          child: Text(appointmentObservable.montAndYear(),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Theme.of(context)
@@ -65,17 +84,25 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600)),
                         ),
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          color: ConstantColors.mainColorApp,
-                          child: IconButton(
-                              color: ConstantColors.mainColorApp,
-                              icon: Icon(Icons.chevron_right,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .foregroundTxtButtonColor),
-                              onPressed: () {}),
-                        ),
+                        InkWell(
+                          onTap: () {
+                             appointmentObservable.nextMonth();
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                color: appointmentObservable.isDateAccesibleForward
+                                    ? ConstantColors.mainColorApp
+                                    : ConstantColors.mainColorApp
+                                        .withOpacity(0.24),
+                                shape: BoxShape.circle),
+                            child: Icon(
+                              Icons.chevron_right,
+                              color: ConstantColors.myBlack,
+                            ),
+                          ),
+                        )
                       ],
                     ),
                     SizedBox(height: 8),
@@ -92,6 +119,37 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     ),
                     SizedBox(height: 15),
                   ])),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  focusColor: ConstantColors.myWhite,
+                  value: appointmentObservable.selectedServiceName,
+                  //elevation: 5,
+                  style: TextStyle(color: ConstantColors.myWhite),
+                  iconEnabledColor: ConstantColors.myBlack,
+                  items: homeObservable.servicesNames
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: TextStyle(color: ConstantColors.myBlack),
+                      ),
+                    );
+                  }).toList(),
+                  hint: Text(
+                    "Que te vas a hacer",
+                    style: TextStyle(
+                        color: ConstantColors.myBlack,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  onChanged: (String value) {
+                    appointmentObservable.selectedServiceName = value;
+                  },
+                ),
+              ),
               Container(
                   width: screenSizeWidth,
                   color: ConstantColors.myWhite,
@@ -126,7 +184,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                             crossAxisSpacing: 8,
                             mainAxisSpacing: 8),
                         itemBuilder: (BuildContext context, int index) {
-                          return _buttonTimeWidget("18:30 - 19:30");
+                          return _buttonTimeWidget("6");
                         },
                       ),
                     ],
@@ -205,7 +263,7 @@ class DateColumn extends StatelessWidget {
         Provider.of<AppointmentObservable>(context, listen: false);
 
     bool _isDateColumnPicked() {
-      return this.dateTime == appointmentObservable.selectedDate;
+      return this.dateTime.day == appointmentObservable.selectedDate.day;
     }
 
     return InkWell(
@@ -213,18 +271,16 @@ class DateColumn extends StatelessWidget {
         appointmentObservable.selectedDate = dateTime;
       },
       child: Container(
-        margin: const EdgeInsets.fromLTRB(6, 0, 0, 0),
+        margin: const EdgeInsets.fromLTRB(4, 0, 0, 0),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          border:
-               Border.all(
-                  width: 1,
-                )
-              ,
+          border: Border.all(
+            width: 1,
+          ),
           borderRadius: BorderRadius.circular(12),
           color: _isDateColumnPicked()
               ? ConstantColors.mainColorApp
-              : ConstantColors.myBlack,
+              : ConstantColors.myWhite,
         ),
         child: Column(
           children: <Widget>[

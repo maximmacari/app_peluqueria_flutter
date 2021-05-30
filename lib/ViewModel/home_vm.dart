@@ -10,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_sms_auth1/Model/salon_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logging/logging.dart';
+import 'package:flutter_sms_auth1/Shared/custom_extensions.dart';
 
 //Un (with) mixin se refiere a  agregar las capacidades de otra clase o clases a nuestra propia clase, sin heredar de esas clases, pero pudinedo utilizar sus propiedades.
 class HomeObservable with ChangeNotifier {
@@ -28,6 +29,8 @@ class HomeObservable with ChangeNotifier {
   callback(newSubgroup) {
     _selectedSubgroup = newSubgroup;
   }
+
+  List<String> get servicesNames => _servicesList.map((e) => e.name.capitalized()).toSet().toList();
 
   void getFirestoreServices() {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
