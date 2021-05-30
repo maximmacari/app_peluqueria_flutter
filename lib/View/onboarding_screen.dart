@@ -5,8 +5,8 @@ import 'package:flutter_sms_auth1/Model/user_preferences.dart';
 import 'package:flutter_sms_auth1/ViewModel/onboarding_vm.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../shared/colors.dart';
-import '../shared/styles.dart';
+import '../Shared/colors.dart';
+import '../Shared/styles.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override

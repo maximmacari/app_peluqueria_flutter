@@ -2,22 +2,20 @@ import 'package:flutter/material.dart';
 
 class Appointment {
 
-/** 
- *  FIREBASE JSON
- * 
- *  - DateTime appointmentTimestamp
- *    - ServiceID => allow read if userUid == userUID
- *    - UserUid => allow read if userUid == userUID
- *    - DateTime creationDateTime
- *    - DateTime endAppointmentTimestamp
- */
+///  FIREBASE JSON
+/// 
+///  - DateTime appointmentTimestamp
+///    - ServiceID => allow read if userUid == userUID
+///    - UserUid => allow read if userUid == userUID
+///    - DateTime creationDateTime
+///    - DateTime endAppointmentTimestamp
 
 
-  DateTime idStartTimestamp;
+  String idStartTimestamp;
   String serviceId;
   String userUID;
-  DateTime timestampCreation;
-  DateTime endTimestamp;
+  String timestampCreation;
+  String endTimestamp;
 
   Appointment(
       {@required this.idStartTimestamp,

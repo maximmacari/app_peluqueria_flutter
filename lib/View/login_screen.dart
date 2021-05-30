@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sms_auth1/Model/rout_generator.dart';
-import 'package:flutter_sms_auth1/shared/alert_dialog.dart';
-import 'package:flutter_sms_auth1/shared/colors.dart';
-import 'package:flutter_sms_auth1/shared/custom_extensions.dart';
-import 'package:flutter_sms_auth1/shared/styles.dart';
+import 'package:flutter_sms_auth1/Shared/alert_dialog.dart';
+import 'package:flutter_sms_auth1/Shared/colors.dart';
+import 'package:flutter_sms_auth1/Shared/custom_extensions.dart';
+import 'package:flutter_sms_auth1/Shared/styles.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

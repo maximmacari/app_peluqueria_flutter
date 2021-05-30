@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_sms_auth1/shared/custom_extensions.dart';
+import 'package:flutter_sms_auth1/Shared/custom_extensions.dart';
 
 //Un (with) mixin se refiere a  agregar las capacidades de otra clase o clases a nuestra propia clase, sin heredar de esas clases.
 class LoginObservable with ChangeNotifier {

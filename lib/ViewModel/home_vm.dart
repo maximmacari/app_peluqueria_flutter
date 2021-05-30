@@ -42,6 +42,10 @@ class HomeObservable with ChangeNotifier {
     });
   }
 
+  SalonService getSalonserviceByName(String name){
+    return _servicesList.where((element) => element.name == name).toList()[0];
+  }
+
   void initHome(context) {
     reqPermissions(context).then((status) => {
           status.isGranted

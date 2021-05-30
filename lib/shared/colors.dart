@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 class ConstantColors {
   static const backgroundLinearGradientLight = LinearGradient(
@@ -24,6 +23,7 @@ class ConstantColors {
   static const myWhite = Color(0xFFf1f1f1);
   static const myBlack = Color(0xFF010101);
   static const mainColorApp = Color(0xFF2ec4b6);
+  static const btnDisabled = Color.fromARGB(160, 46, 196, 182);
   //static final foregroundColorButton = SchedulerBinding.instance.window.platformBrightness == Brightness.light ? Color(0xFF121212) : Color(0xFFDEE4e7);
 }
 

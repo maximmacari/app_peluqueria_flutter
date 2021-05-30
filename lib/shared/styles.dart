@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sms_auth1/shared/colors.dart';
+import 'package:flutter_sms_auth1/Shared/colors.dart';
 
 class CustomTextStyles {
   TextStyle onboardingTitleStyle(context) {

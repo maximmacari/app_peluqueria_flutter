@@ -12,11 +12,6 @@ class RouteGenerator {
     //final args = settings.arguments; // data passed to other views
     final _authFirebase = FirebaseAuth.instance;
     switch (settings.name) {
-      case Screen.PRESENTATION:
-        return UserPreferences.getPresentationSeen() == false ||
-                UserPreferences.getPresentationSeen() == null
-            ? MaterialPageRoute(builder: (_) => OnboardingScreen())
-            : MaterialPageRoute(builder: (_) => HomeScreen());
       case Screen.LOGIN:
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case Screen.HOME:
@@ -28,9 +23,14 @@ class RouteGenerator {
           return MaterialPageRoute(builder: (_) => LoginScreen());
         } else {
           print("Loggedin: ${_authFirebase.currentUser.phoneNumber}"); */
-          
-          return MaterialPageRoute(builder: (_) => AppointmentScreen());
-        //}
+
+        return MaterialPageRoute(builder: (_) => AppointmentScreen());
+      //}
+      default:
+        return UserPreferences.getPresentationSeen() == false ||
+                UserPreferences.getPresentationSeen() == null
+            ? MaterialPageRoute(builder: (_) => OnboardingScreen())
+            : MaterialPageRoute(builder: (_) => HomeScreen());
     }
   }
 }

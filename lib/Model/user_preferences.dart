@@ -1,4 +1,4 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/Shared_preferences.dart';
 
 class UserPreferences {
   static const String PRESENTATION_SEEN = "presentation_seen";
