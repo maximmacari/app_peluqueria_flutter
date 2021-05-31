@@ -17,15 +17,12 @@ class RouteGenerator {
       case Screen.HOME:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case Screen.SET_APPOINTMENT:
-        /* testing
-         if (_authFirebase.currentUser == null) {
+        if (_authFirebase.currentUser == null) {
           // no user logged in
           return MaterialPageRoute(builder: (_) => LoginScreen());
-        } else {
-          print("Loggedin: ${_authFirebase.currentUser.phoneNumber}"); */
-
+        }
+        print("Logged in: ${_authFirebase.currentUser.phoneNumber}");
         return MaterialPageRoute(builder: (_) => AppointmentScreen());
-      //}
       default:
         return UserPreferences.getPresentationSeen() == false ||
                 UserPreferences.getPresentationSeen() == null
@@ -41,13 +38,3 @@ class Screen {
   static const String HOME = "/login/home";
   static const String SET_APPOINTMENT = "/login/home/set-appointment";
 }
-
-// Presentation only show the first time, later on login add button to go over it again
-// Firebase services, Cachear en json durante 2 semanas?
-// Firebase appointment data
-//
-
-//info
-//https://www.youtube.com/watch?v=nyvwx7o277U
-//https://medium.com/flutter-community/clean-navigation-in-flutter-using-generated-routes-891bd6e000df
-//https://medium.com/fabcoding/navigating-between-screens-in-flutter-navigator-named-routes-passing-data-e3deab46c9e6

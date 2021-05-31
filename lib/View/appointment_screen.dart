@@ -1,9 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
 import 'package:flutter_sms_auth1/Shared/colors.dart';
-import 'package:flutter_sms_auth1/Shared/colors.dart';
 import 'package:flutter_sms_auth1/ViewModel/home_vm.dart';
-import 'package:flutter_sms_auth1/Shared/colors.dart';
 import 'package:flutter_sms_auth1/Shared/custom_extensions.dart';
 import 'package:flutter_sms_auth1/Shared/styles.dart';
 import 'package:flutter_sms_auth1/ViewModel/appointment_vm.dart';
@@ -17,10 +15,19 @@ class AppointmentScreen extends StatefulWidget {
 
 class _AppointmentScreenState extends State<AppointmentScreen> {
   @override
+  void initState() {
+    // TODO: implement initState
+    Provider.of<AppointmentObservable>(context, listen: false)
+        .getMoriningRangeTimes();
+    Provider.of<AppointmentObservable>(context, listen: false)
+        .getAfternoonRangeTimes();
+  }
+
+  @override
   Widget build(BuildContext context) {
     initializeDateFormatting("es_ES");
     var appointmentObservable =
-        Provider.of<AppointmentObservable>(context, listen: false);
+        Provider.of<AppointmentObservable>(context, listen: true);
     var homeObservable = Provider.of<HomeObservable>(context, listen: false);
     final screenSizeWidth = MediaQuery.of(context).size.width;
     final screenSizeHeight = MediaQuery.of(context).size.height;
@@ -28,8 +35,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     final double itemWidth = screenSizeWidth / 1.8;
 
     print(homeObservable.servicesNames); // TODO test, now its empty[]
-    print(
-        "Definitive ranges: ${appointmentObservable.presentDateTimeRanges()}");
 
     return Scaffold(
       backgroundColor: ConstantColors.mainColorApp,
@@ -127,34 +132,40 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   ])),
               Container(
                 width: MediaQuery.of(context).size.width * 0.9,
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  focusColor: ConstantColors.myWhite,
-                  value: appointmentObservable.selectedSalonService.name,
-                  //elevation: 5,
-                  style: TextStyle(color: ConstantColors.myWhite),
-                  iconEnabledColor: ConstantColors.myBlack,
-                  items: homeObservable.servicesNames
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: TextStyle(color: ConstantColors.myBlack),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _headerWidget("Servicio: "),
+                    DropdownButton<String>(
+                      isExpanded: true,
+                      focusColor: ConstantColors.myWhite,
+                      value: appointmentObservable.selectedSalonService.name,
+                      //elevation: 5,
+                      style: TextStyle(color: ConstantColors.myWhite),
+                      iconEnabledColor: ConstantColors.myBlack,
+                      items: homeObservable.servicesNames.toSet().toList()
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: TextStyle(color: ConstantColors.myBlack),
+                          ),
+                        );
+                      }).toList(),
+                      hint: Text(
+                        "¿Qué te vas a hacer?",
+                        style: TextStyle(
+                            color: ConstantColors.myBlack,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500),
                       ),
-                    );
-                  }).toList(),
-                  hint: Text(
-                    "¿Qué te vas a hacer?",
-                    style: TextStyle(
-                        color: ConstantColors.myBlack,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  onChanged: (String value) {
-                    appointmentObservable.selectedServiceName =
-                        homeObservable.getSalonserviceByName(value);
-                  },
+                      onChanged: (String value) {
+                        appointmentObservable.selectedServiceName =
+                            homeObservable.getSalonserviceByName(value);
+                      },
+                    ),
+                  ],
                 ),
               ),
               Container(
@@ -168,8 +179,26 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                       GridView.builder(
                         primary: false,
                         shrinkWrap: true,
-                        itemCount: appointmentObservable
-                            .getMoriningRangeTimes()
+                        itemCount:
+                            appointmentObservable.morningDateTimeRanges.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: (itemWidth / itemHeight),
+                            crossAxisCount:
+                                (screenSizeWidth / itemWidth).ceil().toInt(),
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 8),
+                        itemBuilder: (BuildContext context, int index) {
+                          return _buttonTimeWidget(appointmentObservable
+                              .morningDateTimeRanges[index]);
+                        },
+                      ),
+                      _headerWidget("Tarde"),
+                      GridView.builder(
+                        primary: false,
+                        shrinkWrap: true,
+                        itemCount: context
+                            .read<AppointmentObservable>()
+                            .afternoonDateTimeRanges
                             .length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             childAspectRatio: (itemWidth / itemHeight),
@@ -179,22 +208,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                             mainAxisSpacing: 8),
                         itemBuilder: (BuildContext context, int index) {
                           return _buttonTimeWidget(appointmentObservable
-                              .getMoriningRangeTimes()[index]);
-                        },
-                      ),
-                      _headerWidget("Tarde"),
-                      GridView.builder(
-                        primary: false,
-                        shrinkWrap: true,
-                        itemCount: context.read<AppointmentObservable>().getAfternoonRangeTimes().length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: (itemWidth / itemHeight),
-                            crossAxisCount:
-                                (screenSizeWidth / itemWidth).ceil().toInt(),
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 8),
-                        itemBuilder: (BuildContext context, int index) {
-                          return _buttonTimeWidget(appointmentObservable.getAfternoonRangeTimes()[index]);
+                              .afternoonDateTimeRanges[index]);
                         },
                       ),
                     ],
@@ -240,15 +254,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
               style: BorderStyle.solid),
           borderRadius: BorderRadius.circular(12)),
       child: TextButton(
-          style: ButtonStyle(
-              /* shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-              side: BorderSide(
-                    color: Colors.grey, width: 1, style: BorderStyle.solid),
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ), */
-              ),
           onPressed: () {
             appointmentObservable.selectedTimeRange = timeRange;
           },
@@ -296,6 +301,8 @@ class DateColumn extends StatelessWidget {
       onTap: () {
         if (appointmentObservable.isDayAvailable(this.dateTime)) {
           appointmentObservable.selectedDate = dateTime;
+          appointmentObservable.getAfternoonRangeTimes();
+          appointmentObservable.getMoriningRangeTimes();
         }
       },
       child: Container(

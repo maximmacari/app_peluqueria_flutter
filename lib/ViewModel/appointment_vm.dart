@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +8,13 @@ import 'package:flutter_sms_auth1/Model/salon_service.dart';
 import "package:flutter_sms_auth1/Shared/custom_extensions.dart";
 import 'package:intl/intl.dart';
 import 'dart:io';
+
+// Validate json dart, file exists
+// rename json objects name , corte caballero
+// push appoointmentto firebase
+// get user appointments  read if user.UID == User.id
+// Listview of the user.appointments
+// morning at saturday is till 3 pm 
 
 //Un (with) mixin se refiere a  agregar las capacidades de otra clase o clases a nuestra propia clase, sin heredar de esas clases, pero pudinedo utilizar sus propiedades.
 class AppointmentObservable with ChangeNotifier {
@@ -19,6 +28,11 @@ class AppointmentObservable with ChangeNotifier {
   DateTime _selectedDate = DateTime.now();
   DateTimeRange _selectedTimeRange;
   List<DateTime> _holidays = [];
+  List<DateTimeRange> _afternoonDateTimeRanges = [];
+  List<DateTimeRange> _morningDateTimeRanges = [];
+  List<Appointment> _appointmentsList = [];
+  final _authFirebase = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   DateTimeRange _dateTimeRangeSelected;
 
@@ -34,7 +48,10 @@ class AppointmentObservable with ChangeNotifier {
 
   set selectedServiceName(SalonService newSalonService) {
     this._selectedSalonService = newSalonService;
+    getMoriningRangeTimes();
+    getAfternoonRangeTimes();
     notifyListeners();
+    print("Appointment, _seletedSalonService: $_selectedSalonService");
   }
 
   set selectedDate(DateTime newDateTime) {
@@ -46,10 +63,16 @@ class AppointmentObservable with ChangeNotifier {
   void nextMonth() {
     if (isDateAccesibleForward) {
       if (_selectedDate.month == 12) {
-        selectedDate = new DateTime(_selectedDate.year + 1, 1);
+        _selectedDate = new DateTime(_selectedDate.year + 1, 1);
+        getMoriningRangeTimes();
+        getAfternoonRangeTimes();
+        notifyListeners();
       } else {
-        selectedDate =
+        _selectedDate =
             new DateTime(_selectedDate.year, _selectedDate.month + 1);
+        getMoriningRangeTimes();
+        getAfternoonRangeTimes();
+        notifyListeners();
       }
     }
   }
@@ -65,9 +88,15 @@ class AppointmentObservable with ChangeNotifier {
     if (isDateAccesibleBackward) {
       if (_selectedDate.month == 1) {
         selectedDate = new DateTime(_selectedDate.year - 1, 12);
+        getMoriningRangeTimes();
+        getAfternoonRangeTimes();
+        notifyListeners();
       } else {
         selectedDate =
             new DateTime(_selectedDate.year, _selectedDate.month - 1);
+        getMoriningRangeTimes();
+        getAfternoonRangeTimes();
+        notifyListeners();
       }
     }
   }
@@ -103,30 +132,42 @@ class AppointmentObservable with ChangeNotifier {
         [_brakeRangeTime]); //substract Firestore ones from this
   }
 
-  List<DateTimeRange> getMoriningRangeTimes(){
+  void getMoriningRangeTimes() {
     var moringTimeRanges = presentDateTimeRanges();
     moringTimeRanges.retainWhere((element) => element.end.isMorning);
-    return moringTimeRanges;
+    _morningDateTimeRanges = moringTimeRanges;
   }
 
-  List<DateTimeRange> getAfternoonRangeTimes(){
+  void getAfternoonRangeTimes() {
     var afternoonTimeRanges = presentDateTimeRanges();
     afternoonTimeRanges.retainWhere((element) => element.end.isAfternoon);
-    return afternoonTimeRanges;
+    _afternoonDateTimeRanges = afternoonTimeRanges;
   }
 
-  void reservar(){
-    if (_selectedTimeRange != null ) { //user.uuid != null
-      //Firebase push Appiintment
-      final Appointment appointment = Appointment(endTimestamp: selectedTimeRange.end.timestamp.toString(),
-      idStartTimestamp: selectedTimeRange.start.timestamp.toString(),
-      serviceId: _selectedSalonService.id,
-      timestampCreation: DateTime.now().timestamp.toString(),
-      userUID: ); // Aqui
+  void reservar() async {
+    if (_selectedTimeRange != null) {
+      final Appointment appointment = Appointment(
+          endTimestamp: selectedTimeRange.end.timestamp.toString(),
+          idStartTimestamp: selectedTimeRange.start.timestamp.toString(),
+          serviceId: _selectedSalonService.id,
+          timestampCreation: DateTime.now().timestamp.toString(),
+          userUID: _authFirebase.currentUser.uid);
+
+      addReservationToFirestore(appointment);
     }
   }
 
+  void requestReservations() {
+    firestore.collection("RESERVATIONS").get().then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
+        _appointmentsList.add(Appointment.fromJson(result.data()));
+      });
+    });
+  }
 
+  void addReservationToFirestore(Appointment appointment) {
+    firestore.collection("RESERVATIONS").add(appointment.toJson());
+  }
 
   List<DateTimeRange> generateDateTimeRanges(DateTimeRange dayRange) {
     //makes DateTimeRanges for specific salonService
@@ -135,14 +176,13 @@ class AppointmentObservable with ChangeNotifier {
     DateTime _auxStart = dayRange.start;
     DateTime _auxEnd = dayRange.start;
 
-    
     while (_auxEnd.isBefore(dayRange.end)) {
-      
-      _auxEnd = _auxEnd.add(Duration(minutes: int.parse(_selectedSalonService.duration)));
+      _auxEnd = _auxEnd
+          .add(Duration(minutes: int.parse(_selectedSalonService.duration)));
       timeRanges.add(new DateTimeRange(start: _auxStart, end: _auxEnd));
       _auxStart = _auxEnd;
       //print("range created: ${DateTimeRange(end: _auxEnd, start: _auxStart)}");
-    } 
+    }
     return timeRanges;
   }
 
@@ -158,6 +198,8 @@ class AppointmentObservable with ChangeNotifier {
   DateFormat get dateFormat => _dateFormat;
   DateTime get yesterday => DateTime.now().subtract(Duration(days: 1));
   DateTimeRange get dateTimeRange => _dateTimeRangeSelected;
+  List<DateTimeRange> get morningDateTimeRanges => _morningDateTimeRanges;
+  List<DateTimeRange> get afternoonDateTimeRanges => _afternoonDateTimeRanges;
 
   String montAndYear() {
     final int montNumber = _selectedDate.month;

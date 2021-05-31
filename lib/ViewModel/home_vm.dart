@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_sms_auth1/Model/custom_utils.dart';
 import 'package:flutter_sms_auth1/Model/salon_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import "package:flutter/material.dart";
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_sms_auth1/Model/salon_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logging/logging.dart';
 import 'package:flutter_sms_auth1/Shared/custom_extensions.dart';
 
@@ -30,19 +26,20 @@ class HomeObservable with ChangeNotifier {
     _selectedSubgroup = newSubgroup;
   }
 
-  List<String> get servicesNames => _servicesList.map((e) => e.name.capitalized()).toSet().toList();
+  List<String> get servicesNames =>
+      _servicesList.map((e) => e.name).toSet().toList();
 
   void getFirestoreServices() {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     firestore.collection("SERVICES").get().then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
-        _servicesList
-            .add(SalonService.fromJson(result.data()));
+        _servicesList.add(SalonService.fromJson(result.data()));
+        print("serviciosss");
       });
     });
   }
 
-  SalonService getSalonserviceByName(String name){
+  SalonService getSalonserviceByName(String name) {
     return _servicesList.where((element) => element.name == name).toList()[0];
   }
 

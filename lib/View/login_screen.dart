@@ -7,9 +7,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 import 'package:flutter_sms_auth1/Shared/alert_dialog.dart';
-import 'package:flutter_sms_auth1/Shared/colors.dart';
 import 'package:flutter_sms_auth1/Shared/custom_extensions.dart';
 import 'package:flutter_sms_auth1/Shared/styles.dart';
+import 'package:flutter_sms_auth1/shared/colors.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final FocusNode _focusPhoneField = new FocusNode();
   final FocusNode _focusCodeField = new FocusNode();
-  
+
   final _phoneFormKey = GlobalKey<FormState>();
   final _codeFormKey = GlobalKey<FormState>();
 
@@ -286,7 +286,7 @@ class _LoginScreenState extends State<LoginScreen> {
             showLoading = false;
           });
           try {
-            //_signinWithPhoneAuthCredential(phoneAuthCredential);
+            _signinWithPhoneAuthCredential(phoneAuthCredential);
             Navigator.of(context).pushNamed(Screen.HOME);
           } catch (e) {
             print("err: $e");

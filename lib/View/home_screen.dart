@@ -8,10 +8,6 @@ import "package:flutter_sms_auth1/Shared/colors.dart";
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_sms_auth1/Shared/custom_extensions.dart';
 import "package:carousel_slider/carousel_slider.dart";
-/* import 'package:flutter_sms_auth1/Model/custom_utils.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:logging/logging.dart'; */
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,93 +15,14 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-//https://petercoding.com/firebase/2020/04/04/using-cloud-firestore-in-flutter/
 class _HomeScreenState extends State<HomeScreen> {
-  //List<SalonService> _servicesList = [];
-  //String _selectedSubgroup = "cortes";
-
-  /* callback(newSubgroup) {
-    setState(() {
-      _selectedSubgroup = newSubgroup;
-    });
-  } */
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<HomeObservable>(context, listen: false).initHome(context);
     });
-    /* reqPermissions().then((status) => {
-          status.isGranted
-              ? {
-                  log.info("Permission granted: ${status.toString()}"),
-                  mainDirectory.then((directory) => {
-                        fileExists(directory.path.toString() + "/services.json")
-                            .then((fileExists) => {
-                                  fileExists
-                                      ? {
-                                          log.info("File /servies.json exists"),
-                                          readFileAsString(
-                                                  directory.path.toString() +
-                                                      "/services.json")
-                                              .then((fileResult) => {
-                                                    print("result: " +
-                                                        fileResult.toString())
-                                                  })
-                                        }
-                                      : {
-                                          log.warning(
-                                              "File /services.json does not exist"),
-                                          getFirestoreServices(),
-                                          writeFileAsString(
-                                              directory.path.toString() +
-                                                  "/services.json",
-                                              _servicesList.toString()),
-                                        }
-                                })
-                      })
-                }
-              : {
-                  log.info("Permission denied: ${status.toString()}"),
-                }
-        }); */
   }
-
-/*   Future<PermissionStatus> reqPermissions() async {
-    var status = await Permission.storage.request();
-    if (!status.isDenied && !status.isGranted) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => CupertinoAlertDialog(
-                title: Text('Permisio de almacenamiento.'),
-                content: Text(
-                    'Necesitamos tu permiso para mejorar el rendimiento de la app.'),
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    child: Text('Denegar'),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  CupertinoDialogAction(
-                    child: Text('Ajustes'),
-                    onPressed: () => openAppSettings(),
-                  ),
-                ],
-              ));
-    }
-    return status;
-  } */
-
-  /* //TODO quitar
-  void getFirestoreServices() {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    firestore.collection("SERVICES").get().then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
-        print("get: ${result.data()}");
-        _servicesList.add(new SalonService.fromJson(result.data()));
-      });
-    });
-  } */
 
   Widget build(BuildContext context) {
     var homeObservable = Provider.of<HomeObservable>(context);
