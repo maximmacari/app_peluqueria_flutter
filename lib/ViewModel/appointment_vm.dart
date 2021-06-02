@@ -9,21 +9,27 @@ import "package:flutter_sms_auth1/Shared/custom_extensions.dart";
 import 'package:intl/intl.dart';
 import 'dart:io';
 
+//TODO
 // Validate json dart, file exists
 // rename json objects name , corte caballero
-// push appoointmentto firebase
+// push appointmentto firebase
 // get user appointments  read if user.UID == User.id
 // Listview of the user.appointments
-// morning at saturday is till 3 pm 
+// guardar el fichero en almacenamiento interno
+// validate json https://medium.com/codechai/validating-json-in-flutter-6f07ec9344f8
+// json file validation https://stackoverflow.com/questions/52240607/how-to-check-if-a-file-was-edited-modified-by-a-user
+// Listview images for superuser 
+// Screen for superuser, manage the appointments
+// missing firebaseOAuth.loggout
 
 //Un (with) mixin se refiere a  agregar las capacidades de otra clase o clases a nuestra propia clase, sin heredar de esas clases, pero pudinedo utilizar sus propiedades.
 class AppointmentObservable with ChangeNotifier {
   SalonService _selectedSalonService = SalonService(
       duration: '15',
-      name: 'caballero',
+      name: 'corte caballero',
       subgroup: 'cortes',
       price: '9.50',
-      id: '210'); //TODO cahnge name
+      id: '210');
   DateFormat _dateFormat = DateFormat.yMd(Platform.localeName.toString());
   DateTime _selectedDate = DateTime.now();
   DateTimeRange _selectedTimeRange;
@@ -44,6 +50,7 @@ class AppointmentObservable with ChangeNotifier {
   set selectedTimeRange(DateTimeRange newTimeRange) {
     _selectedTimeRange = newTimeRange;
     notifyListeners();
+    print("Selected Time range: ${_selectedTimeRange.toHourString()}");
   }
 
   set selectedServiceName(SalonService newSalonService) {
@@ -107,7 +114,6 @@ class AppointmentObservable with ChangeNotifier {
      *  Monday - Friday 9:30 - 19:30 ; breaks 14:00 - 16:00
      *  Saturday 9:00 - 15:00
      */
-
     final int _openingHour = 9;
     final int _openingMinutes = _selectedDate.isSaturday ? 0 : 30;
     final int _closeHour = _selectedDate.isSaturday ? 15 : 19;

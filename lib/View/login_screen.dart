@@ -1,15 +1,12 @@
-import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 import 'package:flutter_sms_auth1/Shared/alert_dialog.dart';
-import 'package:flutter_sms_auth1/Shared/custom_extensions.dart';
+import 'package:flutter_sms_auth1/Shared/colors.dart';
 import 'package:flutter_sms_auth1/Shared/styles.dart';
-import 'package:flutter_sms_auth1/shared/colors.dart';
+import 'package:flutter_sms_auth1/ViewModel/login_vm.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -17,30 +14,22 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final PHONE_REGEX = RegExp("(6|7)[ -]*([0-9][ -]*){8}");
-
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _codeController = TextEditingController();
-
   final FocusNode _focusPhoneField = new FocusNode();
   final FocusNode _focusCodeField = new FocusNode();
+  GlobalKey<FormState> _phoneFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> _codeFormKey = GlobalKey<FormState>();
 
-  final _phoneFormKey = GlobalKey<FormState>();
-  final _codeFormKey = GlobalKey<FormState>();
-
-  bool _termsAccepted = false;
-
-  Timer _timer;
-  bool _buttonEnabled = true;
-  int _secsButtonAvailable = 60;
-
-  //Firebase auth
-  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  String verificationId = "";
-  bool showLoading = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<LoginObservable>(context, listen: false)
+        .initAuthService(context);
+  }
 
   @override
   Widget build(BuildContext context) {
+    var loginObservable = Provider.of<LoginObservable>(context, listen: true);
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -67,8 +56,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     Form(
                       key: _phoneFormKey,
                       child: TextFormField(
+                        showCursor: true,
+                        cursorColor: ConstantColors.mainColorApp,
                         keyboardType: TextInputType.phone,
-                        controller: _phoneController,
+                        controller: loginObservable.phoneController,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                           new CustomInputFormatter(),
@@ -76,36 +67,35 @@ class _LoginScreenState extends State<LoginScreen> {
                               11) //phone number(9) + separation every 3 chars (2)
                         ],
                         focusNode: _focusPhoneField,
-                        autofocus: false,
+                        //autofocus: false,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: ConstantColors.myBlack,
                             fontSize: 24),
                         decoration: InputDecoration(
-                            suffix: Column(
-                              children: [
-                                TextButton(
-                                  onPressed: () {
-                                    receiveSMS();
-                                  },
-                                  child: Text(
-                                    _buttonEnabled
-                                        ? "Recibir SMS"
-                                        : "$_secsButtonAvailable sec SMS",
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  style: TextButton.styleFrom(
-                                      shape: (RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      )),
-                                      padding: EdgeInsets.all(12),
-                                      primary: Colors.black,
-                                      backgroundColor: _buttonEnabled
-                                          ? ConstantColors.mainColorApp
-                                          : Colors.grey),
-                                ),
-                              ],
+                            suffix: TextButton(
+                              onPressed: () {
+                                if (_phoneFormKey.currentState.validate() &&
+                                    loginObservable.termsAccepted == true) {
+                                  loginObservable.receiveSMS(context);
+                                  FocusScope.of(context).unfocus();
+                                }
+                              },
+                              child: Text(
+                                loginObservable.buttonEnabled
+                                    ? "Recibir SMS"
+                                    : "${loginObservable.secsButtonAvailable} sec SMS",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              style: TextButton.styleFrom(
+                                  shape: (RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  )),
+                                  padding: EdgeInsets.all(12),
+                                  primary: Colors.black,
+                                  backgroundColor: loginObservable.buttonEnabled
+                                      ? ConstantColors.mainColorApp
+                                      : Colors.grey),
                             ),
                             hintText: "645 962 530", // Use company number
                             hintStyle: TextStyle(color: Colors.grey[400]),
@@ -121,9 +111,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         validator: (value) {
                           if (value.isEmpty)
                             return "El campo no puede estar vacío.";
-                          if (!PHONE_REGEX.hasMatch(value))
+                          if (!loginObservable.PHONE_REGEX.hasMatch(value))
                             return "Número no válido.";
-                          if (!_termsAccepted)
+                          if (!loginObservable.termsAccepted)
                             return "Debes aceptar los términos y condiciones.";
                         },
                       ),
@@ -156,11 +146,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               Spacer(),
                               Checkbox(
-                                value: _termsAccepted,
+                                value: loginObservable.termsAccepted,
                                 activeColor: ConstantColors.mainColorApp,
                                 onChanged: (value) {
                                   setState(() {
-                                    _termsAccepted = value;
+                                    loginObservable.termsAccepted = value;
                                   });
                                 },
                               ),
@@ -176,13 +166,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         Form(
                           key: _codeFormKey,
                           child: TextFormField(
+                            showCursor: true,
+                            cursorColor: ConstantColors.mainColorApp,
                             keyboardType: TextInputType.phone,
-                            controller: _codeController,
+                            controller: loginObservable.codeController,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
                             ],
                             focusNode: _focusCodeField,
-                            autofocus: false,
+                            //autofocus: false,
                             maxLength: 6,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -207,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.only(top: 32),
+                          margin: EdgeInsets.only(top: 32.0),
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
                             child: SizedBox(
@@ -216,8 +208,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onPressed: () {
                                   if (_codeFormKey.currentState.validate() &&
                                       _phoneFormKey.currentState.validate() &&
-                                      _termsAccepted) {
-                                    _sendCode();
+                                      loginObservable.termsAccepted) {
+                                      loginObservable.sendCodeOTP();
                                   }
                                 },
                                 child: Text(
@@ -242,14 +234,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     Spacer(flex: 3)
                   ],
                 ),
-                showLoading
+                loginObservable.showLoading
                     ? Center(
                         child: Container(
                           width: 100,
                           height: 100,
                           color: ConstantColors.mainColorApp.withOpacity(0.8),
                           child: Center(
-                            child: CircularProgressIndicator(),
+                            child: CircularIndicatorAlertDialog(),
                           ),
                         ),
                       )
@@ -258,132 +250,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ));
-  }
-
-  void receiveSMS() {
-    if (_buttonEnabled) {
-      if (_phoneFormKey.currentState.validate() && _termsAccepted == true) {
-        setState(() {
-          showLoading = true;
-        });
-        verifyPhone();
-        //Send sms code
-        FocusScope.of(context).requestFocus(FocusNode());
-        this._buttonEnabled.toggle();
-        startTimer();
-      }
-    }
-  }
-
-  void verifyPhone() async {
-    final String phoneNumberE164 = "+34" + _phoneController.text;
-    await _firebaseAuth.verifyPhoneNumber(
-        phoneNumber: phoneNumberE164,
-        //autoRetrievedSmsCodeForTesting: "+34645962530", // only testing
-        timeout: const Duration(seconds: 60),
-        verificationCompleted: (phoneAuthCredential) async {
-          setState(() {
-            showLoading = false;
-          });
-          try {
-            _signinWithPhoneAuthCredential(phoneAuthCredential);
-            Navigator.of(context).pushNamed(Screen.HOME);
-          } catch (e) {
-            print("err: $e");
-          }
-        },
-        verificationFailed: (FirebaseAuthException fbException) async {
-          setState(() {
-            showLoading = false;
-          });
-          print("err: ${fbException.message}");
-          OkAlertDialog("Error", "${fbException.message}",
-              () => {Navigator.of(context).pop("ok")});
-        },
-        codeSent: (String verificationId, int resendingToken) async {
-          setState(() {
-            showLoading = false;
-            verificationId = verificationId;
-          });
-
-          try {
-            PhoneAuthCredential credential = PhoneAuthProvider.credential(
-                verificationId: verificationId, smsCode: _codeController.text);
-            await _firebaseAuth.signInWithCredential(credential);
-          } catch (err) {
-            OkAlertDialog("Error", "Ha habido un error: ${err.toString()}",
-                () => Navigator.of(context).pop("ok"));
-          }
-        },
-        //after the time out..60 seconds this method is called
-        codeAutoRetrievalTimeout: (codeAutoRetrievalTimeout) async {
-          setState(() {
-            showLoading = false;
-            verificationId = codeAutoRetrievalTimeout;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text("OTP error: se acabó el tiempo"),
-          ));
-          print("err: ${codeAutoRetrievalTimeout.toString()}");
-        });
-  }
-
-  void _sendCode() async {
-    try {
-      print("code: ${_codeController.text}");
-      final phoneAuthCredential = PhoneAuthProvider.credential(
-          verificationId: verificationId, smsCode: _codeController.text);
-      _signinWithPhoneAuthCredential(phoneAuthCredential);
-    } catch (e) {
-      print("err: $e");
-    }
-  }
-
-  void _resetButtonCounter() {
-    _secsButtonAvailable = 60;
-  }
-
-  void _signinWithPhoneAuthCredential(
-      AuthCredential phoneAuthCredential) async {
-    setState(() {
-      showLoading = true;
-    });
-    try {
-      final authCredential =
-          await _firebaseAuth.signInWithCredential(phoneAuthCredential);
-      if (authCredential.user != null) {
-        print("Ha entrado: ${authCredential.user}");
-        Navigator.of(context).pushNamed(Screen.HOME);
-      }
-    } on FirebaseAuthException catch (e) {
-      OkAlertDialog(
-          "Error", e.message, () => {Navigator.of(context).pop("ok")});
-    } finally {
-      setState(() {
-        showLoading = false;
-      });
-    }
-  }
-
-  void startTimer() {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        if (_secsButtonAvailable == 0) {
-          setState(() {
-            timer.cancel();
-            _resetButtonCounter();
-            this._buttonEnabled.toggle();
-          });
-        } else {
-          setState(() {
-            _secsButtonAvailable--;
-            print("sec: $_secsButtonAvailable");
-          });
-        }
-      },
-    );
   }
 
   void showTermsAndContidionDialog(context) {
@@ -396,6 +262,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget termsConditionDialog(context) {
+    var loginObservable = Provider.of<LoginObservable>(context, listen: false);
     return Container(
         child: Center(
       child: FutureBuilder(
@@ -427,7 +294,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextButton(
                           onPressed: () {
                             setState(() {
-                              _termsAccepted = false;
+                              loginObservable.termsAccepted = false;
                             });
                             Navigator.pop(context);
                           },
@@ -444,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextButton(
                           onPressed: () {
                             setState(() {
-                              _termsAccepted = true;
+                              loginObservable.termsAccepted = true;
                             });
                             Navigator.pop(context);
                           },
@@ -473,7 +340,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 )),
               );
             } else {
-              return CircularProgressIndicator();
+              return CircularIndicatorAlertDialog();
             }
           }),
     ));
@@ -482,7 +349,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void dispose() {
     try {
-      _timer.cancel();
+      Provider.of<LoginObservable>(context, listen: false).timer.cancel();
     } catch (e) {
       print("err $e");
     }

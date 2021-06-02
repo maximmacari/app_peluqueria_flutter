@@ -13,7 +13,7 @@ extension DateTimeExtension on DateTime {
   bool get isSaturday => this.weekday == 6;
   bool get isSunday => this.weekday == 7;
   bool get isAfternoon => this.isAfter(DateTime(this.year, this.month, this.day, 14));
-  bool get isMorning => this.isBefore(DateTime(this.year, this.month, this.day, 14));
+  bool get isMorning => this.isBefore(DateTime(this.year, this.month, this.day, this.isSaturday ? 15 : 14));
   int get timestamp => this.millisecondsSinceEpoch;
 }
 

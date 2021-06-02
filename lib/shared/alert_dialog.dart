@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 class OkAlertDialog extends StatelessWidget {
   String _description;
   String _title;
@@ -25,6 +26,32 @@ class OkAlertDialog extends StatelessWidget {
     );
   }
 }
+
+
+class CircularIndicatorAlertDialog extends StatelessWidget {
+  
+  CircularIndicatorAlertDialog(){}
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          SizedBox(
+            width: 150,
+            height: 150,
+            child: CircularProgressIndicator(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
 
 class CancelAlertDialog extends StatelessWidget {
   String _description;

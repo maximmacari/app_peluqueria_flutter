@@ -1,13 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import 'package:flutter/services.dart';
+import 'package:flutter_sms_auth1/Model/custom_utils.dart';
 import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 import 'package:flutter_sms_auth1/Model/salon_service.dart';
 import 'package:flutter_sms_auth1/Model/user_preferences.dart';
+import 'package:flutter_sms_auth1/Shared/alert_dialog.dart';
 import 'package:flutter_sms_auth1/ViewModel/home_vm.dart';
 import "package:flutter_sms_auth1/Shared/colors.dart";
+import 'package:flutter_sms_auth1/ViewModel/login_vm.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_sms_auth1/Shared/custom_extensions.dart';
 import "package:carousel_slider/carousel_slider.dart";
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,13 +20,45 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<HomeObservable>(context, listen: false).initHome(context);
     });
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+        print("state: paused");
+        // TODO: Handle this case.
+        break;
+      case AppLifecycleState.resumed:
+        print("state: resumed");
+        // TODO: Handle this case.
+        break;
+      case AppLifecycleState.inactive:
+        print("state: inactive");
+        // TODO: Handle this case.
+        break;
+      case AppLifecycleState.detached:
+        print("state: detached");
+        Provider.of<LoginObservable>(context, listen: false)
+            .authService
+            .signOut();
+        break;
+    }
   }
 
   Widget build(BuildContext context) {
@@ -67,8 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      body: (homeObservable.servicesList as List<SalonService>).length >
-              0 // todo quitar
+      body: (homeObservable.servicesList.length > 0)
           ? Column(
               children: [
                 HorizontalScrollViewSubgroups(
@@ -250,7 +286,15 @@ class VerticalCustomListView extends StatelessWidget {
                       ],
                     ),
                   )
-                : Center(child: CircularProgressIndicator());
+                : (reqPermissions(context).then((value) =>
+                    (value == PermissionStatus.denied)
+                        ? CancelAlertDialog("Administra los permisos",
+                            "Para continuar acepta los permisos", () {
+                            reqPermissions(context);
+                          }, () {
+                            SystemNavigator.pop();
+                          })
+                        : CircularIndicatorAlertDialog()));
           }),
     ));
   }
