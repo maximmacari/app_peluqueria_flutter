@@ -77,6 +77,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       Center(
                                           child: SvgPicture.asset(
                                         "assets/images/logo.svg",
+                                        cacheColorFilter: false,
                                         fit: BoxFit.cover,
                                         color: Theme.of(context)
                                             .colorScheme
@@ -108,6 +109,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       Center(
                                           child: SvgPicture.asset(
                                         "assets/images/logo.svg",
+                                        cacheColorFilter: false,
                                         fit: BoxFit.cover,
                                         color: Theme.of(context)
                                             .colorScheme
@@ -139,6 +141,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       Center(
                                           child: SvgPicture.asset(
                                         "assets/images/logo.svg",
+                                        cacheColorFilter: false,
                                         fit: BoxFit.cover,
                                         color: Theme.of(context)
                                             .colorScheme

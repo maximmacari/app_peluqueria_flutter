@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import "package:path_provider/path_provider.dart";
 import 'package:permission_handler/permission_handler.dart';
 
-Future<Directory> get mainDirectory async =>
+Future<Directory> get internalAppDirectory async =>
     // Retrieve "External Storage Directory" for Android and "NSApplicationSupportDirectory" for iOS
     Platform.isAndroid
-        ? await getExternalStorageDirectory()
+        ? await getApplicationSupportDirectory() //getExternalStorageDirectory()
         : await getApplicationSupportDirectory();
 
 Future<bool> fileExists(String path) async {
@@ -18,8 +18,9 @@ writeFileAsString(String filePath, String jsonEncodedContent) async {
   try {
     File file = File(filePath);
     // Convert json object to String data using json.encode() method
-    await file.writeAsString(jsonEncodedContent);
-    print("File created");
+
+    await file.writeAsString(jsonEncodedContent.toString());
+    print("File created, with: ${jsonEncodedContent.toString()}");
   } catch (err) {
     print("err ${err.toString()}");
   }

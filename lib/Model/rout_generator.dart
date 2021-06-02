@@ -17,12 +17,13 @@ class RouteGenerator {
       case Screen.HOME:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case Screen.SET_APPOINTMENT:
-        if (_authFirebase.currentUser == null) {
-          // no user logged in
+        if (_authFirebase.currentUser == null) {// no user logged in 
           return MaterialPageRoute(builder: (_) => LoginScreen());
+        } else {
+          print("Logged in: ${_authFirebase.currentUser.phoneNumber}");
+          return MaterialPageRoute(builder: (_) => AppointmentScreen());
         }
-        print("Logged in: ${_authFirebase.currentUser.phoneNumber}");
-        return MaterialPageRoute(builder: (_) => AppointmentScreen());
+        break;
       default:
         return UserPreferences.getPresentationSeen() == false ||
                 UserPreferences.getPresentationSeen() == null

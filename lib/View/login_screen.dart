@@ -16,8 +16,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final FocusNode _focusPhoneField = new FocusNode();
   final FocusNode _focusCodeField = new FocusNode();
-  GlobalKey<FormState> _phoneFormKey = GlobalKey<FormState>();
-  GlobalKey<FormState> _codeFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _phoneFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _codeFormKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -234,17 +234,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     Spacer(flex: 3)
                   ],
                 ),
-                loginObservable.showLoading
-                    ? Center(
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          color: ConstantColors.mainColorApp.withOpacity(0.8),
-                          child: Center(
-                            child: CircularIndicatorAlertDialog(),
-                          ),
-                        ),
-                      )
+                loginObservable.authService.showLoading
+                    ? CircularIndicatorAlertDialog()
                     : Container()
               ],
             ),

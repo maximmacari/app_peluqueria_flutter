@@ -32,10 +32,10 @@ class MainPageApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => AppointmentObservable())
       ],
       child: MaterialApp(
-        title: 'Peluqeria',
+        title: 'Peluquería',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(colorScheme: ColorScheme.light(), textSelectionTheme: TextSelectionThemeData(
-            selectionColor: Color(0xffBA379B).withOpacity(.5),
+            selectionColor: ConstantColors.mainColorApp.withOpacity(0.5),
             cursorColor: ConstantColors.mainColorApp.withOpacity(0.7),
             selectionHandleColor: ConstantColors.mainColorApp.withOpacity(0.7),
           ),),

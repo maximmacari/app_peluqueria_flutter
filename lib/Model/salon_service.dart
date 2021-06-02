@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 class SalonService {
@@ -58,6 +60,11 @@ class SalonService {
     }
   }
 
+  static List<SalonService> fromJsonList(String json) {
+    final List parsedList = jsonDecode(json); 
+    return parsedList.map((i) => SalonService.fromJson(i)).toList();
+  } 
+
   factory SalonService.fromJson(Map<String, dynamic> json) => SalonService(
       id: json['Codigo'],
       subgroup: json['Subgrupo'],
@@ -76,7 +83,7 @@ class SalonService {
   }
 
   String toString() {
-    return "id: $_id subgroup: $_subgroup name: $_name duration: $_duration price: $_price";
+    return """{"Codigo": "$_id","Subgrupo": "$_subgroup","Nombre": "$_name","Duracion": "$_duration","Precio": "$_price"}""";
   }
 }
 

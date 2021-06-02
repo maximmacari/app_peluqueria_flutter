@@ -24,9 +24,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<HomeObservable>(context, listen: false).initHome(context);
+      Provider.of<HomeObservable>(context, listen: false).initHome(context);  
     });
     WidgetsBinding.instance.addObserver(this);
   }
@@ -42,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.paused:
         print("state: paused");
-        // TODO: Handle this case.
         break;
       case AppLifecycleState.resumed:
         print("state: resumed");
@@ -114,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     .filterBySubgroupName(homeObservable.selectedSubgroup))
               ],
             )
-          : Center(child: CircularProgressIndicator()),
+          : CircularIndicatorAlertDialog() 
     );
   }
 }
@@ -294,7 +292,8 @@ class VerticalCustomListView extends StatelessWidget {
                           }, () {
                             SystemNavigator.pop();
                           })
-                        : CircularIndicatorAlertDialog()));
+                        : //CircularIndicatorAlertDialog()
+                        Text("caca")));
           }),
     ));
   }
