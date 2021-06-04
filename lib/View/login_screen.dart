@@ -30,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     var loginObservable = Provider.of<LoginObservable>(context, listen: true);
+    print("Rendering login screen");
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(

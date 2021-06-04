@@ -1,18 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
-import 'package:flutter/services.dart';
-import 'package:flutter_sms_auth1/Model/custom_utils.dart';
 import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 import 'package:flutter_sms_auth1/Model/salon_service.dart';
 import 'package:flutter_sms_auth1/Model/user_preferences.dart';
 import 'package:flutter_sms_auth1/Shared/alert_dialog.dart';
 import 'package:flutter_sms_auth1/ViewModel/home_vm.dart';
 import "package:flutter_sms_auth1/Shared/colors.dart";
-import 'package:flutter_sms_auth1/ViewModel/login_vm.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_sms_auth1/Shared/custom_extensions.dart';
 import "package:carousel_slider/carousel_slider.dart";
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,13 +17,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<HomeObservable>(context, listen: false).initHome(context);  
+      Provider.of<HomeObservable>(context, listen: false).initHome(context);
     });
     WidgetsBinding.instance.addObserver(this);
+    super.initState();
   }
 
   @override
@@ -41,6 +37,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.paused:
         print("state: paused");
+        /* Provider.of<LoginObservable>(context, listen: false)
+            .authService
+            .signOut(); */
         break;
       case AppLifecycleState.resumed:
         print("state: resumed");
@@ -52,79 +51,75 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.detached:
         print("state: detached");
-        Provider.of<LoginObservable>(context, listen: false)
-            .authService
-            .signOut();
+
         break;
     }
   }
 
   Widget build(BuildContext context) {
-    var homeObservable = Provider.of<HomeObservable>(context);
+    final String _selectedSubgroup = UserPreferences.getSelectedSubGroup();
+
+    print("Rendering home screen");
     return Scaffold(
-      appBar: AppBar(
-        title: Text(homeObservable.selectedSubgroup.capitalized(),
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.foregroundPlainTxtColor)),
-        foregroundColor: Theme.of(context).colorScheme.foregroundPlainTxtColor,
-        backgroundColor: ConstantColors.mainColorApp,
-        leading: Container(
-          margin: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-              color: Colors.blue.withAlpha(200),
-              borderRadius: BorderRadius.circular(50)),
-          child: IconButton(
-              icon: Icon(Icons.info_outlined,
+        appBar: AppBar(
+          title: Text(_selectedSubgroup.capitalized(),
+              style: TextStyle(
                   color:
-                      Theme.of(context).colorScheme.foregroundTxtButtonColor),
-              onPressed: () {
-                UserPreferences.setPresentationSeen(false);
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    Screen.PRESENTATION, (route) => false);
-              }),
+                      Theme.of(context).colorScheme.foregroundPlainTxtColor)),
+          foregroundColor:
+              Theme.of(context).colorScheme.foregroundPlainTxtColor,
+          backgroundColor: ConstantColors.mainColorApp,
+          leading: Container(
+            margin: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+                color: Colors.blue.withAlpha(200),
+                borderRadius: BorderRadius.circular(50)),
+            child: IconButton(
+                icon: Icon(Icons.info_outlined,
+                    color:
+                        Theme.of(context).colorScheme.foregroundTxtButtonColor),
+                onPressed: () {
+                  UserPreferences.setPresentationSeen(false);
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      Screen.PRESENTATION, (route) => false);
+                }),
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: ConstantColors.mainColorApp,
-        elevation: 4.0,
-        //shape: StadiumBorder(side: BorderSide(color: Colors.white, width: 1)),
-        icon: Icon(
-          Icons.add,
-          //color: Theme.of(context).colorScheme.mainForeground
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: ConstantColors.mainColorApp,
+          elevation: 4.0,
+          //shape: StadiumBorder(side: BorderSide(color: Colors.white, width: 1)),
+          icon: Icon(
+            Icons.add,
+            //color: Theme.of(context).colorScheme.mainForeground
+          ),
+          label: Text('Reservar',
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.foregroundTxtButtonColor)
+              //ConstantColors.foregroundColorButton), // EEn dark foregroundcolorButton: Colors.white, light foreegroundcolorButton: Colors.nomuydark
+              ),
+          onPressed: () {
+            Navigator.of(context).pushNamed(Screen.SET_APPOINTMENT);
+          },
         ),
-        label: Text('Reservar',
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.foregroundTxtButtonColor)
-            //ConstantColors.foregroundColorButton), // EEn dark foregroundcolorButton: Colors.white, light foreegroundcolorButton: Colors.nomuydark
-            ),
-        onPressed: () {
-          Navigator.of(context).pushNamed(Screen.SET_APPOINTMENT);
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      body: (homeObservable.servicesList.length > 0)
-          ? Column(
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        body: Consumer<HomeObservable>(builder: (context, data, _) {
+          if (data.servicesList.length > 0) {
+            return Column(
               children: [
-                HorizontalScrollViewSubgroups(
-                    homeObservable.servicesList.getUniqueSubgroup(),
-                    homeObservable.callback),
-                VerticalCustomListView(homeObservable.servicesList
-                    .filterBySubgroupName(homeObservable.selectedSubgroup))
+                HorizontalScrollViewSubgroups(),
+                VerticalCustomListView()
               ],
-            )
-          : CircularIndicatorAlertDialog() 
-    );
+            );
+          } else {
+            return CircularIndicatorAlertDialog();
+          }
+        }));
   }
 }
 
 class HorizontalScrollViewSubgroups extends StatefulWidget {
-  List<SalonService> _services = [];
-  Function(String) callback;
-
-  HorizontalScrollViewSubgroups(services, Function func) {
-    this._services = services;
-    callback = func;
-  }
+  HorizontalScrollViewSubgroups() {}
 
   @override
   _HorizontalScrollViewSubgroupsState createState() =>
@@ -135,6 +130,7 @@ class _HorizontalScrollViewSubgroupsState
     extends State<HorizontalScrollViewSubgroups> {
   @override
   Widget build(BuildContext context) {
+    var homeObservable = Provider.of<HomeObservable>(context, listen: true);
     return Container(
         padding: EdgeInsets.all(8),
         color: Theme.of(context).colorScheme.mainBackground,
@@ -146,12 +142,11 @@ class _HorizontalScrollViewSubgroupsState
                 enlargeCenterPage: true,
                 enableInfiniteScroll: false,
                 onPageChanged: (index, _) {
-                  setState(() {
-                    widget.callback(widget._services[index].subgroup);
-                  });
+                  homeObservable.selectedSubgroup =
+                      homeObservable.servicesList[index].subgroup;
+                  print("selectedsubgroup: ${homeObservable.selectedSubgroup}");
                 }),
-            items: widget._services
-                .map((service) => Container(
+            items: homeObservable.servicesList.getUniqueSubgroup().map((service) => Container(
                       decoration: new BoxDecoration(
                           boxShadow: [
                             BoxShadow(
@@ -235,66 +230,66 @@ class _HorizontalScrollViewSubgroupsState
 }
 
 class VerticalCustomListView extends StatelessWidget {
-  List<SalonService> _subgroupServices = [];
-
-  VerticalCustomListView(List subgroupServices) {
-    this._subgroupServices = subgroupServices;
-  }
+  VerticalCustomListView() {}
   @override
   Widget build(BuildContext context) {
     return Expanded(
         child: Container(
-      color: Theme.of(context).colorScheme.mainBackground,
-      child: ListView.builder(
-          padding: const EdgeInsets.fromLTRB(0, 8, 0, 80),
-          itemCount: _subgroupServices.length,
-          itemBuilder: (context, index) {
-            return _subgroupServices.length > 0
-                ? Container(
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.mainBackground,
-                        borderRadius: BorderRadius.all(Radius.circular(16))),
-                    margin: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                          child: FittedBox(
-                            child: Text(
-                              "${_subgroupServices[index].name.capitalized()}",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: "CormorantGaramond"),
-                            ),
-                          ),
-                        ),
-                        Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
-                          child: Text(
-                            "${_subgroupServices[index].price} €",
-                            style: TextStyle(
-                                letterSpacing: 1.5,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: "CormorantGaramond"),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : (reqPermissions(context).then((value) =>
-                    (value == PermissionStatus.denied)
-                        ? CancelAlertDialog("Administra los permisos",
-                            "Para continuar acepta los permisos", () {
-                            reqPermissions(context);
-                          }, () {
-                            SystemNavigator.pop();
-                          })
-                        : //CircularIndicatorAlertDialog()
-                        Text("caca")));
-          }),
-    ));
+            color: Theme.of(context).colorScheme.mainBackground,
+            child: ListView(children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 80),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.mainBackground,
+                      borderRadius: BorderRadius.all(Radius.circular(16))),
+                  margin: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                  child: Consumer<HomeObservable>(
+                    builder: (context, data, _) => Column(
+                        children: listaItems(data.servicesList
+                            .filterBySubgroupName(data.selectedSubgroup))),
+                  ),
+                ),
+              )
+            ])));
   }
+}
+
+List<Widget> listaItems(List<SalonService> _subgroupServices) {
+  return _subgroupServices.map((element) => serviceRow(element)).toList();
+}
+
+Widget serviceRow(SalonService salonService) {
+  return Row(
+    children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+        child: FittedBox(
+          child: Text(
+            "${salonService.name.capitalized()}",
+            maxLines: 1,
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                fontFamily: "CormorantGaramond"),
+          ),
+        ),
+      ),
+      Spacer(
+        flex: 1,
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
+        child: Text(
+          "${salonService.price} €",
+          maxLines: 1,
+          style: TextStyle(
+              letterSpacing: 1.5,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              fontFamily: "CormorantGaramond"),
+        ),
+      ),
+    ],
+  );
 }

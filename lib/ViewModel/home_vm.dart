@@ -1,36 +1,35 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_sms_auth1/Model/custom_utils.dart';
 import 'package:flutter_sms_auth1/Model/salon_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_sms_auth1/Model/user_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:logger/logger.dart';
 
 //Un (with) mixin se refiere a  agregar las capacidades de otra clase o clases a nuestra propia clase, sin heredar de esas clases, pero pudinedo utilizar sus propiedades.
 class HomeObservable with ChangeNotifier {
-  String _selectedSubgroup = "cortes";
   List<SalonService> _servicesList = [];
   final Logger _log = Logger(
     printer: PrettyPrinter(),
   );
 
-  String get selectedSubgroup => _selectedSubgroup;
+  String get selectedSubgroup => UserPreferences.getSelectedSubGroup().toString();
   List<SalonService> get servicesList => _servicesList;
+  List<String> get servicesNames =>
+      _servicesList.map((e) => e.name).toSet().toList();
 
-  set selectedSubgroup(String newSubgroup) {
-    _selectedSubgroup = newSubgroup;
+  set selectedSubgroup(String newValue) {
+    UserPreferences.setSelectedSubGroup(newValue);
     notifyListeners();
   }
 
-  callback(newSubgroup) {
-    _selectedSubgroup = newSubgroup;
+  set servicesList(List<SalonService> newServices) {
+    _servicesList = newServices;
+    notifyListeners();
   }
-
-  List<String> get servicesNames =>
-      _servicesList.map((e) => e.name).toSet().toList();
 
   Future<List<SalonService>> getFirestoreServices() async {
     List<SalonService> sserviceList = [];
@@ -48,50 +47,42 @@ class HomeObservable with ChangeNotifier {
     return _servicesList.where((element) => element.name == name).toList()[0];
   }
 
-  void initHome(context) {
-    getFirestoreServices().then((data) => {
-          internalAppDirectory.then((directory) => {
-                writeFileAsString(directory.path.toString() + "/services.json",
-                    data.toString()),
-                readFileAsString(directory.path.toString() + "/services.json").then((content) => {
-                  _servicesList = SalonService.fromJsonList(content.toString()).toList(),
-                  print("decoded: ${_servicesList}")
-                })
-              })
+  void _readServicesFile(String path) {
+    readFileAsString(path).then((content) => {
+          servicesList = SalonService.fromJsonList(content.toString()).toList(),
         });
   }
 
-  /*   reqPermissions(context).then((status) => {
+  void initHome(context) {
+    String servicesFilePath;
+    reqPermissions(context).then((status) => {
           status.isGranted
               ? {
                   _log.i("Permission granted: ${status.toString()}"),
                   internalAppDirectory.then((directory) => {
-                        fileExists(directory.path.toString() + "/services.json")
-                            .then((fileExists) => {
-                                  fileExists
-                                      ? {
-                                          _log.i("File /servies.json exists"),
-                                          readFileAsString(
-                                                  directory.path.toString() +
-                                                      "/services.json")
-                                              .then((fileResult) => {
-                                                    _log.i("Read results from file: ${fileResult.toString()}")})
-                                        }
-                                      : {
-                                          _log.w(
-                                              "File /services.json does not exist"),
-                                          getFirestoreServices(),
-                                          writeFileAsString(
-                                              directory.path.toString() +
-                                                  "/services.json",
-                                              _servicesList.toString()),
-                                        }
-                                })
+                        servicesFilePath =
+                            directory.path.toString() + "/services.json",
+                        fileExists(servicesFilePath).then((fileExists) => {
+                              fileExists
+                                  ? {
+                                      _log.i("File /servies.json exists"),
+                                      _readServicesFile(servicesFilePath)
+                                    }
+                                  : {
+                                      _log.w(
+                                          "File /services.json does not exist"),
+                                      getFirestoreServices().then((data) => {
+                                            writeFileAsString(servicesFilePath,
+                                                data.toString()),
+                                            _readServicesFile(servicesFilePath)
+                                          })
+                                    }
+                            })
                       })
                 }
               : {
                   _log.i("Permission denied: ${status.toString()}"),
                 }
         });
-  } */
+  }
 }

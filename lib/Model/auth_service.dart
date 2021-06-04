@@ -29,6 +29,7 @@ class AuthService {
   AuthService(this.context);
 
   void sendCode(String smsCode) {
+    _showLoading = true;
     try {
       print("code: $smsCode");
       final phoneAuthCredential = PhoneAuthProvider.credential(
@@ -37,6 +38,8 @@ class AuthService {
     } catch (err) {
       OkAlertDialog("Error", "Ha habido un error: ${err.toString()}",
           () => Navigator.of(context).pop("ok"));
+    } finally {
+      _showLoading = false;
     }
   }
 

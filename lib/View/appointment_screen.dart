@@ -34,7 +34,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     final double itemHeight = (screenSizeHeight - kToolbarHeight - 24) / 10;
     final double itemWidth = screenSizeWidth / 1.8;
 
-    print("Servicenames_ ${homeObservable.servicesNames}"); // TODO test, now its empty[]
+    //print("Servicenames_ ${homeObservable.servicesNames}"); // TODO test, now its empty[]
+    print("Rendering AppointmentScreen");
 
     return Scaffold(
       backgroundColor: ConstantColors.mainColorApp,

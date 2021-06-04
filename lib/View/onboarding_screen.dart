@@ -39,6 +39,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     var onboardingObservable = Provider.of<OnBoardingObservable>(context);
+    print("Rendering onboardingscreen");
     return ChangeNotifierProvider(
       create: (context) => OnBoardingObservable(),
       child: Scaffold(
