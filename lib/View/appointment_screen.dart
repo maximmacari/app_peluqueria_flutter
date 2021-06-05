@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
+import 'package:flutter_sms_auth1/Model/salon_service.dart';
 import 'package:flutter_sms_auth1/Shared/colors.dart';
 import 'package:flutter_sms_auth1/ViewModel/home_vm.dart';
 import 'package:flutter_sms_auth1/Shared/custom_extensions.dart';
@@ -27,7 +28,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   Widget build(BuildContext context) {
     initializeDateFormatting("es_ES");
     var appointmentObservable =
-        Provider.of<AppointmentObservable>(context, listen: true);
+        Provider.of<AppointmentObservable>(context, listen: false); //true
     var homeObservable = Provider.of<HomeObservable>(context, listen: false);
     final screenSizeWidth = MediaQuery.of(context).size.width;
     final screenSizeHeight = MediaQuery.of(context).size.height;
@@ -136,23 +137,58 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _headerWidget("Servicio: "),
-                    DropdownButton<String>(
+                    _headerWidget(
+                        "Servicio: ${appointmentObservable.selectedSalonService.name.capitalized()}"),
+                    DropdownButton<SalonService>(
                       isExpanded: true,
                       focusColor: ConstantColors.myWhite,
-                      value: appointmentObservable.selectedSalonService.name,
-                      //elevation: 5,
                       style: TextStyle(color: ConstantColors.myWhite),
                       iconEnabledColor: ConstantColors.myBlack,
-                      items: homeObservable.servicesNames.toSet().toList()
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: TextStyle(color: ConstantColors.myBlack),
-                          ),
-                        );
+                      onChanged: (SalonService service) {
+                        appointmentObservable.selectedService = service;
+                      },
+                      value: null,
+                      items: homeObservable.servicesList
+                          .toSet()
+                          .toList()
+                          .map<DropdownMenuItem<SalonService>>(
+                              (SalonService service) {
+                        if (appointmentObservable.auxSubgroup
+                                .toLowerCase()
+                                .toString() !=
+                            service.subgroup.toLowerCase().toString()) {
+                          appointmentObservable.auxSubgroup = service.subgroup;
+                          return DropdownMenuItem<SalonService>(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12.0),
+                                color: ConstantColors.mainColorApp
+                                    .withOpacity(0.7),
+                              ),
+                              padding: const EdgeInsets.all(8),
+                              width: double.infinity,
+                              child: Text(
+                                service.subgroup.capitalized(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: ConstantColors.myBlack,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                        return DropdownMenuItem<SalonService>(
+                            value: service,
+                            child: InkWell(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                                child: Text(
+                                  service.name,
+                                  style:
+                                      TextStyle(color: ConstantColors.myBlack),
+                                ),
+                              ),
+                            ));
                       }).toList(),
                       hint: Text(
                         "¿Qué te vas a hacer?",
@@ -161,10 +197,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                             fontSize: 14,
                             fontWeight: FontWeight.w500),
                       ),
-                      onChanged: (String value) {
-                        appointmentObservable.selectedServiceName =
-                            homeObservable.getSalonserviceByName(value);
-                      },
                     ),
                   ],
                 ),
@@ -177,41 +209,53 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       _headerWidget("Madrugada"),
-                      GridView.builder(
-                        primary: false,
-                        shrinkWrap: true,
-                        itemCount:
-                            appointmentObservable.morningDateTimeRanges.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: (itemWidth / itemHeight),
-                            crossAxisCount:
-                                (screenSizeWidth / itemWidth).ceil().toInt(),
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 8),
-                        itemBuilder: (BuildContext context, int index) {
-                          return _buttonTimeWidget(appointmentObservable
-                              .morningDateTimeRanges[index]);
-                        },
-                      ),
+                      appointmentObservable.morningDateTimeRanges.length > 0
+                          ? GridView.builder(
+                              primary: false,
+                              shrinkWrap: true,
+                              itemCount: appointmentObservable
+                                  .morningDateTimeRanges.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      childAspectRatio:
+                                          (itemWidth / itemHeight),
+                                      crossAxisCount:
+                                          (screenSizeWidth / itemWidth)
+                                              .ceil()
+                                              .toInt(),
+                                      crossAxisSpacing: 8,
+                                      mainAxisSpacing: 8),
+                              itemBuilder: (BuildContext context, int index) {
+                                return _buttonTimeWidget(appointmentObservable
+                                    .morningDateTimeRanges[index]);
+                              },
+                            )
+                          : Text("No hay citas disponibles", style: TextStyle(color: Colors.grey),),
                       _headerWidget("Tarde"),
-                      GridView.builder(
-                        primary: false,
-                        shrinkWrap: true,
-                        itemCount: context
-                            .read<AppointmentObservable>()
-                            .afternoonDateTimeRanges
-                            .length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: (itemWidth / itemHeight),
-                            crossAxisCount:
-                                (screenSizeWidth / itemWidth).ceil().toInt(),
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 8),
-                        itemBuilder: (BuildContext context, int index) {
-                          return _buttonTimeWidget(appointmentObservable
-                              .afternoonDateTimeRanges[index]);
-                        },
-                      ),
+                      appointmentObservable.afternoonDateTimeRanges.length > 0
+                          ? GridView.builder(
+                              primary: false,
+                              shrinkWrap: true,
+                              itemCount: context
+                                  .read<AppointmentObservable>()
+                                  .afternoonDateTimeRanges
+                                  .length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      childAspectRatio:
+                                          (itemWidth / itemHeight),
+                                      crossAxisCount:
+                                          (screenSizeWidth / itemWidth)
+                                              .ceil()
+                                              .toInt(),
+                                      crossAxisSpacing: 8,
+                                      mainAxisSpacing: 8),
+                              itemBuilder: (BuildContext context, int index) {
+                                return _buttonTimeWidget(appointmentObservable
+                                    .afternoonDateTimeRanges[index]);
+                              },
+                            )
+                          : Text("No hay citas disponibles", style: TextStyle(color: Colors.grey),),
                     ],
                   )),
               SizedBox(height: 32),
@@ -243,7 +287,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   Widget _buttonTimeWidget(DateTimeRange timeRange) {
     var appointmentObservable =
         Provider.of<AppointmentObservable>(context, listen: false);
-
     return Container(
       decoration: BoxDecoration(
           color: appointmentObservable.selectedTimeRange == timeRange
@@ -268,9 +311,10 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
   Widget _headerWidget(String text) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 24),
-        Text("$text: ",
+        Text("$text",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         SizedBox(height: 16)
       ],

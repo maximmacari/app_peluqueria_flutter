@@ -12,17 +12,24 @@ import 'package:logger/logger.dart';
 //Un (with) mixin se refiere a  agregar las capacidades de otra clase o clases a nuestra propia clase, sin heredar de esas clases, pero pudinedo utilizar sus propiedades.
 class HomeObservable with ChangeNotifier {
   List<SalonService> _servicesList = [];
+  String _selectedSubgroup = "cortes";
   final Logger _log = Logger(
     printer: PrettyPrinter(),
   );
 
-  String get selectedSubgroup => UserPreferences.getSelectedSubGroup().toString();
-  List<SalonService> get servicesList => _servicesList;
+  String get selectedSubgroup => _selectedSubgroup;
+
+  List<SalonService> get servicesList {
+    _servicesList.sort((a, b) => a.subgroup.compareTo(b.subgroup));
+    return _servicesList;
+  }
+
   List<String> get servicesNames =>
       _servicesList.map((e) => e.name).toSet().toList();
 
   set selectedSubgroup(String newValue) {
     UserPreferences.setSelectedSubGroup(newValue);
+    _selectedSubgroup = UserPreferences.getSelectedSubGroup().toString();
     notifyListeners();
   }
 
@@ -66,7 +73,7 @@ class HomeObservable with ChangeNotifier {
                               fileExists
                                   ? {
                                       _log.i("File /servies.json exists"),
-                                      _readServicesFile(servicesFilePath)
+                                      _readServicesFile(servicesFilePath),
                                     }
                                   : {
                                       _log.w(
@@ -74,7 +81,7 @@ class HomeObservable with ChangeNotifier {
                                       getFirestoreServices().then((data) => {
                                             writeFileAsString(servicesFilePath,
                                                 data.toString()),
-                                            _readServicesFile(servicesFilePath)
+                                            _readServicesFile(servicesFilePath),
                                           })
                                     }
                             })

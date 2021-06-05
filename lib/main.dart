@@ -38,7 +38,7 @@ class MainPageApp extends StatelessWidget {
             selectionColor: ConstantColors.mainColorApp.withOpacity(0.5),
             cursorColor: ConstantColors.mainColorApp.withOpacity(0.7),
             selectionHandleColor: ConstantColors.mainColorApp.withOpacity(0.7),
-          ),),
+          ), ),
         initialRoute: Screen.PRESENTATION,
         onGenerateRoute: RouteGenerator.generateRoute,
       ),

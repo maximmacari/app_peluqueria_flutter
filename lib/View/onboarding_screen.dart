@@ -38,7 +38,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var onboardingObservable = Provider.of<OnBoardingObservable>(context);
+    var onboardingObservable =
+        Provider.of<OnBoardingObservable>(context, listen: false);
     print("Rendering onboardingscreen");
     return ChangeNotifierProvider(
       create: (context) => OnBoardingObservable(),
@@ -63,10 +64,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               physics: ClampingScrollPhysics(),
                               controller: onboardingObservable.pageController,
                               onPageChanged: (int page) {
-                                var onboardingVM =
-                                    Provider.of<OnBoardingObservable>(context,
-                                        listen: false);
-                                onboardingVM.currentPage = page;
+                                Provider.of<OnBoardingObservable>(context,
+                                        listen: false)
+                                    .currentPage = page;
                               },
                               children: <Widget>[
                                 Padding(
@@ -175,8 +175,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 for (var i = 0;
                                     i < onboardingObservable.numPages;
                                     i++)
-                                  _indicator(
-                                      i == onboardingObservable.currentPage)
+                                  _indicator(i ==
+                                      Provider.of<OnBoardingObservable>(context,
+                                              listen: false).currentPage),
                               ]),
                           Spacer(),
                           Align(
@@ -200,9 +201,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     onboardingObservable.loadNextPage();
                                   }
                                 },
-                                child: Text(onboardingObservable.buttonText,
-                                    style: CustomTextStyles()
-                                        .onboardingBtnTextStyle(context)),
+                                child: Consumer<OnBoardingObservable>(
+                                  builder: (context, data, _) => Text(
+                                      onboardingObservable.buttonText,
+                                      style: CustomTextStyles()
+                                          .onboardingBtnTextStyle(context)),
+                                ),
                               ),
                             ),
                           ),

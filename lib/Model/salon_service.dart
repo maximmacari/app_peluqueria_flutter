@@ -10,16 +10,16 @@ class SalonService {
   String _price;
 
   SalonService(
-      {@required String id,
-      @required String subgroup,
-      @required String name,
-      @required String duration,
-      @required String price}) {
-    this._id = id;
-    this._subgroup = subgroup;
-    this._name = name;
-    this._duration = duration;
-    this._price = price;
+      {@required String Codigo,
+      @required String Subgrupo,
+      @required String Nombre,
+      @required String Duracion,
+      @required String Precio}) {
+    this._id = Codigo;
+    this._subgroup = Subgrupo;
+    this._name = Nombre;
+    this._duration = Duracion;
+    this._price = Precio;
   }
 
   String get subgroup => this._subgroup;
@@ -29,8 +29,8 @@ class SalonService {
   String get id => this._id;
   String get duration => this._duration;
 
-  Color get subgroupColor {
-    switch (this.subgroup) {
+  static Color subgroupColor(String subgroup) {
+    switch (subgroup) {
       case "cortes":
         return Colors.brown;
       case "peinados":
@@ -66,11 +66,11 @@ class SalonService {
   } 
 
   factory SalonService.fromJson(Map<String, dynamic> json) => SalonService(
-      id: json['Codigo'],
-      subgroup: json['Subgrupo'],
-      name: json['Nombre'],
-      duration: json['Duracion'],
-      price: json['Precio']);
+      Codigo: json['Codigo'],
+      Subgrupo: json['Subgrupo'],
+      Nombre: json['Nombre'],
+      Duracion: json['Duracion'],
+      Precio: json['Precio']);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -94,7 +94,7 @@ class SalonServiceList {
 
   factory SalonServiceList.fromJson(List<dynamic> json) {
     List<SalonService> services = [];
-    services = json.map((i) => SalonService.fromJson(i)).toList();
+    services = json.map((i) => SalonService.fromJson(i)).toSet().toList();
     return new SalonServiceList(services);
   }
 }
@@ -104,14 +104,7 @@ extension ListExt on List<SalonService> {
     return this.where((element) => element._subgroup == name).toList();
   }
 
-//TODO quitar
-  List<SalonService> getUniqueSubgroup() {
-    List<SalonService> _uniqueServices = [];
-    for (final e in this) {
-      if (int.parse(e.id.substring(e.id.length - 1)) == 0) {
-        _uniqueServices.add(e);
-      }
-    }
-    return _uniqueServices;
+  List<String> getUniqueSubgroup() {
+    return this.map((e) => e.subgroup).toSet().toList();
   }
 }

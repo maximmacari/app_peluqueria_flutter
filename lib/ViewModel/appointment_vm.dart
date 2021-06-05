@@ -9,28 +9,29 @@ import "package:flutter_sms_auth1/Shared/custom_extensions.dart";
 import 'package:intl/intl.dart';
 import 'dart:io';
 
-
 //TODO
-// Validate json dart, file exists
-// rename json objects name , corte caballero
 // push appointmentto firebase
 // get user appointments  read if user.UID == User.id
 // Listview of the user.appointments
 // guardar el fichero en almacenamiento interno
 // validate json https://medium.com/codechai/validating-json-in-flutter-6f07ec9344f8
 // json file validation https://stackoverflow.com/questions/52240607/how-to-check-if-a-file-was-edited-modified-by-a-user
-// Listview images for superuser 
+// Listview images for superuser
 // Screen for superuser, manage the appointments
 // missing firebaseOAuth.loggout
+//onboarding button dosnt work
+//push name rute form home to setappoitnment, slow
+
 
 //Un (with) mixin se refiere a  agregar las capacidades de otra clase o clases a nuestra propia clase, sin heredar de esas clases, pero pudinedo utilizar sus propiedades.
 class AppointmentObservable with ChangeNotifier {
   SalonService _selectedSalonService = SalonService(
-      duration: '15',
-      name: 'corte caballero',
-      subgroup: 'cortes',
-      price: '9.50',
-      id: '210');
+      Codigo: "230",
+      Subgrupo: "tintes",
+      Nombre: "tinte corto",
+      Duracion: "25",
+      Precio: "15.90 ");
+  String _auxSubgroup = "";
   DateFormat _dateFormat = DateFormat.yMd(Platform.localeName.toString());
   DateTime _selectedDate = DateTime.now();
   DateTimeRange _selectedTimeRange;
@@ -40,7 +41,6 @@ class AppointmentObservable with ChangeNotifier {
   List<Appointment> _appointmentsList = [];
   final _authFirebase = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
   DateTimeRange _dateTimeRangeSelected;
 
   set dateTimeRangeSelected(DateTimeRange newDateTimeRange) {
@@ -48,13 +48,19 @@ class AppointmentObservable with ChangeNotifier {
     notifyListeners();
   }
 
+  set auxSubgroup(String newValue){
+    _auxSubgroup = newValue;
+  }
+
+  String get auxSubgroup => _auxSubgroup;
+
   set selectedTimeRange(DateTimeRange newTimeRange) {
     _selectedTimeRange = newTimeRange;
     notifyListeners();
     print("Selected Time range: ${_selectedTimeRange.toHourString()}");
   }
 
-  set selectedServiceName(SalonService newSalonService) {
+  set selectedService(SalonService newSalonService) {
     this._selectedSalonService = newSalonService;
     getMoriningRangeTimes();
     getAfternoonRangeTimes();

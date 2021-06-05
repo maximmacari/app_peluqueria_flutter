@@ -8,6 +8,7 @@ import 'package:flutter_sms_auth1/Shared/styles.dart';
 import 'package:flutter_sms_auth1/ViewModel/login_vm.dart';
 import 'package:provider/provider.dart';
 
+// add google verification in spainish
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -82,11 +83,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   FocusScope.of(context).unfocus();
                                 }
                               },
-                              child: Text(
-                                loginObservable.buttonEnabled
-                                    ? "Recibir SMS"
-                                    : "${loginObservable.secsButtonAvailable} sec SMS",
-                                style: TextStyle(fontSize: 16),
+                              child: Consumer<LoginObservable>(
+                                builder: (context, data, _) => Text(
+                                  data.buttonEnabled
+                                      ? "Recibir SMS"
+                                      : "${data.secsButtonAvailable} sec SMS",
+                                  style: TextStyle(fontSize: 16),
+                                ),
                               ),
                               style: TextButton.styleFrom(
                                   shape: (RoundedRectangleBorder(
@@ -210,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   if (_codeFormKey.currentState.validate() &&
                                       _phoneFormKey.currentState.validate() &&
                                       loginObservable.termsAccepted) {
-                                      loginObservable.sendCodeOTP();
+                                    loginObservable.sendCodeOTP();
                                   }
                                 },
                                 child: Text(

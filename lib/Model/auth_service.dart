@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sms_auth1/Model/rout_generator.dart';
 import 'package:flutter_sms_auth1/Shared/alert_dialog.dart';
+import 'package:flutter_sms_auth1/Shared/colors.dart';
 import 'package:flutter_sms_auth1/ViewModel/login_vm.dart';
 import 'package:provider/provider.dart';
 
@@ -72,7 +73,8 @@ class AuthService {
           _verificationId = codeAutoRetrievalTimeout;
           if (auth.currentUser == null) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("OTP error: se acabó el tiempo"),
+              content: Text("OTP error: se acabó el tiempo",),
+              backgroundColor: ConstantColors.mainColorApp.withOpacity(0.76),
             ));
           }
           print("err: ${codeAutoRetrievalTimeout}");
@@ -88,7 +90,7 @@ class AuthService {
           await auth.signInWithCredential(phoneAuthCredential);
       if (authCredential.user != null) {
         print("Ha entrado: ${authCredential.user}");
-        Navigator.of(context).pushNamed(Screen.HOME);
+        Navigator.of(context).pushNamed(Screen.SET_APPOINTMENT);
       }
     } on FirebaseAuthException catch (e) {
       OkAlertDialog(

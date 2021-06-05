@@ -57,23 +57,18 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Widget build(BuildContext context) {
-    final String _selectedSubgroup = UserPreferences.getSelectedSubGroup();
-
     print("Rendering home screen");
     return Scaffold(
         appBar: AppBar(
-          title: Text(_selectedSubgroup.capitalized(),
-              style: TextStyle(
-                  color:
-                      Theme.of(context).colorScheme.foregroundPlainTxtColor)),
           foregroundColor:
               Theme.of(context).colorScheme.foregroundPlainTxtColor,
           backgroundColor: ConstantColors.mainColorApp,
+          title: Text("List de Servicios",
+              style: TextStyle(
+                  color:
+                      Theme.of(context).colorScheme.foregroundPlainTxtColor)),
           leading: Container(
             margin: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-                color: Colors.blue.withAlpha(200),
-                borderRadius: BorderRadius.circular(50)),
             child: IconButton(
                 icon: Icon(Icons.info_outlined,
                     color:
@@ -130,7 +125,7 @@ class _HorizontalScrollViewSubgroupsState
     extends State<HorizontalScrollViewSubgroups> {
   @override
   Widget build(BuildContext context) {
-    var homeObservable = Provider.of<HomeObservable>(context, listen: true);
+    var homeObservable = Provider.of<HomeObservable>(context, listen: false);
     return Container(
         padding: EdgeInsets.all(8),
         color: Theme.of(context).colorScheme.mainBackground,
@@ -143,19 +138,24 @@ class _HorizontalScrollViewSubgroupsState
                 enableInfiniteScroll: false,
                 onPageChanged: (index, _) {
                   homeObservable.selectedSubgroup =
-                      homeObservable.servicesList[index].subgroup;
+                      homeObservable.servicesList[index + 1].subgroup;
                   print("selectedsubgroup: ${homeObservable.selectedSubgroup}");
+                  print("${homeObservable.servicesList}");
                 }),
-            items: homeObservable.servicesList.getUniqueSubgroup().map((service) => Container(
+            items: homeObservable.servicesList
+                .getUniqueSubgroup()
+                .map((subgroup) => Container(
                       decoration: new BoxDecoration(
                           boxShadow: [
                             BoxShadow(
-                                color: service.subgroupColor.withOpacity(0.06),
+                                color: SalonService.subgroupColor(subgroup)
+                                    .withOpacity(0.06),
                                 spreadRadius: 2,
                                 blurRadius: 1,
                                 offset: Offset(-2, -2)),
                             BoxShadow(
-                                color: service.subgroupColor.withOpacity(0.06),
+                                color: SalonService.subgroupColor(subgroup)
+                                    .withOpacity(0.06),
                                 spreadRadius: 2,
                                 blurRadius: 1,
                                 offset: Offset(2, 2))
@@ -163,10 +163,10 @@ class _HorizontalScrollViewSubgroupsState
                           color: Theme.of(context).colorScheme.mainBackground,
                           image: DecorationImage(
                               colorFilter: ColorFilter.mode(
-                                  service.subgroupColor.withOpacity(0.32),
+                                  SalonService.subgroupColor(subgroup)
+                                      .withOpacity(0.32),
                                   BlendMode.softLight),
-                              image: AssetImage(
-                                  "assets/images/${service.subgroup}_background.jpg"),
+                              image: AssetImage("assets/images/$subgroup.jpg"),
                               fit: BoxFit.cover),
                           borderRadius: BorderRadius.all(Radius.circular(8))),
                       child: Center(
@@ -179,7 +179,7 @@ class _HorizontalScrollViewSubgroupsState
                                 Expanded(
                                   flex: 9,
                                   child: Text(
-                                    service.subgroup.toString().capitalized(),
+                                    subgroup.capitalized(),
                                     maxLines: 2,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
@@ -213,7 +213,7 @@ class _HorizontalScrollViewSubgroupsState
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: SvgPicture.asset(
-                                        "assets/icons/${service.subgroup}.svg",
+                                        "assets/icons/$subgroup.svg",
                                         height: 40,
                                         width: 40,
                                       ),
@@ -261,35 +261,43 @@ List<Widget> listaItems(List<SalonService> _subgroupServices) {
 
 Widget serviceRow(SalonService salonService) {
   return Row(
-    children: [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-        child: FittedBox(
-          child: Text(
-            "${salonService.name.capitalized()}",
-            maxLines: 1,
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                fontFamily: "CormorantGaramond"),
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Flexible(
+            flex: 70,
+            child: Container(
+              alignment: Alignment.topLeft,
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                child: Text(
+                  "${salonService.name.capitalized()}",
+                  textScaleFactor: 0.8,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "CormorantGaramond"),
+                ),
+              ),
           ),
-        ),
-      ),
-      Spacer(
-        flex: 1,
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
-        child: Text(
-          "${salonService.price} €",
-          maxLines: 1,
-          style: TextStyle(
-              letterSpacing: 1.5,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              fontFamily: "CormorantGaramond"),
-        ),
-      ),
-    ],
-  );
+          Spacer(),
+          Flexible(
+            flex: 30,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
+              child: Text(
+                "${salonService.price} €",
+                maxLines: 1,
+                style: TextStyle(
+                    letterSpacing: 1.5,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: "CormorantGaramond"),
+              ),
+            ),
+          ),
+        ],
+    );
+     
+  
 }
