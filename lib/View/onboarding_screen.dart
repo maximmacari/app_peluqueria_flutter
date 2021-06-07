@@ -175,9 +175,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 for (var i = 0;
                                     i < onboardingObservable.numPages;
                                     i++)
-                                  _indicator(i ==
-                                      Provider.of<OnBoardingObservable>(context,
-                                              listen: false).currentPage),
+                                    _indicator(i == Provider.of<OnBoardingObservable>(context,listen: true).currentPage
+                                ),    
                               ]),
                           Spacer(),
                           Align(

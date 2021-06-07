@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-extension ToggleExtension on bool {
-  
+extension BoolExtension on bool {
   bool toggle() => !this;
-  
 }
 
 extension StringExtension on String {

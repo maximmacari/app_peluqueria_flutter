@@ -17,7 +17,6 @@ class AppointmentScreen extends StatefulWidget {
 class _AppointmentScreenState extends State<AppointmentScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     Provider.of<AppointmentObservable>(context, listen: false)
         .getMoriningRangeTimes();
     Provider.of<AppointmentObservable>(context, listen: false)

@@ -103,6 +103,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             return Column(
               children: [
                 HorizontalScrollViewSubgroups(),
+                Divider(height: 2,color: ConstantColors.myBlack,),
                 VerticalCustomListView()
               ],
             );
@@ -138,7 +139,7 @@ class _HorizontalScrollViewSubgroupsState
                 enableInfiniteScroll: false,
                 onPageChanged: (index, _) {
                   homeObservable.selectedSubgroup =
-                      homeObservable.servicesList[index + 1].subgroup;
+                      homeObservable.servicesList.getUniqueSubgroup()[index];
                   print("selectedsubgroup: ${homeObservable.selectedSubgroup}");
                   print("${homeObservable.servicesList}");
                 }),
@@ -244,14 +245,13 @@ class VerticalCustomListView extends StatelessWidget {
                       color: Theme.of(context).colorScheme.mainBackground,
                       borderRadius: BorderRadius.all(Radius.circular(16))),
                   margin: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                  child: Consumer<HomeObservable>(
-                    builder: (context, data, _) => Column(
-                        children: listaItems(data.servicesList
-                            .filterBySubgroupName(data.selectedSubgroup))),
+                  child: Column(
+                        children: listaItems(Provider.of<HomeObservable>(context, listen: false).servicesList
+                            .filterBySubgroupName(Provider.of<HomeObservable>(context, listen: false).selectedSubgroup),
                   ),
                 ),
               )
-            ])));
+    )])));
   }
 }
 
