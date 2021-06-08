@@ -23,7 +23,7 @@ class SalonService {
   }
 
   String get subgroup => this._subgroup;
-  String get name => this._name;
+  String get name => this._name ;
   String get price => this._price;
 
   String get id => this._id;

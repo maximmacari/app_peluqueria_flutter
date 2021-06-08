@@ -114,11 +114,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             alignLabelWithHint: true),
                         validator: (value) {
                           if (value.isEmpty)
-                            return "El campo no puede estar vacío.";
+                            return 'El campo no puede estar vacío.';
                           if (!loginObservable.PHONE_REGEX.hasMatch(value))
                             return "Número no válido.";
                           if (!loginObservable.termsAccepted)
                             return "Debes aceptar los términos y condiciones.";
+                            
                         },
                       ),
                     ),

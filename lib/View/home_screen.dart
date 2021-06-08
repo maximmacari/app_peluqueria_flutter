@@ -6,6 +6,7 @@ import 'package:flutter_sms_auth1/Model/user_preferences.dart';
 import 'package:flutter_sms_auth1/Shared/alert_dialog.dart';
 import 'package:flutter_sms_auth1/ViewModel/home_vm.dart';
 import "package:flutter_sms_auth1/Shared/colors.dart";
+import 'package:flutter_sms_auth1/ViewModel/login_vm.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_sms_auth1/Shared/custom_extensions.dart';
 import "package:carousel_slider/carousel_slider.dart";
@@ -37,9 +38,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.paused:
         print("state: paused");
-        /* Provider.of<LoginObservable>(context, listen: false)
-            .authService
-            .signOut(); */
+        //Provider.of<LoginObservable>(context, listen: false).authService.signOut();
         break;
       case AppLifecycleState.resumed:
         print("state: resumed");
@@ -298,6 +297,4 @@ Widget serviceRow(SalonService salonService) {
           ),
         ],
     );
-     
-  
 }

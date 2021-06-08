@@ -14,9 +14,9 @@ class AuthService {
 
   bool get showLoading => _showLoading;
 
-  set showLoading(bool newValue) {
+  /* set showLoading(bool newValue) {
     _showLoading = newValue;
-  }
+  } */
 
   static AuthService of(context) {
     if (_authService == null)
@@ -30,7 +30,6 @@ class AuthService {
   AuthService(this.context);
 
   void sendCode(String smsCode) {
-    _showLoading = true;
     try {
       print("code: $smsCode");
       final phoneAuthCredential = PhoneAuthProvider.credential(
@@ -39,14 +38,14 @@ class AuthService {
     } catch (err) {
       OkAlertDialog("Error", "Ha habido un error: ${err.toString()}",
           () => Navigator.of(context).pop("ok"));
-    } finally {
-      _showLoading = false;
     }
   }
 
   void verifyPhone(String phoneNumberNoPrefix, String smsCode) async {
     final String phoneNumberE164 = "+34" + phoneNumberNoPrefix;
-    await auth.verifyPhoneNumber(
+    _showLoading = true;
+    try {
+      await auth.verifyPhoneNumber(
         phoneNumber: phoneNumberE164,
         //autoRetrievedSmsCodeForTesting: "+34645962530", // only testing
         timeout: const Duration(seconds: 60),
@@ -80,6 +79,11 @@ class AuthService {
           print("err: ${codeAutoRetrievalTimeout}");
           _showLoading = false;
         });
+    } catch (err) {
+      print("err while verifying phone: ${err.toString()}");
+    }finally {
+      
+    }
   }
 
   void _signinWithPhoneAuthCredential(
@@ -90,7 +94,7 @@ class AuthService {
           await auth.signInWithCredential(phoneAuthCredential);
       if (authCredential.user != null) {
         print("Ha entrado: ${authCredential.user}");
-        Navigator.of(context).pushNamed(Screen.SET_APPOINTMENT);
+        Navigator.of(context).pushReplacementNamed(Screen.SET_APPOINTMENT);
       }
     } on FirebaseAuthException catch (e) {
       OkAlertDialog(

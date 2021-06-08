@@ -22,13 +22,12 @@ import 'dart:io';
 //onboarding button dosnt work
 //push name rute form home to setappoitnment, slow
 
-
 //Un (with) mixin se refiere a  agregar las capacidades de otra clase o clases a nuestra propia clase, sin heredar de esas clases, pero pudinedo utilizar sus propiedades.
 class AppointmentObservable with ChangeNotifier {
   SalonService _selectedSalonService = SalonService(
       Codigo: "230",
       Subgrupo: "tintes",
-      Nombre: "tinte corto",
+      Nombre: "Sin seleccionar",
       Duracion: "25",
       Precio: "15.90 ");
   String _auxSubgroup = "";
@@ -48,7 +47,7 @@ class AppointmentObservable with ChangeNotifier {
     notifyListeners();
   }
 
-  set auxSubgroup(String newValue){
+  set auxSubgroup(String newValue) {
     _auxSubgroup = newValue;
   }
 

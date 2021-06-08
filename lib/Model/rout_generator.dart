@@ -36,6 +36,6 @@ class RouteGenerator {
 class Screen {
   static const String PRESENTATION = "/";
   static const String LOGIN = "/login";
-  static const String HOME = "/login/home";
-  static const String SET_APPOINTMENT = "/login/home/set-appointment";
+  static const String HOME = "/home";
+  static const String SET_APPOINTMENT = "/set-appointment";
 }

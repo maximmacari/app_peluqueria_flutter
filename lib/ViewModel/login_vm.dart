@@ -45,7 +45,6 @@ class LoginObservable with ChangeNotifier {
 
   void receiveSMS(context) {
     if (_buttonEnabled) {
-        authService.showLoading = true;
         authService.verifyPhone(_phoneController.text, _codeController.text,);
         print("principio buttonenabled: ${_buttonEnabled}");
         buttonEnabled = !_buttonEnabled;
@@ -74,11 +73,7 @@ class LoginObservable with ChangeNotifier {
         }
         notifyListeners();
       },
-      
     );
-    notifyListeners();
-    
+    notifyListeners(); 
   }
-
-
 }
