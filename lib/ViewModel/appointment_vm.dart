@@ -20,6 +20,7 @@ import 'dart:io';
 // Screen for superuser, manage the appointments
 // missing firebaseOAuth.loggout
 //onboarding button dosnt work
+//firestore flutter docs https://firebase.flutter.dev/docs/firestore/usage#adding-documents
 //push name rute form home to setappoitnment, slow
 
 //Un (with) mixin se refiere a  agregar las capacidades de otra clase o clases a nuestra propia clase, sin heredar de esas clases, pero pudinedo utilizar sus propiedades.
@@ -37,24 +38,46 @@ class AppointmentObservable with ChangeNotifier {
   List<DateTime> _holidays = [];
   List<DateTimeRange> _afternoonDateTimeRanges = [];
   List<DateTimeRange> _morningDateTimeRanges = [];
-  List<Appointment> _appointmentsList = [];
+  List<Appointment> _foreignBookedAppointments = [];
   final _authFirebase = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   DateTimeRange _dateTimeRangeSelected;
+  String _errMessage = "";
+  bool _showErrMessage = false;
+  bool get showErrMessage => _showErrMessage;
+  bool get isDateAccesibleForward => _selectedDate.isBefore(twoMonthsForward);
+  bool get isDateAccesibleBackward =>
+      _selectedDate.month > DateTime.now().month;
+  SalonService get selectedSalonService => _selectedSalonService;
+  String get auxSubgroup => _auxSubgroup;
+  String get currentLocale => Platform.localeName.toString();
+  String get errMessage => _errMessage;
+  DateTimeRange get selectedTimeRange => _selectedTimeRange;
+  DateTime get twoMonthsForward =>
+      DateTime(DateTime.now().year, DateTime.now().month + 2);
+  DateTime get selectedDate => _selectedDate;
+  DateFormat get dateFormat => _dateFormat;
+  DateTime get yesterday => DateTime.now().subtract(Duration(days: 1));
+  DateTimeRange get dateTimeRange => _dateTimeRangeSelected;
+  List<DateTimeRange> get morningDateTimeRanges => _morningDateTimeRanges;
+  List<DateTimeRange> get afternoonDateTimeRanges => _afternoonDateTimeRanges;
 
   set dateTimeRangeSelected(DateTimeRange newDateTimeRange) {
     this._dateTimeRangeSelected = newDateTimeRange;
     notifyListeners();
   }
 
+  set errMessage(String newMsg) {
+    _errMessage = newMsg;
+  }
+
   set auxSubgroup(String newValue) {
     _auxSubgroup = newValue;
   }
 
-  String get auxSubgroup => _auxSubgroup;
-
   set selectedTimeRange(DateTimeRange newTimeRange) {
     _selectedTimeRange = newTimeRange;
+    _showErrMessage = false;
     notifyListeners();
     print("Selected Time range: ${_selectedTimeRange.toHourString()}");
   }
@@ -63,6 +86,7 @@ class AppointmentObservable with ChangeNotifier {
     this._selectedSalonService = newSalonService;
     getMoriningRangeTimes();
     getAfternoonRangeTimes();
+    _showErrMessage = false;
     notifyListeners();
     print("Appointment, _seletedSalonService: $_selectedSalonService");
   }
@@ -114,7 +138,34 @@ class AppointmentObservable with ChangeNotifier {
     }
   }
 
-  List<DateTimeRange> presentDateTimeRanges() {
+  void getForeignReservations() async {
+    await firestore.collection("RESERVATIONS").get().then((querySnapshot) {
+      querySnapshot.docs.forEach((reservation) async {
+          await firestore.doc(reservation.id.toString()).collection("public").get();
+          https://mullr.dev/2020/07/05/handling-nested-objects-in-firestore-with-flutter/
+          /* .then((publicData) => {
+            publicData.docs.forEach((element) {
+              print("public stattime ${element.id}");
+            })
+          } */
+          //);
+          /* firestore.doc(reservation.id.toString()).collection("private").get().then((privateData) => {
+            privateData.docs.forEach((element) {
+              print("private ${element["phoneNumber"]}");
+            })
+          }); */
+
+      
+      
+        //_appointmentsList.add(Appointment.fromJson(result.data()));
+        
+        //print("result ${reservation.id}");
+        //print("public ${reservation.}");
+      });
+    });
+  }
+
+  List<DateTimeRange> generateWorkingDayDateTimeRanges() {
     /**
      * Schedule of the store
      *  Monday - Friday 9:30 - 19:30 ; breaks 14:00 - 16:00
@@ -136,55 +187,83 @@ class AppointmentObservable with ChangeNotifier {
         _selectedDate.day, _hourEndBreak);
     DateTimeRange _brakeRangeTime =
         DateTimeRange(start: _startBreak, end: _endBreak);
+    DateTimeRange _saturdayAfternoonRangeTimes = DateTimeRange(
+        start: DateTime(
+            _selectedDate.year, _selectedDate.month, _selectedDate.day, 15),
+        end: DateTime(
+            _selectedDate.year, _selectedDate.month, _selectedDate.day, 19));
 
     DateTimeRange _workingDay = DateTimeRange(start: _opening, end: _close);
     //return [];
     final List<DateTimeRange> timeRanges = generateDateTimeRanges(_workingDay);
+    if (_selectedDate.isSaturday)
+      timeRanges.removeCollidingTimeRanges([_saturdayAfternoonRangeTimes]);
     return timeRanges.removeCollidingTimeRanges(
-        [_brakeRangeTime]); //substract Firestore ones from this
+      [
+        _brakeRangeTime,
+      ],
+    ); //substract Firestore ones from this
   }
 
   void getMoriningRangeTimes() {
-    var moringTimeRanges = presentDateTimeRanges();
-    moringTimeRanges.retainWhere((element) => element.end.isMorning);
-    _morningDateTimeRanges = moringTimeRanges;
+    _morningDateTimeRanges = generateWorkingDayDateTimeRanges();
+    _morningDateTimeRanges.retainWhere((element) => element.end.isMorning);
   }
 
   void getAfternoonRangeTimes() {
-    var afternoonTimeRanges = presentDateTimeRanges();
-    afternoonTimeRanges.retainWhere((element) => element.end.isAfternoon);
-    _afternoonDateTimeRanges = afternoonTimeRanges;
+    _afternoonDateTimeRanges = generateWorkingDayDateTimeRanges();
+    _afternoonDateTimeRanges.retainWhere((element) => element.end.isAfternoon);
   }
 
-  void reservar() async {
-    if (_selectedTimeRange != null) {
+  void book() async {
+    //check timerange is in day selected
+    if (_selectedTimeRange == null) {
+      _errMessage = "Debes seleccionar un hora.";
+      _showErrMessage = true;
+      return;
+    }
+
+    if (_selectedSalonService.name == "Sin seleccionar") {
+      _errMessage = "Debes seleccionar un servicio.";
+      _showErrMessage = true;
+      return;
+    }
+
+    if (_selectedTimeRange.start.isAfter(selectedDate)) {
       final Appointment appointment = Appointment(
-          endTimestamp: selectedTimeRange.end.timestamp.toString(),
-          idStartTimestamp: selectedTimeRange.start.timestamp.toString(),
+          endTime: selectedTimeRange.end.timestamp.toString(),
+          startTime: selectedTimeRange.start.timestamp.toString(),
           serviceId: _selectedSalonService.id,
-          timestampCreation: DateTime.now().timestamp.toString(),
-          userUID: _authFirebase.currentUser.uid);
+          creationTime: DateTime.now().timestamp.toString());
 
       addReservationToFirestore(appointment);
     }
   }
 
-  void requestReservations() {
-    firestore.collection("RESERVATIONS").get().then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
-        _appointmentsList.add(Appointment.fromJson(result.data()));
-      });
-    });
-  }
-
-  void addReservationToFirestore(Appointment appointment) {
-    firestore.collection("RESERVATIONS").add(appointment.toJson());
+  void addReservationToFirestore(Appointment appointment) async {
+    CollectionReference reservationsColl = firestore.collection('RESERVATIONS');
+    await reservationsColl.add({}).then((reservation) => {
+          print(" - Reservation id created: ${reservation.id}"),
+          reservationsColl
+              .doc(reservation.id)
+              .collection("public")
+              .add(appointment.toJson())
+              .then((publicDoc) => {
+                    print("public id: ${publicDoc.id}"),
+                    print("${appointment.toJson()}")
+                  }),
+          reservationsColl
+              .doc(reservation.id)
+              .collection("private")
+              .doc(FirebaseAuth.instance.currentUser.uid)
+              .set({
+            "phoneNumber": FirebaseAuth.instance.currentUser.phoneNumber
+          })
+        });
   }
 
   List<DateTimeRange> generateDateTimeRanges(DateTimeRange dayRange) {
-    //makes DateTimeRanges for specific salonService
     List<DateTimeRange> timeRanges = [];
-
     DateTime _auxStart = dayRange.start;
     DateTime _auxEnd = dayRange.start;
 
@@ -193,33 +272,16 @@ class AppointmentObservable with ChangeNotifier {
           .add(Duration(minutes: int.parse(_selectedSalonService.duration)));
       timeRanges.add(new DateTimeRange(start: _auxStart, end: _auxEnd));
       _auxStart = _auxEnd;
-      //print("range created: ${DateTimeRange(end: _auxEnd, start: _auxStart)}");
     }
     return timeRanges;
   }
 
-  bool get isDateAccesibleForward => _selectedDate.isBefore(twoMonthsForward);
-  bool get isDateAccesibleBackward =>
-      _selectedDate.month > DateTime.now().month;
-  SalonService get selectedSalonService => _selectedSalonService;
-  String get currentLocale => Platform.localeName.toString();
-  DateTimeRange get selectedTimeRange => _selectedTimeRange;
-  DateTime get twoMonthsForward =>
-      DateTime(DateTime.now().year, DateTime.now().month + 2);
-  DateTime get selectedDate => _selectedDate;
-  DateFormat get dateFormat => _dateFormat;
-  DateTime get yesterday => DateTime.now().subtract(Duration(days: 1));
-  DateTimeRange get dateTimeRange => _dateTimeRangeSelected;
-  List<DateTimeRange> get morningDateTimeRanges => _morningDateTimeRanges;
-  List<DateTimeRange> get afternoonDateTimeRanges => _afternoonDateTimeRanges;
-
-  String montAndYear() {
+  String monthAndYear() {
     final int montNumber = _selectedDate.month;
     return """
     ${DateFormat.LLLL("es_ES").dateSymbols.MONTHS[montNumber - 1].toString().capitalized()}, ${selectedDate.year}""";
   }
 
-  //var endTime = selectedTimeAdd((const Duration(days: 60)));
   List<DateTime> daysInMonth() {
     int totalMonthDays = _daysInMonth(_selectedDate.month, _selectedDate.year);
     print("Totalmonthdays: $totalMonthDays");

@@ -22,6 +22,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         .getMoriningRangeTimes();
     Provider.of<AppointmentObservable>(context, listen: false)
         .getAfternoonRangeTimes();
+
+        Provider.of<AppointmentObservable>(context, listen: false)
+        .getForeignReservations();
   }
 
   @override
@@ -35,7 +38,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     final double itemHeight = (screenSizeHeight - kToolbarHeight - 24) / 10;
     final double itemWidth = screenSizeWidth / 1.8;
 
-    //print("Servicenames_ ${homeObservable.servicesNames}"); // TODO test, now its empty[]
     print("Rendering AppointmentScreen");
 
     return Scaffold(
@@ -58,7 +60,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         width: screenSizeWidth,
         height: screenSizeHeight,
         color: ConstantColors.myWhite,
-        child: appointmentObservable.afternoonDateTimeRanges == null
+        child: appointmentObservable.afternoonDateTimeRanges == []
             ? CircularIndicatorAlertDialog()
             : SingleChildScrollView(
                 child: Column(
@@ -74,63 +76,78 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                 onTap: () {
                                   appointmentObservable.previousMonth();
                                 },
-                                child: Container(
-                                  margin: const EdgeInsets.all(8),
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                      color: appointmentObservable
-                                              .isDateAccesibleBackward
-                                          ? ConstantColors.mainColorApp
-                                          : ConstantColors.btnDisabled,
-                                      shape: BoxShape.circle),
-                                  child: Icon(
-                                    Icons.chevron_left,
-                                    color: ConstantColors.myBlack,
-                                  ),
-                                ),
+                                child: Consumer<AppointmentObservable>(
+                                    builder: (context, data, _) {
+                                  return Container(
+                                    margin: const EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                        color: data.isDateAccesibleBackward
+                                            ? ConstantColors.mainColorApp
+                                            : ConstantColors.btnDisabled,
+                                        shape: BoxShape.circle),
+                                    child: Icon(
+                                      Icons.chevron_left,
+                                      color: data.isDateAccesibleBackward
+                                          ? ConstantColors.myBlack
+                                          : ConstantColors.myBlack
+                                              .withOpacity(0.5),
+                                    ),
+                                  );
+                                }),
                               ),
                               Expanded(
-                                child: Text(appointmentObservable.montAndYear(),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .foregroundPlainTxtColor,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600)),
+                                child: Consumer<AppointmentObservable>(
+                                    builder: (context, data, _) {
+                                  return Text(data.monthAndYear(),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .foregroundPlainTxtColor,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600));
+                                }),
                               ),
                               InkWell(
                                 onTap: () {
                                   appointmentObservable.nextMonth();
                                 },
-                                child: Container(
-                                  margin: const EdgeInsets.all(8),
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                      color: appointmentObservable
-                                              .isDateAccesibleForward
-                                          ? ConstantColors.mainColorApp
-                                          : ConstantColors.btnDisabled,
-                                      shape: BoxShape.circle),
-                                  child: Icon(
-                                    Icons.chevron_right,
-                                    color: ConstantColors.myBlack,
-                                  ),
-                                ),
+                                child: Consumer<AppointmentObservable>(
+                                    builder: (context, data, _) {
+                                  return Container(
+                                    margin: const EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                        color: data.isDateAccesibleForward
+                                            ? ConstantColors.mainColorApp
+                                            : ConstantColors.btnDisabled,
+                                        shape: BoxShape.circle),
+                                    child: Icon(
+                                      Icons.chevron_right,
+                                      color: data.isDateAccesibleForward
+                                          ? ConstantColors.myBlack
+                                          : ConstantColors.myBlack
+                                              .withOpacity(0.5),
+                                    ),
+                                  );
+                                }),
                               )
                             ],
                           ),
                           SizedBox(height: 8),
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: appointmentObservable
-                                  .daysInMonth()
-                                  .map((currentDate) {
-                                return DateColumn(dateTime: currentDate);
-                              }).toList(),
-                            ),
+                            child: Consumer<AppointmentObservable>(
+                                builder: (context, data, _) {
+                              return Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: data
+                                      .daysInMonth()
+                                      .map((currentDate) =>
+                                          DateColumn(dateTime: currentDate))
+                                      .toList());
+                            }),
                           ),
                           SizedBox(height: 15),
                         ])),
@@ -149,7 +166,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                     child: Row(
                                   children: [
                                     Text(
-                                      "Seleccionado: ",
+                                      "Servicio: ",
                                       style: TextStyle(
                                         color: ConstantColors.myBlack,
                                       ),
@@ -259,62 +276,61 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             _headerWidget("Madrugada"),
-                            appointmentObservable.morningDateTimeRanges.length >
-                                    0
-                                ? GridView.builder(
-                                    primary: false,
-                                    shrinkWrap: true,
-                                    itemCount: appointmentObservable
-                                        .morningDateTimeRanges.length,
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                            childAspectRatio:
-                                                (itemWidth / itemHeight),
-                                            crossAxisCount:
-                                                (screenSizeWidth / itemWidth)
-                                                    .ceil()
-                                                    .toInt(),
-                                            crossAxisSpacing: 8,
-                                            mainAxisSpacing: 8),
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return _buttonTimeWidget(
-                                          appointmentObservable
-                                              .morningDateTimeRanges[index]);
-                                    },
-                                  )
+                            appointmentObservable.morningDateTimeRanges.length >= 1
+                                ? Consumer<AppointmentObservable>(
+                                    builder: (context, data, _) {
+                                    return GridView.builder(
+                                      primary: false,
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          data.morningDateTimeRanges.length,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              childAspectRatio:
+                                                  (itemWidth / itemHeight),
+                                              crossAxisCount:
+                                                  (screenSizeWidth / itemWidth)
+                                                      .ceil()
+                                                      .toInt(),
+                                              crossAxisSpacing: 8,
+                                              mainAxisSpacing: 8),
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return _buttonTimeWidget(
+                                            data.morningDateTimeRanges[index]);
+                                      },
+                                    );
+                                  })
                                 : Text(
                                     "No hay citas disponibles",
                                     style: TextStyle(color: Colors.grey),
                                   ),
                             _headerWidget("Tarde"),
-                            appointmentObservable
-                                        .afternoonDateTimeRanges.length >
-                                    0
-                                ? GridView.builder(
-                                    primary: false,
-                                    shrinkWrap: true,
-                                    itemCount: context
-                                        .read<AppointmentObservable>()
-                                        .afternoonDateTimeRanges
-                                        .length,
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                            childAspectRatio:
-                                                (itemWidth / itemHeight),
-                                            crossAxisCount:
-                                                (screenSizeWidth / itemWidth)
-                                                    .ceil()
-                                                    .toInt(),
-                                            crossAxisSpacing: 8,
-                                            mainAxisSpacing: 8),
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return _buttonTimeWidget(
-                                          appointmentObservable
-                                              .afternoonDateTimeRanges[index]);
-                                    },
-                                  )
+                            appointmentObservable.afternoonDateTimeRanges.length >= 1 
+                                ? Consumer<AppointmentObservable>(
+                                    builder: (context, data, _) {
+                                    return GridView.builder(
+                                      primary: false,
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          data.afternoonDateTimeRanges.length,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              childAspectRatio:
+                                                  (itemWidth / itemHeight),
+                                              crossAxisCount:
+                                                  (screenSizeWidth / itemWidth)
+                                                      .ceil()
+                                                      .toInt(),
+                                              crossAxisSpacing: 8,
+                                              mainAxisSpacing: 8),
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return _buttonTimeWidget(data.afternoonDateTimeRanges[index]);
+
+                                      },
+                                    );
+                                  })
                                 : Text(
                                     "No hay citas disponibles",
                                     style: TextStyle(color: Colors.grey),
@@ -325,7 +341,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.7,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Provider.of<AppointmentObservable>(context, listen: false).book();
+                        },
                         child: Text(
                           "Reservar",
                           style: CustomTextStyles()
@@ -338,6 +356,13 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                             padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
                             backgroundColor: ConstantColors.mainColorApp),
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(Provider.of<AppointmentObservable>(context, listen: false).showErrMessage ?
+                            Provider.of<AppointmentObservable>(context, listen: false).errMessage : "",
+                            style: TextStyle(fontSize: 12, color: Colors.red.withOpacity(0.7)),
+                          ),
                     ),
                     SizedBox(height: 40)
                   ],
@@ -421,7 +446,7 @@ class DateColumn extends StatelessWidget {
           border: Border.all(
             color: (data.isDayAvailable(this.dateTime))
                 ? Theme.of(context).colorScheme.foregroundPlainTxtColor
-                : ConstantColors.btnDisabled,
+                : Colors.transparent,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -433,18 +458,15 @@ class DateColumn extends StatelessWidget {
           children: <Widget>[
             Text(data.dayName(dateTime),
                 style: TextStyle(
-                    color: (data.isDayAvailable(this.dateTime))
-                        ? Theme.of(context).colorScheme.foregroundPlainTxtColor
-                        : ConstantColors.btnDisabled)),
+                    color:
+                        Theme.of(context).colorScheme.foregroundPlainTxtColor)),
             Container(
                 padding: EdgeInsets.all(8),
                 child: Text(dateTime.day.toString(),
                     style: TextStyle(
-                        color: (data.isDayAvailable(this.dateTime))
-                            ? Theme.of(context)
-                                .colorScheme
-                                .foregroundPlainTxtColor
-                            : ConstantColors.btnDisabled))),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .foregroundPlainTxtColor))),
           ],
         ),
       );

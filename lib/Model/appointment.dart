@@ -9,34 +9,35 @@ class Appointment {
   ///    - DateTime creationDateTime
   ///    - DateTime endAppointmentTimestamp
 
-  final String idStartTimestamp;
+  final String creationTime;
+  final String startTime;
+  final String endTime;
   final String serviceId;
-  final String userUID;
-  final String timestampCreation;
-  final String endTimestamp;
+  final String phoneNumber;
+  
 
+
+//https://stackoverflow.com/questions/52993123/firestore-security-rules-allow-user-to-create-doc-only-if-new-doc-id-is-same-as
   Appointment(
-      {@required this.idStartTimestamp,
+      {@required this.startTime,
       @required this.serviceId,
-      @required this.userUID,
-      @required this.timestampCreation,
-      @required this.endTimestamp});
+      @required this.creationTime,
+      @required this.endTime,
+      this.phoneNumber});
 
   Appointment.fromJson(Map<String, dynamic> json)
       : this(
-            idStartTimestamp: json['idStartTimestamp'] as String,
+            startTime: json['startTime'] as String,
             serviceId: json['serviceId'] as String,
-            userUID: json['userUID'] as String,
-            timestampCreation: json['timestampCreation'] as String,
-            endTimestamp: json['endTimestamp'] as String);
+            creationTime: json['creationTime'] as String,
+            endTime: json['endTime'] as String);
 
   Map<String, dynamic> toJson() {
     return {
-      'idStartTimestamp': idStartTimestamp,
+      'creationTime': creationTime,
+      'endTime': endTime,
       'serviceId': serviceId,
-      'userUID': userUID,
-      'timestampCreation': timestampCreation,
-      'endTimestamp': endTimestamp
+      'startTime': startTime
     };
   }
 }

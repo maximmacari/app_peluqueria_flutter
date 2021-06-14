@@ -12,7 +12,7 @@ extension StringExtension on String {
 extension DateTimeExtension on DateTime {
   bool get isSaturday => this.weekday == 6;
   bool get isSunday => this.weekday == 7;
-  bool get isAfternoon => this.isAfter(DateTime(this.year, this.month, this.day, 14));
+  bool get isAfternoon => this.isAfter(DateTime(this.year, this.month, this.day, this.isSaturday ? 15 : 14, 0));
   bool get isMorning => this.isBefore(DateTime(this.year, this.month, this.day, this.isSaturday ? 15 : 14));
   int get timestamp => this.millisecondsSinceEpoch;
 }
@@ -47,4 +47,6 @@ extension DateTimeRangeExte on DateTimeRange {
     var formatter = DateFormat.Hm();     
     return "${formatter.format(this.start)} - ${formatter.format(this.end)}";
   }
+
+  DateTimeRange get noDiference => DateTimeRange(end: DateTime.now(), start: DateTime.now());
 }
