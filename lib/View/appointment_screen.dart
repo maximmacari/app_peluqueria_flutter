@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
+import 'package:flutter_sms_auth1/Model/appointment.dart';
 import 'package:flutter_sms_auth1/Model/salon_service.dart';
 import 'package:flutter_sms_auth1/Shared/alert_dialog.dart';
 import 'package:flutter_sms_auth1/Shared/colors.dart';
@@ -16,22 +17,27 @@ class AppointmentScreen extends StatefulWidget {
 }
 
 class _AppointmentScreenState extends State<AppointmentScreen> {
+
+  AppointmentObservable appointmentObservable;
+
   @override
   void initState() {
-    Provider.of<AppointmentObservable>(context, listen: false)
-        .getMoriningRangeTimes();
-    Provider.of<AppointmentObservable>(context, listen: false)
-        .getAfternoonRangeTimes();
+    appointmentObservable = Provider.of<AppointmentObservable>(context, listen: false); //true
+    if (appointmentObservable.foreignBookedAppointments.length == 0) {
+      appointmentObservable.getReservations();
+    } else {
+      appointmentObservable.foreignBookedAppointments.clear();
+      appointmentObservable.getReservations();
+    }
 
-        Provider.of<AppointmentObservable>(context, listen: false)
-        .getForeignReservations();
+    appointmentObservable.getMoriningRangeTimes();
+    appointmentObservable.getAfternoonRangeTimes();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     initializeDateFormatting("es_ES");
-    var appointmentObservable =
-        Provider.of<AppointmentObservable>(context, listen: false); //true
+    //var appointmentObservable = Provider.of<AppointmentObservable>(context, listen: false); //true
     var homeObservable = Provider.of<HomeObservable>(context, listen: false);
     final screenSizeWidth = MediaQuery.of(context).size.width;
     final screenSizeHeight = MediaQuery.of(context).size.height;
@@ -276,7 +282,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             _headerWidget("Madrugada"),
-                            appointmentObservable.morningDateTimeRanges.length >= 1
+                            appointmentObservable
+                                        .morningDateTimeRanges.length >=
+                                    1
                                 ? Consumer<AppointmentObservable>(
                                     builder: (context, data, _) {
                                     return GridView.builder(
@@ -306,7 +314,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                     style: TextStyle(color: Colors.grey),
                                   ),
                             _headerWidget("Tarde"),
-                            appointmentObservable.afternoonDateTimeRanges.length >= 1 
+                            appointmentObservable
+                                        .afternoonDateTimeRanges.length >=
+                                    1
                                 ? Consumer<AppointmentObservable>(
                                     builder: (context, data, _) {
                                     return GridView.builder(
@@ -326,8 +336,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                               mainAxisSpacing: 8),
                                       itemBuilder:
                                           (BuildContext context, int index) {
-                                        return _buttonTimeWidget(data.afternoonDateTimeRanges[index]);
-
+                                        return _buttonTimeWidget(data
+                                            .afternoonDateTimeRanges[index]);
                                       },
                                     );
                                   })
@@ -342,7 +352,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                       width: MediaQuery.of(context).size.width * 0.7,
                       child: TextButton(
                         onPressed: () {
-                          Provider.of<AppointmentObservable>(context, listen: false).book();
+                          Provider.of<AppointmentObservable>(context,
+                                  listen: false)
+                              .book();
                         },
                         child: Text(
                           "Reservar",
@@ -359,10 +371,17 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(Provider.of<AppointmentObservable>(context, listen: false).showErrMessage ?
-                            Provider.of<AppointmentObservable>(context, listen: false).errMessage : "",
-                            style: TextStyle(fontSize: 12, color: Colors.red.withOpacity(0.7)),
-                          ),
+                      child: Text(
+                        Provider.of<AppointmentObservable>(context,
+                                    listen: false)
+                                .showErrMessage
+                            ? Provider.of<AppointmentObservable>(context,
+                                    listen: false)
+                                .errMessage
+                            : "",
+                        style: TextStyle(
+                            fontSize: 12, color: Colors.red.withOpacity(0.7)),
+                      ),
                     ),
                     SizedBox(height: 40)
                   ],

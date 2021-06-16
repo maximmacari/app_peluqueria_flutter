@@ -61,6 +61,19 @@ class AppointmentObservable with ChangeNotifier {
   DateTimeRange get dateTimeRange => _dateTimeRangeSelected;
   List<DateTimeRange> get morningDateTimeRanges => _morningDateTimeRanges;
   List<DateTimeRange> get afternoonDateTimeRanges => _afternoonDateTimeRanges;
+  List<Appointment> get foreignBookedAppointments => _foreignBookedAppointments;
+
+  List<DateTimeRange> _occupiedDateTimeRanges() {
+    List<DateTimeRange> occupiedDateTimeRanges = [];
+    _foreignBookedAppointments.map((e) => {
+          occupiedDateTimeRanges.add(DateTimeRange(
+              start: DateTime.fromMicrosecondsSinceEpoch(
+                  e.startTime.microsecondsSinceEpoch),
+              end: DateTime.fromMicrosecondsSinceEpoch(
+                  e.endTime.microsecondsSinceEpoch)))
+        });
+    return occupiedDateTimeRanges;
+  }
 
   set dateTimeRangeSelected(DateTimeRange newDateTimeRange) {
     this._dateTimeRangeSelected = newDateTimeRange;
@@ -138,29 +151,36 @@ class AppointmentObservable with ChangeNotifier {
     }
   }
 
-  void getForeignReservations() async {
+  void getReservations() async {
+    Appointment auxAppointment;
     await firestore.collection("RESERVATIONS").get().then((querySnapshot) {
       querySnapshot.docs.forEach((reservation) async {
-          await firestore.doc(reservation.id.toString()).collection("public").get();
-          https://mullr.dev/2020/07/05/handling-nested-objects-in-firestore-with-flutter/
-          /* .then((publicData) => {
-            publicData.docs.forEach((element) {
-              print("public stattime ${element.id}");
-            })
-          } */
-          //);
-          /* firestore.doc(reservation.id.toString()).collection("private").get().then((privateData) => {
-            privateData.docs.forEach((element) {
-              print("private ${element["phoneNumber"]}");
-            })
-          }); */
+        await firestore
+            .collection("RESERVATIONS")
+            .doc(reservation.id.toString())
+            .collection("public")
+            .get()
+            .then((publicData) => {
+                  auxAppointment = Appointment(
+                      startTime: Timestamp.fromMicrosecondsSinceEpoch(
+                          int.parse(publicData.docs[0].data()["startTime"])),
+                      serviceId: publicData.docs[0].data()["serviceId"],
+                      creationTime: Timestamp.fromMicrosecondsSinceEpoch(
+                          int.parse(publicData.docs[0].data()["creationTime"])),
+                      endTime: Timestamp.fromMicrosecondsSinceEpoch(
+                          int.parse(publicData.docs[0].data()["endTime"])))
+                });
 
-      
-      
-        //_appointmentsList.add(Appointment.fromJson(result.data()));
-        
-        //print("result ${reservation.id}");
-        //print("public ${reservation.}");
+        await firestore
+            .collection("RESERVATIONS")
+            .doc(reservation.id.toString())
+            .collection("private")
+            .get()
+            .then((privateData) => {
+                  auxAppointment.phoneNumber =
+                      privateData.docs[0].data()["phoneNumber"]
+                });
+        _foreignBookedAppointments.add(auxAppointment);
       });
     });
   }
@@ -175,12 +195,18 @@ class AppointmentObservable with ChangeNotifier {
     final int _openingMinutes = _selectedDate.isSaturday ? 0 : 30;
     final int _closeHour = _selectedDate.isSaturday ? 15 : 19;
     final int _closeMinutes = _selectedDate.isSaturday ? 0 : 30;
-    final int _hourStartBreak = 14;
-    final int _hourEndBreak = 16;
     DateTime _opening = DateTime(_selectedDate.year, _selectedDate.month,
         _selectedDate.day, _openingHour, _openingMinutes);
     DateTime _close = DateTime(_selectedDate.year, _selectedDate.month,
         _selectedDate.day, _closeHour, _closeMinutes);
+    DateTimeRange _workingDay = DateTimeRange(start: _opening, end: _close);
+    final List<DateTimeRange> timeRanges = generateDateTimeRanges(_workingDay);
+    return timeRanges.removeCollidingTimeRanges(_collidingDTRanges());
+  }
+
+  List<DateTimeRange> _collidingDTRanges() {
+    final int _hourStartBreak = 14;
+    final int _hourEndBreak = 16;
     DateTime _startBreak = DateTime(_selectedDate.year, _selectedDate.month,
         _selectedDate.day, _hourStartBreak);
     DateTime _endBreak = DateTime(_selectedDate.year, _selectedDate.month,
@@ -193,16 +219,12 @@ class AppointmentObservable with ChangeNotifier {
         end: DateTime(
             _selectedDate.year, _selectedDate.month, _selectedDate.day, 19));
 
-    DateTimeRange _workingDay = DateTimeRange(start: _opening, end: _close);
-    //return [];
-    final List<DateTimeRange> timeRanges = generateDateTimeRanges(_workingDay);
+    List<DateTimeRange> collidingDTRanges = [];
+    collidingDTRanges.add(_brakeRangeTime);
     if (_selectedDate.isSaturday)
-      timeRanges.removeCollidingTimeRanges([_saturdayAfternoonRangeTimes]);
-    return timeRanges.removeCollidingTimeRanges(
-      [
-        _brakeRangeTime,
-      ],
-    ); //substract Firestore ones from this
+      collidingDTRanges.add(_saturdayAfternoonRangeTimes);
+      collidingDTRanges.addAll(_occupiedDateTimeRanges());
+    return collidingDTRanges;
   }
 
   void getMoriningRangeTimes() {
@@ -231,11 +253,10 @@ class AppointmentObservable with ChangeNotifier {
 
     if (_selectedTimeRange.start.isAfter(selectedDate)) {
       final Appointment appointment = Appointment(
-          endTime: selectedTimeRange.end.timestamp.toString(),
-          startTime: selectedTimeRange.start.timestamp.toString(),
+          endTime: Timestamp.fromDate(selectedTimeRange.end),
+          startTime: Timestamp.fromDate(selectedTimeRange.start),
           serviceId: _selectedSalonService.id,
-          creationTime: DateTime.now().timestamp.toString());
-
+          creationTime: Timestamp.fromDate(DateTime.now()));
       addReservationToFirestore(appointment);
     }
   }

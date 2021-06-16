@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Appointment {
@@ -9,13 +10,15 @@ class Appointment {
   ///    - DateTime creationDateTime
   ///    - DateTime endAppointmentTimestamp
 
-  final String creationTime;
-  final String startTime;
-  final String endTime;
+  final Timestamp creationTime;
+  final Timestamp startTime;
+  final Timestamp endTime;
   final String serviceId;
-  final String phoneNumber;
-  
+  String phoneNumber;
 
+  set setPhoneNumber(String newPhoneNumber) {
+    this.phoneNumber = newPhoneNumber;
+  }
 
 //https://stackoverflow.com/questions/52993123/firestore-security-rules-allow-user-to-create-doc-only-if-new-doc-id-is-same-as
   Appointment(
@@ -27,10 +30,10 @@ class Appointment {
 
   Appointment.fromJson(Map<String, dynamic> json)
       : this(
-            startTime: json['startTime'] as String,
+            startTime: json['startTime'] as Timestamp,
             serviceId: json['serviceId'] as String,
-            creationTime: json['creationTime'] as String,
-            endTime: json['endTime'] as String);
+            creationTime: json['creationTime'] as Timestamp,
+            endTime: json['endTime'] as Timestamp);
 
   Map<String, dynamic> toJson() {
     return {
@@ -40,6 +43,14 @@ class Appointment {
       'startTime': startTime
     };
   }
+
+  @override
+    String toString() {
+      // TODO: implement toString
+      return """
+        $startTime, $endTime, $serviceId, $creationTime, $phoneNumber
+      """;
+    }
 }
 
 //https://stackoverflow.com/questions/62517014/google-firestore-delete-all-collections-older-than-x-hours
