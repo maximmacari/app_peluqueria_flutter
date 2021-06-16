@@ -26,11 +26,12 @@ import 'dart:io';
 //Un (with) mixin se refiere a  agregar las capacidades de otra clase o clases a nuestra propia clase, sin heredar de esas clases, pero pudinedo utilizar sus propiedades.
 class AppointmentObservable with ChangeNotifier {
   SalonService _selectedSalonService = SalonService(
-      Codigo: "230",
-      Subgrupo: "tintes",
-      Nombre: "Sin seleccionar",
-      Duracion: "25",
-      Precio: "15.90 ");
+      Codigo: "310",
+      Subgrupo: "alisados",
+      Nombre: "alisado con plancha",
+      Duracion: "20",
+      Precio: "7.00 ");
+
   String _auxSubgroup = "";
   DateFormat _dateFormat = DateFormat.yMd(Platform.localeName.toString());
   DateTime _selectedDate = DateTime.now();
@@ -79,6 +80,10 @@ class AppointmentObservable with ChangeNotifier {
     this._dateTimeRangeSelected = newDateTimeRange;
     notifyListeners();
   }
+
+  set selectedSalonService(SalonService newSalonServiceSelected){
+    _selectedSalonService = newSalonServiceSelected;
+  } 
 
   set errMessage(String newMsg) {
     _errMessage = newMsg;
@@ -152,6 +157,7 @@ class AppointmentObservable with ChangeNotifier {
   }
 
   void getReservations() async {
+    if (_foreignBookedAppointments.length != 0) _foreignBookedAppointments.clear();
     Appointment auxAppointment;
     await firestore.collection("RESERVATIONS").get().then((querySnapshot) {
       querySnapshot.docs.forEach((reservation) async {
@@ -238,7 +244,6 @@ class AppointmentObservable with ChangeNotifier {
   }
 
   void book() async {
-    //check timerange is in day selected
     if (_selectedTimeRange == null) {
       _errMessage = "Debes seleccionar un hora.";
       _showErrMessage = true;
