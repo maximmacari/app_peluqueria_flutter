@@ -40,15 +40,14 @@ class AppointmentObservable with ChangeNotifier {
   List<DateTimeRange> _afternoonDateTimeRanges = [];
   List<DateTimeRange> _morningDateTimeRanges = [];
   List<Appointment> _foreignBookedAppointments = [];
-  final _authFirebase = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   DateTimeRange _dateTimeRangeSelected;
   String _errMessage = "";
   bool _showErrMessage = false;
   bool get showErrMessage => _showErrMessage;
-  bool get isDateAccesibleForward => _selectedDate.isBefore(twoMonthsForward);
+  bool get isDateAccesibleForward => selectedDate.isBefore(twoMonthsForward);
   bool get isDateAccesibleBackward =>
-      _selectedDate.month > DateTime.now().month;
+      selectedDate.month > DateTime.now().month;
   SalonService get selectedSalonService => _selectedSalonService;
   String get auxSubgroup => _auxSubgroup;
   String get currentLocale => Platform.localeName.toString();
@@ -63,6 +62,10 @@ class AppointmentObservable with ChangeNotifier {
   List<DateTimeRange> get morningDateTimeRanges => _morningDateTimeRanges;
   List<DateTimeRange> get afternoonDateTimeRanges => _afternoonDateTimeRanges;
   List<Appointment> get foreignBookedAppointments => _foreignBookedAppointments;
+
+  //loadings
+  bool _showLoadingDays = false;
+  bool get showLoadingDays => _showLoadingDays;
 
   List<DateTimeRange> _occupiedDateTimeRanges() {
     List<DateTimeRange> occupiedDateTimeRanges = [];
@@ -95,39 +98,32 @@ class AppointmentObservable with ChangeNotifier {
 
   set selectedTimeRange(DateTimeRange newTimeRange) {
     _selectedTimeRange = newTimeRange;
-    _showErrMessage = false;
     notifyListeners();
-    print("Selected Time range: ${_selectedTimeRange.toHourString()}");
+    print("Selected Time range: ${selectedTimeRange.toHourString()}");
   }
 
-  set selectedService(SalonService newSalonService) {
+  /* set selectedService(SalonService newSalonService) {
     this._selectedSalonService = newSalonService;
     getMoriningRangeTimes();
     getAfternoonRangeTimes();
     _showErrMessage = false;
     notifyListeners();
-    print("Appointment, _seletedSalonService: $_selectedSalonService");
-  }
+    print("Appointment, _seletedSalonService: $selectedSalonService");
+  } */
 
   set selectedDate(DateTime newDateTime) {
     _selectedDate = newDateTime;
     notifyListeners();
-    print("_selectedDate: $_selectedDate");
+    print("selectedDate: $selectedDate");
   }
 
   void nextMonth() {
     if (isDateAccesibleForward) {
-      if (_selectedDate.month == 12) {
-        _selectedDate = new DateTime(_selectedDate.year + 1, 1);
-        getMoriningRangeTimes();
-        getAfternoonRangeTimes();
-        notifyListeners();
+      if (selectedDate.month == 12) {
+        selectedDate = new DateTime(selectedDate.year + 1, 1);
       } else {
-        _selectedDate =
-            new DateTime(_selectedDate.year, _selectedDate.month + 1);
-        getMoriningRangeTimes();
-        getAfternoonRangeTimes();
-        notifyListeners();
+        selectedDate =
+            new DateTime(selectedDate.year, selectedDate.month + 1);
       }
     }
   }
@@ -141,17 +137,11 @@ class AppointmentObservable with ChangeNotifier {
 
   void previousMonth() {
     if (isDateAccesibleBackward) {
-      if (_selectedDate.month == 1) {
-        selectedDate = new DateTime(_selectedDate.year - 1, 12);
-        getMoriningRangeTimes();
-        getAfternoonRangeTimes();
-        notifyListeners();
+      if (selectedDate.month == 1) {
+        selectedDate = new DateTime(selectedDate.year - 1, 12); 
       } else {
         selectedDate =
-            new DateTime(_selectedDate.year, _selectedDate.month - 1);
-        getMoriningRangeTimes();
-        getAfternoonRangeTimes();
-        notifyListeners();
+            new DateTime(selectedDate.year, selectedDate.month - 1);
       }
     }
   }
@@ -169,12 +159,12 @@ class AppointmentObservable with ChangeNotifier {
             .then((publicData) => {
                   auxAppointment = Appointment(
                       startTime: Timestamp.fromMicrosecondsSinceEpoch(
-                          int.parse(publicData.docs[0].data()["startTime"])),
-                      serviceId: publicData.docs[0].data()["serviceId"],
+                          int.parse(publicData.docs[0].data()["startTime"]).toInt()),
+                      serviceId: publicData.docs[0].data()["serviceId"].toString(),
                       creationTime: Timestamp.fromMicrosecondsSinceEpoch(
-                          int.parse(publicData.docs[0].data()["creationTime"])),
+                          int.parse(publicData.docs[0].data()["creationTime"]).toInt()),
                       endTime: Timestamp.fromMicrosecondsSinceEpoch(
-                          int.parse(publicData.docs[0].data()["endTime"])))
+                          int.parse(publicData.docs[0].data()["endTime"]).toInt()))
                 });
 
         await firestore
@@ -198,13 +188,13 @@ class AppointmentObservable with ChangeNotifier {
      *  Saturday 9:00 - 15:00
      */
     final int _openingHour = 9;
-    final int _openingMinutes = _selectedDate.isSaturday ? 0 : 30;
-    final int _closeHour = _selectedDate.isSaturday ? 15 : 19;
-    final int _closeMinutes = _selectedDate.isSaturday ? 0 : 30;
-    DateTime _opening = DateTime(_selectedDate.year, _selectedDate.month,
-        _selectedDate.day, _openingHour, _openingMinutes);
-    DateTime _close = DateTime(_selectedDate.year, _selectedDate.month,
-        _selectedDate.day, _closeHour, _closeMinutes);
+    final int _openingMinutes = selectedDate.isSaturday ? 0 : 30;
+    final int _closeHour = selectedDate.isSaturday ? 15 : 19;
+    final int _closeMinutes = selectedDate.isSaturday ? 0 : 30;
+    DateTime _opening = DateTime(selectedDate.year, selectedDate.month,
+        selectedDate.day, _openingHour, _openingMinutes);
+    DateTime _close = DateTime(selectedDate.year, selectedDate.month,
+        selectedDate.day, _closeHour, _closeMinutes);
     DateTimeRange _workingDay = DateTimeRange(start: _opening, end: _close);
     final List<DateTimeRange> timeRanges = generateDateTimeRanges(_workingDay);
     return timeRanges.removeCollidingTimeRanges(_collidingDTRanges());
@@ -213,21 +203,21 @@ class AppointmentObservable with ChangeNotifier {
   List<DateTimeRange> _collidingDTRanges() {
     final int _hourStartBreak = 14;
     final int _hourEndBreak = 16;
-    DateTime _startBreak = DateTime(_selectedDate.year, _selectedDate.month,
-        _selectedDate.day, _hourStartBreak);
-    DateTime _endBreak = DateTime(_selectedDate.year, _selectedDate.month,
-        _selectedDate.day, _hourEndBreak);
+    DateTime _startBreak = DateTime(selectedDate.year, selectedDate.month,
+        selectedDate.day, _hourStartBreak);
+    DateTime _endBreak = DateTime(selectedDate.year, selectedDate.month,
+        selectedDate.day, _hourEndBreak);
     DateTimeRange _brakeRangeTime =
         DateTimeRange(start: _startBreak, end: _endBreak);
     DateTimeRange _saturdayAfternoonRangeTimes = DateTimeRange(
         start: DateTime(
-            _selectedDate.year, _selectedDate.month, _selectedDate.day, 15),
+            selectedDate.year, selectedDate.month, selectedDate.day, 15),
         end: DateTime(
-            _selectedDate.year, _selectedDate.month, _selectedDate.day, 19));
+            selectedDate.year, selectedDate.month, selectedDate.day, 19));
 
     List<DateTimeRange> collidingDTRanges = [];
     collidingDTRanges.add(_brakeRangeTime);
-    if (_selectedDate.isSaturday)
+    if (selectedDate.isSaturday)
       collidingDTRanges.add(_saturdayAfternoonRangeTimes);
       collidingDTRanges.addAll(_occupiedDateTimeRanges());
     return collidingDTRanges;
@@ -244,23 +234,23 @@ class AppointmentObservable with ChangeNotifier {
   }
 
   void book() async {
-    if (_selectedTimeRange == null) {
+    if (selectedTimeRange == null) {
       _errMessage = "Debes seleccionar un hora.";
       _showErrMessage = true;
       return;
     }
 
-    if (_selectedSalonService.name == "Sin seleccionar") {
+    if (selectedSalonService.name == "Sin seleccionar") {
       _errMessage = "Debes seleccionar un servicio.";
       _showErrMessage = true;
       return;
     }
 
-    if (_selectedTimeRange.start.isAfter(selectedDate)) {
+    if (selectedTimeRange.start.isAfter(selectedDate)) {
       final Appointment appointment = Appointment(
           endTime: Timestamp.fromDate(selectedTimeRange.end),
           startTime: Timestamp.fromDate(selectedTimeRange.start),
-          serviceId: _selectedSalonService.id,
+          serviceId: selectedSalonService.id,
           creationTime: Timestamp.fromDate(DateTime.now()));
       addReservationToFirestore(appointment);
     }
@@ -295,7 +285,7 @@ class AppointmentObservable with ChangeNotifier {
 
     while (_auxEnd.isBefore(dayRange.end)) {
       _auxEnd = _auxEnd
-          .add(Duration(minutes: int.parse(_selectedSalonService.duration)));
+          .add(Duration(minutes: int.parse(selectedSalonService.duration)));
       timeRanges.add(new DateTimeRange(start: _auxStart, end: _auxEnd));
       _auxStart = _auxEnd;
     }
@@ -303,17 +293,20 @@ class AppointmentObservable with ChangeNotifier {
   }
 
   String monthAndYear() {
-    final int montNumber = _selectedDate.month;
+    final int montNumber = selectedDate.month;
+    print("Month and year: ${DateFormat.LLLL("es_ES").dateSymbols.MONTHS[montNumber - 1].toString().capitalized()}, ${selectedDate.year}");
     return """
     ${DateFormat.LLLL("es_ES").dateSymbols.MONTHS[montNumber - 1].toString().capitalized()}, ${selectedDate.year}""";
   }
 
   List<DateTime> daysInMonth() {
-    int totalMonthDays = _daysInMonth(_selectedDate.month, _selectedDate.year);
+    _showLoadingDays = true;
+    int totalMonthDays = _daysInMonth(selectedDate.month, selectedDate.year);
     print("Totalmonthdays: $totalMonthDays");
     var listDateTimes = new List<DateTime>.generate(totalMonthDays,
-        (i) => DateTime(DateTime.now().year, _selectedDate.month, i + 1));
+        (i) => DateTime(DateTime.now().year, selectedDate.month, i + 1));
     listDateTimes.retainWhere((element) => element.isAfter(yesterday));
+    _showLoadingDays = false;
     return listDateTimes;
   }
 

@@ -109,17 +109,22 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                       }),
                                     ),
                                     Expanded(
-                                      child: Consumer<AppointmentObservable>(
-                                          builder: (context, data, _) {
-                                        return Text(data.monthAndYear(),
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .foregroundPlainTxtColor,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600));
-                                      }),
+                                      child: Selector<AppointmentObservable,
+                                              String>(
+                                          selector: (_, provider) =>
+                                              provider.monthAndYear(),
+                                          builder:
+                                              (context, monthAndYear, child) {
+                                            return Text(monthAndYear,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .foregroundPlainTxtColor,
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w600));
+                                          }),
                                     ),
                                     InkWell(
                                       onTap: () {
@@ -152,17 +157,21 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                       const EdgeInsets.fromLTRB(0, 8, 0, 8),
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
-                                    child: Consumer<AppointmentObservable>(
-                                        builder: (context, data, _) {
-                                      return Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: data
-                                              .daysInMonth()
-                                              .map((currentDate) => DateColumn(
-                                                  dateTime: currentDate))
-                                              .toList());
-                                    }),
+                                    child: appointmentObservable.showLoadingDays
+                                        ? CircularProgressIndicator()
+                                        : Consumer<AppointmentObservable>(
+                                            builder: (context, data, _) {
+                                            return Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: data
+                                                    .daysInMonth()
+                                                    .map((currentDay) =>
+                                                        DateColumn(
+                                                            dateTime:
+                                                                currentDay))
+                                                    .toList());
+                                          }),
                                   ),
                                 ),
                               ])),
@@ -199,8 +208,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                           iconEnabledColor:
                                               ConstantColors.myBlack,
                                           onChanged: (SalonService service) {
-                                            appointmentObservableData
-                                                .selectedService = service;
+                                            appointmentObservable
+                                                .selectedSalonService = service;
                                           },
                                           value: appointmentObservableData
                                               .selectedSalonService,
@@ -211,17 +220,18 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                                       DropdownMenuItem<
                                                           SalonService>>(
                                                   (SalonService service) {
-                                            if (appointmentObservableData
+                                            if (appointmentObservable
                                                     .auxSubgroup
                                                     .toLowerCase()
                                                     .toString() !=
                                                 service.subgroup
                                                     .toLowerCase()
                                                     .toString()) {
-                                              appointmentObservableData
+                                              appointmentObservable
                                                       .auxSubgroup =
                                                   service.subgroup;
-                                              return DropdownMenuItem<SalonService>(
+                                              return DropdownMenuItem<
+                                                  SalonService>(
                                                 child: Container(
                                                   decoration: BoxDecoration(
                                                     borderRadius:
@@ -420,7 +430,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     return Consumer<AppointmentObservable>(builder: (context, data, _) {
       return Container(
         decoration: BoxDecoration(
-            color: data.selectedTimeRange == timeRange
+            color: Provider.of<AppointmentObservable>(context, listen: false)
+                        .selectedTimeRange ==
+                    timeRange
                 ? ConstantColors.mainColorApp
                 : ConstantColors.myWhite,
             border: Border.all(
@@ -475,44 +487,48 @@ class DateColumn extends StatelessWidget {
       return this.dateTime.day == selectedDay;
     }
 
-    return InkWell(onTap: () {
-      if (appointmentObservable.isDayAvailable(this.dateTime)) {
-        appointmentObservable.selectedDate = dateTime;
-        appointmentObservable.getAfternoonRangeTimes();
-        appointmentObservable.getMoriningRangeTimes();
-      }
-    }, child: Consumer<AppointmentObservable>(builder: (context, data, _) {
-      return Container(
-        margin: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: (data.isDayAvailable(this.dateTime))
-                ? Theme.of(context).colorScheme.foregroundPlainTxtColor
-                : Colors.transparent,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(12),
-          color: _isDateColumnPicked(data.selectedDate.day)
-              ? ConstantColors.mainColorApp
-              : ConstantColors.myWhite,
-        ),
-        child: Column(
-          children: <Widget>[
-            Text(data.dayName(dateTime),
-                style: TextStyle(
-                    color:
-                        Theme.of(context).colorScheme.foregroundPlainTxtColor)),
-            Container(
-                padding: EdgeInsets.all(8),
-                child: Text(dateTime.day.toString(),
-                    style: TextStyle(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .foregroundPlainTxtColor))),
-          ],
-        ),
-      );
-    }));
+    return Selector<AppointmentObservable, bool>(
+        selector: (_, provider) => provider.isDayAvailable(dateTime),
+        builder: (context, isDayAvailable, child) {
+          return InkWell(
+              onTap: () {
+                if (appointmentObservable.isDayAvailable(this.dateTime)) {
+                  appointmentObservable.selectedDate = dateTime;
+                }
+              },
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: (appointmentObservable.isDayAvailable(this.dateTime))
+                        ? Theme.of(context).colorScheme.foregroundPlainTxtColor
+                        : Colors.transparent,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  color: _isDateColumnPicked(
+                          appointmentObservable.selectedDate.day)
+                      ? ConstantColors.mainColorApp
+                      : ConstantColors.myWhite,
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Text(appointmentObservable.dayName(dateTime),
+                        style: TextStyle(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .foregroundPlainTxtColor)),
+                    Container(
+                        padding: EdgeInsets.all(8),
+                        child: Text(dateTime.day.toString(),
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .foregroundPlainTxtColor))),
+                  ],
+                ),
+              ));
+        });
   }
 }

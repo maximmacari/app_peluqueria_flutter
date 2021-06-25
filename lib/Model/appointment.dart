@@ -37,10 +37,10 @@ class Appointment {
 
   Map<String, dynamic> toJson() {
     return {
-      'creationTime': creationTime,
-      'endTime': endTime,
+      'creationTime': creationTime.microsecondsSinceEpoch,
+      'endTime': endTime.microsecondsSinceEpoch,
       'serviceId': serviceId,
-      'startTime': startTime
+      'startTime': startTime.microsecondsSinceEpoch
     };
   }
 
